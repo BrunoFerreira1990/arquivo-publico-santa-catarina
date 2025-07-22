@@ -1,5 +1,6 @@
 package com.example.apesc.model;
 
+import com.example.apesc.model.enums.Genres;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,7 +23,7 @@ public abstract class Person {
     private LocalDate birthDate;
 
     @Column(name = "gender")
-    private String gender;
+    private Genres gender;
 
     @Column(name = "email")
     private String email;

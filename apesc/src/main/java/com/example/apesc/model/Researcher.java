@@ -1,8 +1,16 @@
 package com.example.apesc.model;
 
+import com.example.apesc.model.enums.EducationLevel;
+import com.example.apesc.model.enums.HistoricalPeriod;
+import com.example.apesc.model.enums.Nationality;
+import com.example.apesc.model.enums.StudyArea;
+import com.fasterxml.jackson.databind.annotation.EnumNaming;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
@@ -17,7 +25,7 @@ public class Researcher extends Person {
     private String cpf;
 
     @Column(name = "nacionality")
-    private String nacionality;
+    private Nationality nacionality;
 
     @Column(name = "number_phone")
     private String numberPhone;
@@ -44,7 +52,7 @@ public class Researcher extends Person {
     private String cep;
 
     @Column(name = "education_level")
-    private String educationLevel;
+    private EducationLevel educationLevel;
 
     @Column(name = "education_institution")
     private String educationInstitution;
@@ -61,10 +69,22 @@ public class Researcher extends Person {
     @Column(name = "research_purpose")
     private String researchPurpose;
 
+    @ElementCollection
+    @CollectionTable(
+            name = "researcher_historical_period",
+            joinColumns = @JoinColumn(name = "researcher_id")
+    )
     @Column(name = "historical_period")
-    private String historicalPeriod;
+    @Enumerated(EnumType.STRING)
+    private Set<HistoricalPeriod> historicalPeriods = new HashSet<>();
 
+    @ElementCollection
+    @CollectionTable(
+            name = "researcher_study_area",
+            joinColumns = @JoinColumn(name = "researcher_id")
+    )
     @Column(name = "study_area")
-    private String studyArea;
+    @Enumerated(EnumType.STRING)
+    private Set<StudyArea> studyAreas = new HashSet<>();
 
 }
