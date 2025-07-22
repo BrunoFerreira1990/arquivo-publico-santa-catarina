@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.annotation.EnumNaming;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.*;
+import org.springframework.data.annotation.LastModifiedDate;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -83,5 +85,12 @@ public class Researcher extends Person {
     @Column(name = "study_area")
     @Enumerated(EnumType.STRING)
     private Set<StudyArea> studyAreas = new HashSet<>();
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
 }
