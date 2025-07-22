@@ -1,9 +1,6 @@
 package com.example.apesc.model;
 
-import com.example.apesc.model.enums.EducationLevel;
-import com.example.apesc.model.enums.HistoricalPeriod;
-import com.example.apesc.model.enums.Nationality;
-import com.example.apesc.model.enums.StudyArea;
+import com.example.apesc.model.enums.*;
 import com.fasterxml.jackson.databind.annotation.EnumNaming;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
@@ -46,7 +43,7 @@ public class Researcher extends Person {
     private String city;
 
     @Column(name = "state")
-    private String state;
+    private States state;
 
     @Column(name = "cep")
     private String cep;
