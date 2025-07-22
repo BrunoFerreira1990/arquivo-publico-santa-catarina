@@ -211,7 +211,8 @@ public enum Nationality {
     VENEZUELAN("Venezuelan"),
     VIETNAMESE("Vietnamese"),
     ZAMBIAN("Zambian"),
-    ZIMBABWEAN("Zimbabwean");
+    ZIMBABWEAN("Zimbabwean"),
+    OTHER_NATIONALITY("Other Nationality");
 
     private final String displayName;
 
