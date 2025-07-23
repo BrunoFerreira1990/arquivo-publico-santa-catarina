@@ -1,5 +1,6 @@
 package com.example.apesc.model;
 
+import com.example.apesc.model.enums.ConsultationType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -8,8 +9,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table
@@ -26,7 +25,7 @@ public class ConsultationRecord {
     private LocalDate researchDate;
 
     @Column(name = "consultation_type")
-    private String consultationType;
+    private ConsultationType consultationType;
 
     @Column(name = "document_repository_id")
     private String documentRepositoryId;
