@@ -11,15 +11,16 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table
+@Table(name = "consultation_record")
 public class ConsultationRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "researcher_id")
-    private String researcherId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "researcher_id", nullable = false)
+    private Researcher researcher;
 
     @Column(name = "research_date")
     private LocalDate researchDate;

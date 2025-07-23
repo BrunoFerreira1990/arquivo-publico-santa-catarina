@@ -13,8 +13,6 @@ import java.util.Set;
 
 @Entity
 @Data
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "researcher")
@@ -92,5 +90,8 @@ public class Researcher extends Person {
     @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "researcher", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ConsultationRecord> consultationRecords = new HashSet<>();
 
 }
