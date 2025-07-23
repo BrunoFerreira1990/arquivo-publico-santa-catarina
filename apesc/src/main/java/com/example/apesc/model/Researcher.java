@@ -17,7 +17,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table
+@Table(name = "researcher")
 public class Researcher extends Person {
 
     @Column(name = "cpf")
