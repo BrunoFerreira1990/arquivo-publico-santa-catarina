@@ -1,6 +1,6 @@
 package com.example.apesc.model;
 
-import com.example.apesc.model.enums.ConsultationType;
+import com.example.apesc.model.enums.TipoConsulta;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,7 +26,7 @@ public class RegistroConsulta {
     private LocalDate dataPesquisa;
 
     @Column(name = "tipo_consulta")
-    private ConsultationType tipoConsulta;
+    private TipoConsulta tipoConsulta;
 
     @Column(name = "acervo_documental_id")
     private String acervoDocumentalId;

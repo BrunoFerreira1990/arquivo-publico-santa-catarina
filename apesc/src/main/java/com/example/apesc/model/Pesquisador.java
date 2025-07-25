@@ -21,7 +21,7 @@ public class Pesquisador extends Pessoa {
     private String cpf;
 
     @Column(name = "nacionalidade")
-    private Nationality nacionalidade;
+    private Nacionalidade nacionalidade;
 
     @Column(name = "numeroTelefone")
     private String numeroTelefone;
@@ -42,13 +42,13 @@ public class Pesquisador extends Pessoa {
     private String cidade;
 
     @Column(name = "estado")
-    private States estado;
+    private Estados estado;
 
     @Column(name = "cep")
     private String cep;
 
     @Column(name = "nivel_educacional")
-    private EducationLevel NivelEducacional;
+    private NivelEducacional NivelEducacional;
 
     @Column(name = "instituicao_ensino")
     private String instituicaoEnsino;
@@ -72,7 +72,7 @@ public class Pesquisador extends Pessoa {
     )
     @Column(name = "periodo_estudo")
     @Enumerated(EnumType.STRING)
-    private Set<HistoricalPeriod> periodoEstudo = new HashSet<>();
+    private Set<PeriodoEstudo> periodoEstudo = new HashSet<>();
 
     @ElementCollection
     @CollectionTable(
@@ -81,14 +81,14 @@ public class Pesquisador extends Pessoa {
     )
     @Column(name = "area_estudo")
     @Enumerated(EnumType.STRING)
-    private Set<StudyArea> areaEstudo = new HashSet<>();
+    private Set<AreaEstudo> areaEstudo = new HashSet<>();
 
     @Column(name = "criado_em")
     private LocalDateTime criadoEm;
 
     @LastModifiedDate
     @Column(name = "atualizado_em")
-    private LocalDateTime updatedAt;
+    private LocalDateTime atualizadoEm;
 
     @OneToMany(mappedBy = "pesquisador", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<RegistroConsulta> registroConsultas = new HashSet<>();

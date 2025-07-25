@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum States {
+public enum Estados {
 
     AC("Acre"),
     AL("Alagoas"),

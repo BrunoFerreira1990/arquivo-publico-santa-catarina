@@ -3,14 +3,12 @@ package com.example.apesc.model.enums;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
 @Getter
-public enum HistoricalPeriod {
+@AllArgsConstructor
+public enum TipoConsulta {
 
-    COLONAL("Colonial"),
-    IMPERIAL("Imperial"),
-    REPUBLICAN("Republican");
+    PRESENCIAL("Presencial"),
+    REMOTO("Remoto");
 
     private String displayName;
-
 }

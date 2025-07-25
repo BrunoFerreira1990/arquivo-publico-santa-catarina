@@ -5,10 +5,10 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum ConsultationType {
+public enum Generos {
 
-    IN_PERSON("In Person"),
-    REMOTE("Remote");
+    MASCULINO("Masculino"),
+    FEMININO("Feminino");
 
     private String displayName;
 }

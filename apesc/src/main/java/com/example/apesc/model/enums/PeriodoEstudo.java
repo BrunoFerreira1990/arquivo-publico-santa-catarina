@@ -3,12 +3,14 @@ package com.example.apesc.model.enums;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@Getter
 @AllArgsConstructor
-public enum Genres {
+@Getter
+public enum PeriodoEstudo {
 
-    MALE("Male"),
-    FEMALE("Female");
+    COLONAL("Colonial"),
+    IMPERIAL("Imperial"),
+    REPUBLICANO("Republicano");
 
     private String displayName;
+
 }
