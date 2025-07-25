@@ -10,17 +10,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Table(name = "producing_agency")
+@Table(name = "orgao_produtor")
 public class OrgaoProdutor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "nome")
+    private String nome;
 
-    @Column(name = "abbreviation")
-    private String abbreviation;
+    @Column(name = "abreviacao")
+    private String abreviacao;
 
 }

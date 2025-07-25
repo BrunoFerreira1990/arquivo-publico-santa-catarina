@@ -9,16 +9,16 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "employee")
+@Table(name = "empregado")
 public class Empregado extends Pessoa {
 
-    @Column(name = "registration_number")
-    private String registrationNumber;
+    @Column(name = "numero_matricula")
+    private String numeroMatricula;
 
-    @Column(name = "position")
-    private String position;
+    @Column(name = "cargo")
+    private String cargo;
 
-    @Column(name = "section")
-    private String section;
+    @Column(name = "setor")
+    private String setor;
 
 }

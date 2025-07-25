@@ -11,86 +11,87 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "researcher")
+@Data
+@Table(name = "pesquisador")
 public class Pesquisador extends Pessoa {
 
     @Column(name = "cpf")
     private String cpf;
 
-    @Column(name = "nacionality")
-    private Nationality nacionality;
+    @Column(name = "nacionalidade")
+    private Nationality nacionalidade;
 
-    @Column(name = "number_phone")
-    private String numberPhone;
+    @Column(name = "numeroTelefone")
+    private String numeroTelefone;
 
-    @Column(name = "street_name")
-    private String streetName;
+    @Column(name = "logradouro")
+    private String logradouro;
 
-    @Column(name = "house_number")
-    private String houseNumber;
+    @Column(name = "numero_casa")
+    private String numeroCasa;
 
-    @Column(name = "complement")
-    private String complement;
+    @Column(name = "complemento")
+    private String complemento;
 
-    @Column(name = "neighborhood")
-    private String neighborhood;
+    @Column(name = "bairro")
+    private String bairro;
 
-    @Column(name = "city")
-    private String city;
+    @Column(name = "cidade")
+    private String cidade;
 
-    @Column(name = "state")
-    private States state;
+    @Column(name = "estado")
+    private States estado;
 
     @Column(name = "cep")
     private String cep;
 
-    @Column(name = "education_level")
-    private EducationLevel educationLevel;
+    @Column(name = "nivel_educacional")
+    private EducationLevel NivelEducacional;
 
-    @Column(name = "education_institution")
-    private String educationInstitution;
+    @Column(name = "instituicao_ensino")
+    private String instituicaoEnsino;
 
-    @Column(name = "course")
-    private String course;
+    @Column(name = "curso")
+    private String curso;
 
-    @Column(name = "profession")
-    private String profession;
+    @Column(name = "profissao")
+    private String profissao;
 
-    @Column(name = "research_subject")
-    private String researchSubject;
+    @Column(name = "assunto_pesquisa")
+    private String assuntoPesquisa;
 
-    @Column(name = "research_purpose")
-    private String researchPurpose;
-
-    @ElementCollection
-    @CollectionTable(
-            name = "researcher_historical_period",
-            joinColumns = @JoinColumn(name = "researcher_id")
-    )
-    @Column(name = "historical_period")
-    @Enumerated(EnumType.STRING)
-    private Set<HistoricalPeriod> historicalPeriods = new HashSet<>();
+    @Column(name = "finalidade_pesquisa")
+    private String finalidadePesquisa;
 
     @ElementCollection
     @CollectionTable(
-            name = "researcher_study_area",
-            joinColumns = @JoinColumn(name = "researcher_id")
+            name = "pesquisador_periodo_estudo",
+            joinColumns = @JoinColumn(name = "pesquisador_id")
     )
-    @Column(name = "study_area")
+    @Column(name = "periodo_estudo")
     @Enumerated(EnumType.STRING)
-    private Set<StudyArea> studyAreas = new HashSet<>();
+    private Set<HistoricalPeriod> periodoEstudo = new HashSet<>();
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    @ElementCollection
+    @CollectionTable(
+            name = "pesquisador_area_estudo",
+            joinColumns = @JoinColumn(name = "pesquisador_id")
+    )
+    @Column(name = "area_estudo")
+    @Enumerated(EnumType.STRING)
+    private Set<StudyArea> areaEstudo = new HashSet<>();
+
+    @Column(name = "criado_em")
+    private LocalDateTime criadoEm;
 
     @LastModifiedDate
-    @Column(name = "updated_at")
+    @Column(name = "atualizado_em")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "researcher", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<RegistroConsulta> consultationRecords = new HashSet<>();
+    @OneToMany(mappedBy = "pesquisador", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<RegistroConsulta> registroConsultas = new HashSet<>();
 
 }
+

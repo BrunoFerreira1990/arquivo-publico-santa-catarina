@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Table(name = "document_collections")
+@Table(name = "acervo_documental")
 public class AcervoDocumental {
 
     @Id

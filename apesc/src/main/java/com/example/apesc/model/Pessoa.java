@@ -12,21 +12,21 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "person")
+@Table(name = "pessoa")
 public abstract class Pessoa {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "nome")
+    private String nome;
 
-    @Column(name = "birth_date")
-    private LocalDate birthDate;
+    @Column(name = "data_nascimento")
+    private LocalDate dataNascimento;
 
-    @Column(name = "gender")
-    private Genres gender;
+    @Column(name = "genero")
+    private Genres genero;
 
     @Column(name = "email")
     private String email;

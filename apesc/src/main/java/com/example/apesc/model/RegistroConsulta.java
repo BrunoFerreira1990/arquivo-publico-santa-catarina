@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "consultation_record")
+@Table(name = "registro_consulta")
 public class RegistroConsulta {
 
     @Id
@@ -19,34 +19,34 @@ public class RegistroConsulta {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "researcher_id", nullable = false)
-    private Pesquisador researcher;
+    @JoinColumn(name = "pesquisador_id", nullable = false)
+    private Pesquisador pesquisadorId;
 
-    @Column(name = "research_date")
-    private LocalDate researchDate;
+    @Column(name = "data_pesquisa")
+    private LocalDate dataPesquisa;
 
-    @Column(name = "consultation_type")
-    private ConsultationType consultationType;
+    @Column(name = "tipo_consulta")
+    private ConsultationType tipoConsulta;
 
-    @Column(name = "document_repository_id")
-    private String documentRepositoryId;
+    @Column(name = "acervo_documental_id")
+    private String acervoDocumentalId;
 
-    @Column(name = "period")
-    private String period;
+    @Column(name = "periodo")
+    private String periodo;
 
-    @Column(name = "quantity")
-    private Integer quantity;
+    @Column(name = "quantidade")
+    private Integer quantidade;
 
-    @Column(name = "employee_id")
-    private String employeeId;
+    @Column(name = "empregado_id")
+    private String empregadoId;
 
-    @Column(name = "register_date")
-    private LocalDateTime registerDate;
+    @Column(name = "data_registro")
+    private LocalDateTime dataRegistro;
 
-    @Column(name = "update_date")
-    private LocalDateTime updateDate;
+    @Column(name = "data_atualizacao")
+    private LocalDateTime dataAtualizacao;
 
-    @Column(name = "update_employee_id")
-    private String updateEmployeeId;
+    @Column(name = "empregado_atualizacao_id")
+    private String empregadoAtualizacaoId;
 
 }
