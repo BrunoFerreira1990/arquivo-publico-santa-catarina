@@ -1,7 +1,6 @@
 package com.example.apesc.model;
 
 import com.example.apesc.model.enums.*;
-import com.fasterxml.jackson.databind.annotation.EnumNaming;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.*;
@@ -16,7 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "researcher")
-public class Researcher extends Person {
+public class Pesquisador extends Pessoa {
 
     @Column(name = "cpf")
     private String cpf;
@@ -92,6 +91,6 @@ public class Researcher extends Person {
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "researcher", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<ConsultationRecord> consultationRecords = new HashSet<>();
+    private Set<RegistroConsulta> consultationRecords = new HashSet<>();
 
 }

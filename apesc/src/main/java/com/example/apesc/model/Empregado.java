@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "employee")
-public class Employee extends Person{
+public class Empregado extends Pessoa {
 
     @Column(name = "registration_number")
     private String registrationNumber;

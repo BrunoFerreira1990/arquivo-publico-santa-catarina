@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "consultation_record")
-public class ConsultationRecord {
+public class RegistroConsulta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +20,7 @@ public class ConsultationRecord {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "researcher_id", nullable = false)
-    private Researcher researcher;
+    private Pesquisador researcher;
 
     @Column(name = "research_date")
     private LocalDate researchDate;
