@@ -7,6 +7,9 @@ import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -20,16 +23,18 @@ public class RegistroConsulta {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pesquisador_id", nullable = false)
-    private Pesquisador pesquisadorId;
+    private Pesquisador pesquisador;
 
-    @Column(name = "data_pesquisa")
+    @Column(name = "data_pesquisa", nullable = false)
     private LocalDate dataPesquisa;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "tipo_consulta")
     private TipoConsulta tipoConsulta;
 
-    @Column(name = "acervo_documental_id")
-    private String acervoDocumentalId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "acervo_documental_id", nullable = false)
+    private AcervoDocumental acervoDocumental;
 
     @Column(name = "periodo")
     private String periodo;
@@ -37,16 +42,20 @@ public class RegistroConsulta {
     @Column(name = "quantidade")
     private Integer quantidade;
 
-    @Column(name = "empregado_id")
-    private String empregadoId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "funcionario_id", nullable = false)
+    private Funcionario funcionario;
 
+    @CreatedDate
     @Column(name = "data_registro")
     private LocalDateTime dataRegistro;
 
+    @LastModifiedDate
     @Column(name = "data_atualizacao")
     private LocalDateTime dataAtualizacao;
 
-    @Column(name = "empregado_atualizacao_id")
-    private String empregadoAtualizacaoId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "funcionario_atualizacao_id")
+    private Funcionario funcionarioAtualizacao;
 
 }

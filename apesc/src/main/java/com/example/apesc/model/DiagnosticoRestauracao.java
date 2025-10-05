@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -18,6 +19,10 @@ public class DiagnosticoRestauracao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @ManyToOne
+    @JoinColumn(name = "funcionario_id", nullable = false, unique = true)
+    private Funcionario responsavelRestauracao;
+
     @Column(name = "data_diagnostico")
     private LocalDate dataDiagnostico;
 
@@ -25,8 +30,8 @@ public class DiagnosticoRestauracao {
     private Integer numeroDocumento;
 
     @ManyToOne
-    @JoinColumn(name = "documento_id")
-    private AcervoDocumental documentoId;
+    @JoinColumn(name = "documento_id", nullable = false)
+    private AcervoDocumental acervoDocumental;
 
     @Column(name = "autor")
     private String autor;
@@ -112,8 +117,26 @@ public class DiagnosticoRestauracao {
     @Column(name = "encadernacao")
     private Boolean encadernacao;
 
-    @ManyToOne
-    @JoinColumn(name = "empregado_id")
-    private Empregado responsavelRestauracao;
+
+    @OneToOne(mappedBy = "diagnosticoRestauracao", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ProcedimentoRestauracao procedimentoRestauracao;
+
+    @PreRemove
+    private void removeProcedimentoRestauracao() {
+        if (procedimentoRestauracao != null) {
+            procedimentoRestauracao.setDiagnosticoRestauracao(null);
+        }
+    }
+
+    public void setProcedimentoRestauracao(ProcedimentoRestauracao procedimento) {
+        if (procedimento == null) {
+            if (this.procedimentoRestauracao != null) {
+                this.procedimentoRestauracao.setDiagnosticoRestauracao(null);
+            }
+        } else {
+            procedimento.setDiagnosticoRestauracao(this);
+        }
+        this.procedimentoRestauracao = procedimento;
+    }
 
 }

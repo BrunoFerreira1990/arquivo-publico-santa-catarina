@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "empregado")
-public class Empregado extends Pessoa {
+public class Funcionario extends Pessoa {
 
     @Column(name = "numero_matricula")
     private String numeroMatricula;
@@ -30,5 +30,8 @@ public class Empregado extends Pessoa {
 
     @OneToMany(mappedBy = "responsavelRestauracao")
     private List<DiagnosticoRestauracao> diagnosticosRealizados = new ArrayList<>();
+
+    @OneToMany(mappedBy = "responsavelRestauracao")
+    private List<ProcedimentoRestauracao> procedimentosRealizados = new ArrayList<>();
 
 }

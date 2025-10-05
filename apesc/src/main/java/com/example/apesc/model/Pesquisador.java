@@ -93,5 +93,15 @@ public class Pesquisador extends Pessoa {
     @OneToMany(mappedBy = "pesquisador", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<RegistroConsulta> registroConsultas = new HashSet<>();
 
+    public void addRegistroConsulta(RegistroConsulta rc) {
+        registroConsultas.add(rc);
+        rc.setPesquisador(this);
+    }
+
+    public void removeRegistroConsulta(RegistroConsulta rc) {
+        registroConsultas.remove(rc);
+        rc.setPesquisador(null);
+    }
+
 }
 

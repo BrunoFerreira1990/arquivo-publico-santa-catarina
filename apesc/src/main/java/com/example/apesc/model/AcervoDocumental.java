@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,11 +19,17 @@ public class AcervoDocumental {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer tipoDocumentoId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "tipo_documento_id", nullable = false)
+    private TipoDocumento tipoDocumento;
 
-    private String orgaoProdutorId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "entidade_produtora_id", nullable = false)
+    private EntidadeProdutora entidadeProdutora;
 
-    private String orgaoReceptorId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "entidade_receptora_id", nullable = true)
+    private EntidadeProdutora entidadeReceptora;
 
     @Column(name = "natureza_transacao")
     private String naturezaTransacao;
@@ -36,5 +45,8 @@ public class AcervoDocumental {
 
     @Column(name = "disponibilidade")
     private Boolean disponibilidade;
+
+    @OneToMany(mappedBy = "documentoId")
+    private List<DiagnosticoRestauracao> diagnosticoRestauracao = new ArrayList<>();
 
 }
