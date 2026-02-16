@@ -46,7 +46,7 @@ public class AcervoDocumental {
     @Column(name = "disponibilidade")
     private Boolean disponibilidade;
 
-    @OneToMany(mappedBy = "documentoId")
+    @OneToMany(mappedBy = "acervoDocumental")
     private List<DiagnosticoRestauracao> diagnosticoRestauracao = new ArrayList<>();
 
 }
