@@ -27,7 +27,7 @@ public class EntidadeProdutora {
     private String abreviacao;
 
     @OneToMany(mappedBy = "entidadeProdutora")
-    private List<AcervoDocumental> acervoDocumental = new ArrayList()<>();
+    private List<AcervoDocumental> acervoDocumental = new ArrayList<>();
 
     @OneToMany(mappedBy = "entidadeReceptora")
     private List<AcervoDocumental> acervoDocumentalReceptora = new ArrayList<>();

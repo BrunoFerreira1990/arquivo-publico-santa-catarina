@@ -25,7 +25,7 @@ public class Funcionario extends Pessoa {
     @Column(name = "setor")
     private String setor;
 
-    @OneToMany(mappedBy = "empregado")
+    @OneToMany(mappedBy = "funcionario")
     private List<RegistroConsulta> registroConsultas = new ArrayList<>();
 
     @OneToMany(mappedBy = "responsavelRestauracao")
