@@ -1,6 +1,7 @@
 package com.example.apesc.service.consultationrecord;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.apesc.model.RegistroConsulta;
 import com.example.apesc.repository.RegistroConsultaRepository;
@@ -17,14 +18,17 @@ public class RegistroConsultaServiceImpl implements RegistroConsultaService {
         return registroConsultaRepository.save(registroConsulta);
     }
     
+    @Transactional(readOnly = true)
     public RegistroConsulta findById(Long id) {
         return registroConsultaRepository.findById(id).orElse(null);
     }
     
+    @Transactional
     public void delete(Long id) {
         registroConsultaRepository.deleteById(id);
     }
     
+    @Transactional
     public RegistroConsulta update(RegistroConsulta registroConsulta) {
         return registroConsultaRepository.save(registroConsulta);
     }
