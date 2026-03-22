@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.apesc.model.TipoDocumento;
 import com.example.apesc.repository.TipoDocumentoRepository;
+import com.example.apesc.util.TipoDocumentoValidation;
 
 import lombok.AllArgsConstructor;
 
@@ -15,6 +16,7 @@ import lombok.AllArgsConstructor;
 public class TipoDocumentoServiceImpl {
 
     private final TipoDocumentoRepository tipoDocumentoRepository;
+    private final TipoDocumentoValidation tipoDocumentoValidation;
     
     @Transactional(readOnly = true)
     public List<TipoDocumento> findAll() {
@@ -28,13 +30,13 @@ public class TipoDocumentoServiceImpl {
     
     @Transactional
     public TipoDocumento save(TipoDocumento tipoDocumento) {
-       
-        
+        tipoDocumentoValidation.validateSave(tipoDocumento, tipoDocumentoRepository);
         return tipoDocumentoRepository.save(tipoDocumento);
     }
     
     @Transactional
     public TipoDocumento update(TipoDocumento tipoDocumento) {
+        tipoDocumentoValidation.validateSave(tipoDocumento, tipoDocumentoRepository);
         return tipoDocumentoRepository.save(tipoDocumento);
     }
     
