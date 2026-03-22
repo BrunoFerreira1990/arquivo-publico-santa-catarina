@@ -9,7 +9,7 @@ import com.example.apesc.repository.TipoDocumentoRepository;
 
 public class TipoDocumentoValidation {
 
-    public static void validateSave(TipoDocumento tipoDocumento, TipoDocumentoRepository tipoDocumentoRepository) {
+    public void validateSave(TipoDocumento tipoDocumento, TipoDocumentoRepository tipoDocumentoRepository) {
         
      if (tipoDocumento.getNomeDocumento() == null || tipoDocumento.getNomeDocumento().trim().isEmpty()) {
             throw new CustomException(
