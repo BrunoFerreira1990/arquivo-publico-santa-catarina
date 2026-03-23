@@ -42,6 +42,24 @@ public class TipoDocumentoValidation {
         }
     }
 
+    public void validateUpdate(TipoDocumento tipoDocumento, TipoDocumentoRepository tipoDocumentoRepository) {
+        if (tipoDocumento.getId() == null) {
+            throw new CustomException(
+                ErrorConstants.INVALID_ID, 
+                HttpStatus.BAD_REQUEST
+            );
+        }
+        
+        if (tipoDocumentoRepository.findById(tipoDocumento.getId()).isEmpty()) {
+            throw new CustomException(
+                ErrorConstants.ID_NOT_FOUND, 
+                HttpStatus.NOT_FOUND
+            );
+        }
+        
+        validateSave(tipoDocumento, tipoDocumentoRepository);
+    }
+
     public void validateDelete(Long id, TipoDocumentoRepository tipoDocumentoRepository) {
         if (id == null) {
             throw new CustomException(
