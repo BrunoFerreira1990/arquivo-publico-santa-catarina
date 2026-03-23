@@ -41,4 +41,20 @@ public class TipoDocumentoValidation {
             );
         }
     }
+
+    public void validateDelete(Long id, TipoDocumentoRepository tipoDocumentoRepository) {
+        if (id == null) {
+            throw new CustomException(
+                ErrorConstants.INVALID_ID, 
+                HttpStatus.BAD_REQUEST
+            );
+        }
+
+        if (tipoDocumentoRepository.findById(id).isEmpty()) {
+            throw new CustomException(
+                ErrorConstants.ID_NOT_FOUND, 
+                HttpStatus.NOT_FOUND
+            );
+        }
+    }
 }
