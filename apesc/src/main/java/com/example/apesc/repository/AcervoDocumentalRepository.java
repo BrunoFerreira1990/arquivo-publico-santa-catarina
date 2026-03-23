@@ -8,4 +8,6 @@ import java.util.List;
 public interface AcervoDocumentalRepository extends JpaRepository<AcervoDocumental, Long> {
 
     List<AcervoDocumental> findByTipoDocumentoId(Long tipoDocumentoId);
+    
+    boolean existsByTipoDocumentoId(Long tipoDocumentoId);
 }
