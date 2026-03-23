@@ -25,4 +25,20 @@ public class TipoDocumentoValidation {
             );
         }
     }
+
+    public void validateFindByName(String name, TipoDocumentoRepository tipoDocumentoRepository) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new CustomException(
+                ErrorConstants.EMPTY_NAME, 
+                HttpStatus.BAD_REQUEST
+            );
+        }
+
+        if (tipoDocumentoRepository.findByName(name).isEmpty()) {
+            throw new CustomException(
+                ErrorConstants.NAME_NOT_FOUND, 
+                HttpStatus.NOT_FOUND
+            );
+        }
+    }
 }

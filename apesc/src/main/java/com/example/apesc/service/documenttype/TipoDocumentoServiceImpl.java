@@ -47,6 +47,7 @@ public class TipoDocumentoServiceImpl {
     
     @Transactional(readOnly = true)
     public List<TipoDocumento> findByName(String name) {
+        tipoDocumentoValidation.validateFindByName(name, tipoDocumentoRepository);
         return tipoDocumentoRepository.findByName(name);
     }
     
