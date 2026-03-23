@@ -16,6 +16,6 @@ public interface TipoDocumentoService {
     
     void delete(Long id);
     
-    List<TipoDocumento> findByName(String name);
+    TipoDocumento findByName(String name);
     
 }
