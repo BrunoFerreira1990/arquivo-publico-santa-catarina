@@ -13,7 +13,13 @@ public enum ErrorConstants {
     NAME_NOT_FOUND("Nome não encontrado"),
     INVALID_ID("ID inválido"),
     ID_NOT_FOUND("ID não encontrado"),
-    TIPO_DOCUMENTO_HAS_DOCUMENTS("Tipo de documento possui documentos associados e não pode ser deletado");
+    TIPO_DOCUMENTO_HAS_DOCUMENTS("Tipo de documento possui documentos associados e não pode ser deletado"),
+    TIPO_DOCUMENTO_REQUIRED("Tipo de documento é obrigatório"),
+    TIPO_DOCUMENTO_NOT_FOUND("Tipo de documento não encontrado"),
+    ENTIDADE_PRODUTORA_REQUIRED("Entidade produtora é obrigatória"),
+    ENTIDADE_PRODUTORA_NOT_FOUND("Entidade produtora não encontrada"),
+    NATUREZA_TRANSACAO_REQUIRED("Natureza da transação é obrigatória"),
+    QUANTIDADE_INVALIDA("Quantidade deve ser maior que zero");
 
     private final String description;
 
