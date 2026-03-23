@@ -30,7 +30,7 @@ public class AcervoDocumentalController {
         List<AcervoDocumentalDTO> acervos = acervoDocumentalService.findAll().stream()
                 .map(AcervoDocumentalDTO::fromEntity)
                 .collect(Collectors.toList());
-        return ResponseEntity.status(HttpStatus.OK).body(acervos);
+        return ResponseEntity.ok(acervos);
     }
 
     @GetMapping("/{id}")
@@ -45,10 +45,6 @@ public class AcervoDocumentalController {
             @PathVariable Long id, 
             @RequestBody AcervoDocumentalDTO dto) {
         
-        if (!acervoDocumentalService.findById(id).isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
-        
         AcervoDocumental acervoAtualizado = dto.toEntity();
         acervoAtualizado.setId(id);
         
@@ -58,9 +54,6 @@ public class AcervoDocumentalController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        if (!acervoDocumentalService.findById(id).isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
         acervoDocumentalService.delete(id);
         return ResponseEntity.noContent().build();
     }
