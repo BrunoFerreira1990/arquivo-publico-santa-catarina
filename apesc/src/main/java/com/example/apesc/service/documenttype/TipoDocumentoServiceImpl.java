@@ -46,7 +46,7 @@ public class TipoDocumentoServiceImpl implements TipoDocumentoService {
     }
     
     @Transactional
-    public String delete(Long id) {
+    public void delete(Long id) {
         tipoDocumentoValidation.validateDelete(id, tipoDocumentoRepository);
         
         if (acervoDocumentalRepository.existsByTipoDocumentoId(id)) {
@@ -57,7 +57,6 @@ public class TipoDocumentoServiceImpl implements TipoDocumentoService {
         }
         
         tipoDocumentoRepository.deleteById(id);
-        return "Tipo de documento deletado com sucesso";
     }
     
     @Transactional(readOnly = true)
