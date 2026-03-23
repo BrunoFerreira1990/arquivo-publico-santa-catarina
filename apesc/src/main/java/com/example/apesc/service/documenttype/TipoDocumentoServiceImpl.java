@@ -17,7 +17,7 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-public class TipoDocumentoServiceImpl {
+public class TipoDocumentoServiceImpl implements TipoDocumentoService {
 
     private final TipoDocumentoRepository tipoDocumentoRepository;
     private final TipoDocumentoValidation tipoDocumentoValidation;
@@ -61,9 +61,14 @@ public class TipoDocumentoServiceImpl {
     }
     
     @Transactional(readOnly = true)
-    public List<TipoDocumento> findByName(String name) {
+    public TipoDocumento findByName(String name) {
         tipoDocumentoValidation.validateFindByName(name, tipoDocumentoRepository);
-        return tipoDocumentoRepository.findByName(name);
+        return tipoDocumentoRepository.findByName(name).stream()
+                .findFirst()
+                .orElseThrow(() -> new CustomException(
+                    ErrorConstants.NAME_NOT_FOUND, 
+                    HttpStatus.NOT_FOUND
+                ));
     }
     
 }
