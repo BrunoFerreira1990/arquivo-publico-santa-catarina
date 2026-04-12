@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface TipoDocumentoRepository extends JpaRepository<TipoDocumento, Long> {
 
-    List<TipoDocumento> findByName(String name);
+    List<TipoDocumento> findByNomeDocumento(String nomeDocumento);
     
 }

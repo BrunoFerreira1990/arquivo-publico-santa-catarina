@@ -7,5 +7,5 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PesquisadorRepository extends JpaRepository<Pesquisador, Long> {
-    List<Pesquisador> findByName(String name);
+    List<Pesquisador> findByNome(String nome);
 }

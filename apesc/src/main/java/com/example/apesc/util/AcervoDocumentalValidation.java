@@ -7,7 +7,9 @@ import com.example.apesc.repository.AcervoDocumentalRepository;
 import com.example.apesc.repository.TipoDocumentoRepository;
 import com.example.apesc.repository.EntidadeProdutoraRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 
+@Component
 public class AcervoDocumentalValidation {
 
     public void validateSave(AcervoDocumental acervo, 

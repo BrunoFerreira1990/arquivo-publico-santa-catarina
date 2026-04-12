@@ -8,7 +8,7 @@ public interface PesquisadorService {
 
     Pesquisador save(Pesquisador pesquisador);
 
-    List<Pesquisador> findByName(String name);
+    List<Pesquisador> findByNome(String nome);
 
     void delete(Long id);
 

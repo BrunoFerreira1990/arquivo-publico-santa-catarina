@@ -1,12 +1,14 @@
 package com.example.apesc.util;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 
 import com.example.apesc.exception.CustomException;
 import com.example.apesc.exception.ErrorConstants;
 import com.example.apesc.model.TipoDocumento;
 import com.example.apesc.repository.TipoDocumentoRepository;
 
+@Component
 public class TipoDocumentoValidation {
 
     public void validateSave(TipoDocumento tipoDocumento, TipoDocumentoRepository tipoDocumentoRepository) {
@@ -18,7 +20,7 @@ public class TipoDocumentoValidation {
             );
         }
 
-     if (!tipoDocumentoRepository.findByName(tipoDocumento.getNomeDocumento()).isEmpty()) {
+     if (!tipoDocumentoRepository.findByNomeDocumento(tipoDocumento.getNomeDocumento()).isEmpty()) {
             throw new CustomException(
                 ErrorConstants.DUPLICATE_NAME, 
                 HttpStatus.BAD_REQUEST
@@ -34,7 +36,7 @@ public class TipoDocumentoValidation {
             );
         }
 
-        if (tipoDocumentoRepository.findByName(name).isEmpty()) {
+        if (tipoDocumentoRepository.findByNomeDocumento(name).isEmpty()) {
             throw new CustomException(
                 ErrorConstants.NAME_NOT_FOUND, 
                 HttpStatus.NOT_FOUND

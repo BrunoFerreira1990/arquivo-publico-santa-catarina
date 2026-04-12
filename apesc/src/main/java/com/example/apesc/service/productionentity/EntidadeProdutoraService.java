@@ -15,6 +15,6 @@ public interface EntidadeProdutoraService {
     
     List<EntidadeProdutora> findAll();
     
-    List<EntidadeProdutora> findByName(String name);
+    List<EntidadeProdutora> findByNome(String nome);
     
 }

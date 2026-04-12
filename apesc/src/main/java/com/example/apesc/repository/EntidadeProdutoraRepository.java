@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface EntidadeProdutoraRepository extends JpaRepository<EntidadeProdutora, Long> {
 
-    List<EntidadeProdutora> findByName(String name);
+    List<EntidadeProdutora> findByNome(String nome);
 
 }

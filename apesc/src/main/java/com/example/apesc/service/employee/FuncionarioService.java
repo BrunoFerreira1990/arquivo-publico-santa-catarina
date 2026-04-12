@@ -4,7 +4,7 @@ import com.example.apesc.model.Funcionario;
 
 public interface FuncionarioService {
     
-    public Funcionario findByName(String name);
+    public Funcionario findByNome(String nome);
 
     public Funcionario save(Funcionario funcionario);
 

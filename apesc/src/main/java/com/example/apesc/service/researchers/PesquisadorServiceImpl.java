@@ -20,8 +20,8 @@ public class PesquisadorServiceImpl implements PesquisadorService {
         return pesquisadorRepository.save(pesquisador);
     }
     
-    public List<Pesquisador> findByName(String name) {
-        return pesquisadorRepository.findByName(name);
+    public List<Pesquisador> findByNome(String nome) {
+        return pesquisadorRepository.findByNome(nome);
     }
 
     public void delete(Long id) {

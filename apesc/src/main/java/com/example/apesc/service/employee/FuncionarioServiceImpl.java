@@ -25,8 +25,8 @@ public class FuncionarioServiceImpl implements FuncionarioService {
         funcionarioRepository.deleteById(id);
     }
 
-    public Funcionario findByName(String name) {
-        return funcionarioRepository.findByName(name);
+    public Funcionario findByNome(String nome) {
+        return funcionarioRepository.findByNome(nome);
     }
     
 }

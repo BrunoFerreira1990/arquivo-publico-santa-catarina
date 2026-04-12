@@ -36,8 +36,8 @@ public class EntidadeProdutoraServiceImpl implements EntidadeProdutoraService {
         return entidadeProdutoraRepository.findAll();
     }
     
-    public List<EntidadeProdutora> findByName(String name) {
-        return entidadeProdutoraRepository.findByName(name);
+    public List<EntidadeProdutora> findByNome(String nome) {
+        return entidadeProdutoraRepository.findByNome(nome);
         
     }
     

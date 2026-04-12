@@ -60,9 +60,9 @@ public class TipoDocumentoServiceImpl implements TipoDocumentoService {
     }
     
     @Transactional(readOnly = true)
-    public TipoDocumento findByName(String name) {
+    public TipoDocumento findByNomeDocumento(String name) {
         tipoDocumentoValidation.validateFindByName(name, tipoDocumentoRepository);
-        return tipoDocumentoRepository.findByName(name).stream()
+        return tipoDocumentoRepository.findByNomeDocumento(name).stream()
                 .findFirst()
                 .orElseThrow(() -> new CustomException(
                     ErrorConstants.NAME_NOT_FOUND, 
