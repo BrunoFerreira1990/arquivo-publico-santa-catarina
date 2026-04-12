@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.example.apesc.model.EntidadeProdutora;
 import com.example.apesc.repository.EntidadeProdutoraRepository;
 import com.example.apesc.util.CommonUtils;
+import com.example.apesc.util.EntidadeProdutoraValidation;
 
 import lombok.AllArgsConstructor;
 
@@ -15,6 +16,7 @@ import lombok.AllArgsConstructor;
 public class EntidadeProdutoraServiceImpl implements EntidadeProdutoraService {
     
     private final EntidadeProdutoraRepository entidadeProdutoraRepository;
+    private final EntidadeProdutoraValidation entidadeProdutoraValidation;
     
 
     public EntidadeProdutora save(EntidadeProdutora entidadeProdutora) {
@@ -24,6 +26,7 @@ public class EntidadeProdutoraServiceImpl implements EntidadeProdutoraService {
         if (entidadeProdutora.getAbreviacao() != null) {
             entidadeProdutora.setAbreviacao(CommonUtils.toUpperCaseSafe(entidadeProdutora.getAbreviacao()));
         }
+        entidadeProdutoraValidation.validateSave(entidadeProdutora, entidadeProdutoraRepository);
         return entidadeProdutoraRepository.save(entidadeProdutora);
     }
     
@@ -34,10 +37,12 @@ public class EntidadeProdutoraServiceImpl implements EntidadeProdutoraService {
         if (entidadeProdutora.getAbreviacao() != null) {
             entidadeProdutora.setAbreviacao(CommonUtils.toUpperCaseSafe(entidadeProdutora.getAbreviacao()));
         }
+        entidadeProdutoraValidation.validateUpdate(entidadeProdutora, entidadeProdutoraRepository);
         return entidadeProdutoraRepository.save(entidadeProdutora);
     }
     
     public void delete(Long id) {
+        entidadeProdutoraValidation.validateDelete(id, entidadeProdutoraRepository);
         entidadeProdutoraRepository.deleteById(id);
     }
     
@@ -50,8 +55,6 @@ public class EntidadeProdutoraServiceImpl implements EntidadeProdutoraService {
     }
     
     public List<EntidadeProdutora> findByNome(String nome) {
-        return entidadeProdutoraRepository.findByNome(nome);
-        
+        return entidadeProdutoraRepository.findByNomeIgnoreCase(nome);
     }
-    
 }

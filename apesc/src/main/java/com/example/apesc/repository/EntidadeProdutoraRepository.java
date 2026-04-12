@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface EntidadeProdutoraRepository extends JpaRepository<EntidadeProdutora, Long> {
 
-    List<EntidadeProdutora> findByNome(String nome);
+    List<EntidadeProdutora> findByNomeIgnoreCase(String nome);
+    List<EntidadeProdutora> findByAbreviacaoIgnoreCase(String abreviacao);
 
 }
