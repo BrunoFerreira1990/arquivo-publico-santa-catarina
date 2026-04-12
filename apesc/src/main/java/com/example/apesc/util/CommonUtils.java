@@ -24,4 +24,11 @@ public class CommonUtils {
         
         return formatted.toString().trim();
     }
+
+    public static String toUpperCaseSafe(String text) {
+        if (text == null || text.trim().isEmpty()) {
+            return text;
+        }
+        return text.trim().toUpperCase();
+    }
 }
