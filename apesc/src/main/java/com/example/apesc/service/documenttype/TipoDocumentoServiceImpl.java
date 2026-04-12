@@ -13,6 +13,7 @@ import com.example.apesc.exception.CustomException;
 import com.example.apesc.exception.ErrorConstants;
 import org.springframework.http.HttpStatus;
 
+import com.example.apesc.util.CommonUtils;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -35,12 +36,18 @@ public class TipoDocumentoServiceImpl implements TipoDocumentoService {
     
     @Transactional
     public TipoDocumento save(TipoDocumento tipoDocumento) {
+        if (tipoDocumento.getNomeDocumento() != null) {
+            tipoDocumento.setNomeDocumento(CommonUtils.toTitleCase(tipoDocumento.getNomeDocumento()));
+        }
         tipoDocumentoValidation.validateSave(tipoDocumento, tipoDocumentoRepository);
         return tipoDocumentoRepository.save(tipoDocumento);
     }
     
     @Transactional
     public TipoDocumento update(TipoDocumento tipoDocumento) {
+        if (tipoDocumento.getNomeDocumento() != null) {
+            tipoDocumento.setNomeDocumento(CommonUtils.toTitleCase(tipoDocumento.getNomeDocumento()));
+        }
         tipoDocumentoValidation.validateUpdate(tipoDocumento, tipoDocumentoRepository);
         return tipoDocumentoRepository.save(tipoDocumento);
     }
