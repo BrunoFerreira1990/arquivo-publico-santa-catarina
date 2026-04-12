@@ -20,7 +20,7 @@ public class TipoDocumentoValidation {
             );
         }
 
-     if (!tipoDocumentoRepository.findByNomeDocumento(tipoDocumento.getNomeDocumento()).isEmpty()) {
+     if (!tipoDocumentoRepository.findByNomeDocumentoIgnoreCase(tipoDocumento.getNomeDocumento()).isEmpty()) {
             throw new CustomException(
                 ErrorConstants.DUPLICATE_NAME, 
                 HttpStatus.BAD_REQUEST
@@ -36,7 +36,7 @@ public class TipoDocumentoValidation {
             );
         }
 
-        if (tipoDocumentoRepository.findByNomeDocumento(name).isEmpty()) {
+        if (tipoDocumentoRepository.findByNomeDocumentoIgnoreCase(name).isEmpty()) {
             throw new CustomException(
                 ErrorConstants.NAME_NOT_FOUND, 
                 HttpStatus.NOT_FOUND
