@@ -8,7 +8,9 @@ import lombok.Getter;
 public enum ErrorConstants {
 
     DUPLICATE_NAME("Nome duplicado"),
+    DUPLICATE_ABREVIACAO("Abreviação duplicada"),
     EMPTY_NAME("O nome não pode ser vazio"),
+    EMPTY_ABREVIACAO("A abreviação não pode ser vazia"),
     INVALID_NAME("Nome do tipo de documento inválido"),
     NAME_NOT_FOUND("Nome não encontrado"),
     INVALID_ID("ID inválido"),

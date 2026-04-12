@@ -59,7 +59,14 @@ public class TipoDocumentoValidation {
             );
         }
         
-        validateSave(tipoDocumento, tipoDocumentoRepository);
+        if (tipoDocumento.getNomeDocumento() == null || tipoDocumento.getNomeDocumento().trim().isEmpty()) {
+            throw new CustomException(ErrorConstants.EMPTY_NAME, HttpStatus.BAD_REQUEST);
+        }
+
+        java.util.List<TipoDocumento> existing = tipoDocumentoRepository.findByNomeDocumentoIgnoreCase(tipoDocumento.getNomeDocumento());
+        if (!existing.isEmpty() && !existing.get(0).getId().equals(tipoDocumento.getId())) {
+            throw new CustomException(ErrorConstants.DUPLICATE_NAME, HttpStatus.BAD_REQUEST);
+        }
     }
 
     public void validateDelete(Long id, TipoDocumentoRepository tipoDocumentoRepository) {
