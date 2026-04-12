@@ -4,6 +4,10 @@ import com.example.apesc.dto.TipoDocumentoDTO;
 import com.example.apesc.model.TipoDocumento;
 import com.example.apesc.service.documenttype.TipoDocumentoService;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +32,7 @@ public class TipoDocumentoController {
         TipoDocumento atualizado = tipoDocumentoService.update(entity);
         return ResponseEntity.ok(TipoDocumentoDTO.fromEntity(atualizado));
     }
-    
+
     @GetMapping("/name/{name}")
     public ResponseEntity<TipoDocumentoDTO> findByName(@PathVariable String name) {
         TipoDocumento tipo = tipoDocumentoService.findByNomeDocumento(name);
@@ -39,6 +43,12 @@ public class TipoDocumentoController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         tipoDocumentoService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<TipoDocumentoDTO>> findAll() {
+        List<TipoDocumento> tipos = tipoDocumentoService.findAll();
+        return ResponseEntity.ok(tipos.stream().map(TipoDocumentoDTO::fromEntity).collect(Collectors.toList()));
     }
 
 }
