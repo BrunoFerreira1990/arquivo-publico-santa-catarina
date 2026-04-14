@@ -57,4 +57,8 @@ public class EntidadeProdutoraServiceImpl implements EntidadeProdutoraService {
     public List<EntidadeProdutora> findByNome(String nome) {
         return entidadeProdutoraRepository.findByNomeIgnoreCase(nome);
     }
+
+    public List<EntidadeProdutora> findByAbreviacao(String abreviacao) {
+        return entidadeProdutoraRepository.findByAbreviacaoIgnoreCase(abreviacao);
+    }
 }
