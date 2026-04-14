@@ -24,8 +24,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         Map<String, Object> body = new HashMap<>();
         body.put("timestamp", LocalDateTime.now());
         body.put("status", ex.getHttpStatus().value());
-        body.put("error", ex.getDescription());
-        body.put("message", ex.getDescription());
+        body.put("error", ex.getDescription() != null ? ex.getDescription().name() : "UNKNOWN_ERROR");
+        body.put("message", ex.getDescription() != null ? ex.getDescription().getDescription() : "Unexpected error");
         body.put("object", ex.getObject());
         body.put("path", request.getDescription(false).replace("uri=", ""));
 
