@@ -17,4 +17,6 @@ public interface EntidadeProdutoraService {
     
     List<EntidadeProdutora> findByNome(String nome);
     
+    List<EntidadeProdutora> findByAbreviacao(String abreviacao);
+    
 }
