@@ -55,10 +55,12 @@ public class EntidadeProdutoraServiceImpl implements EntidadeProdutoraService {
     }
     
     public List<EntidadeProdutora> findByNome(String nome) {
+        entidadeProdutoraValidation.validateFindByName(nome, entidadeProdutoraRepository);
         return entidadeProdutoraRepository.findByNomeIgnoreCase(nome);
     }
 
     public List<EntidadeProdutora> findByAbreviacao(String abreviacao) {
+        entidadeProdutoraValidation.validateFindByAbreviacao(abreviacao, entidadeProdutoraRepository);
         return entidadeProdutoraRepository.findByAbreviacaoIgnoreCase(abreviacao);
     }
 }

@@ -68,4 +68,24 @@ public class EntidadeProdutoraValidation {
             throw new CustomException(ErrorConstants.ID_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
     }
+
+    public void validateFindByName(String name, EntidadeProdutoraRepository repository) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new CustomException(ErrorConstants.EMPTY_NAME, HttpStatus.BAD_REQUEST);
+        }
+
+        if (repository.findByNomeIgnoreCase(name).isEmpty()) {
+            throw new CustomException(ErrorConstants.NAME_NOT_FOUND, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    public void validateFindByAbreviacao(String abreviacao, EntidadeProdutoraRepository repository) {
+        if (abreviacao == null || abreviacao.trim().isEmpty()) {
+            throw new CustomException(ErrorConstants.EMPTY_ABREVIACAO, HttpStatus.BAD_REQUEST);
+        }
+
+        if (repository.findByAbreviacaoIgnoreCase(abreviacao).isEmpty()) {
+            throw new CustomException(ErrorConstants.ABREVIACAO_NOT_FOUND, HttpStatus.NOT_FOUND);
+        }
+    }
 }

@@ -13,6 +13,7 @@ public enum ErrorConstants {
     EMPTY_ABREVIACAO("A abreviação não pode ser vazia"),
     INVALID_NAME("Nome do tipo de documento inválido"),
     NAME_NOT_FOUND("Nome não encontrado"),
+    ABREVIACAO_NOT_FOUND("Abreviação não encontrada"),
     INVALID_ID("ID inválido"),
     ID_NOT_FOUND("ID não encontrado"),
     TIPO_DOCUMENTO_HAS_DOCUMENTS("Tipo de documento possui documentos associados e não pode ser deletado"),
