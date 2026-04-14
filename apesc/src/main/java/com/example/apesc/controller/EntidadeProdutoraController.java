@@ -41,6 +41,22 @@ public class EntidadeProdutoraController {
         return ResponseEntity.notFound().build();
     }
 
+    @GetMapping("/name/{name}")
+    public ResponseEntity<List<EntidadeProdutoraDTO>> findByName(@PathVariable String name) {
+        List<EntidadeProdutoraDTO> lista = entidadeProdutoraService.findByNome(name).stream()
+                .map(EntidadeProdutoraDTO::fromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(lista);
+    }
+
+    @GetMapping("/abreviacao/{abreviacao}")
+    public ResponseEntity<List<EntidadeProdutoraDTO>> findByAbreviacao(@PathVariable String abreviacao) {
+        List<EntidadeProdutoraDTO> lista = entidadeProdutoraService.findByAbreviacao(abreviacao).stream()
+                .map(EntidadeProdutoraDTO::fromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(lista);
+    }
+
     @PatchMapping("/{id}")
     public ResponseEntity<EntidadeProdutoraDTO> update(@PathVariable Long id, @RequestBody EntidadeProdutoraDTO dto) {
         EntidadeProdutora entity = dto.toEntity();
