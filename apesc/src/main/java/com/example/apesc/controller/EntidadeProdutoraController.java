@@ -40,17 +40,16 @@ public class EntidadeProdutoraController {
         }
         return ResponseEntity.notFound().build();
     }
-
-    @GetMapping("/name/{name}")
-    public ResponseEntity<List<EntidadeProdutoraDTO>> findByName(@PathVariable String name) {
+    @GetMapping({"/name/{name}", "/name", "/name/"})
+    public ResponseEntity<List<EntidadeProdutoraDTO>> findByName(@PathVariable(required = false) String name) {
         List<EntidadeProdutoraDTO> lista = entidadeProdutoraService.findByNome(name).stream()
                 .map(EntidadeProdutoraDTO::fromEntity)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(lista);
     }
 
-    @GetMapping("/abreviacao/{abreviacao}")
-    public ResponseEntity<List<EntidadeProdutoraDTO>> findByAbreviacao(@PathVariable String abreviacao) {
+    @GetMapping({"/abreviacao/{abreviacao}", "/abreviacao", "/abreviacao/"})
+    public ResponseEntity<List<EntidadeProdutoraDTO>> findByAbreviacao(@PathVariable(required = false) String abreviacao) {
         List<EntidadeProdutoraDTO> lista = entidadeProdutoraService.findByAbreviacao(abreviacao).stream()
                 .map(EntidadeProdutoraDTO::fromEntity)
                 .collect(Collectors.toList());
