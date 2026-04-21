@@ -29,7 +29,8 @@ public class AcervoDocumentalServiceImpl implements AcervoDocumentalService {
     public AcervoDocumental save(AcervoDocumental acervoDocumental) {
         acervoValidation.validateSave(acervoDocumental, acervoDocumentalRepository, 
                                    tipoDocumentoRepository, entidadeProdutoraRepository);
-        return acervoDocumentalRepository.save(acervoDocumental);
+        AcervoDocumental acervoSalvo = acervoDocumentalRepository.save(acervoDocumental);
+        return acervoDocumentalRepository.findById(acervoSalvo.getId()).orElse(acervoSalvo);
     }
 
     @Transactional(readOnly = true)
@@ -59,6 +60,7 @@ public class AcervoDocumentalServiceImpl implements AcervoDocumentalService {
     public AcervoDocumental update(AcervoDocumental acervoDocumental) {
         acervoValidation.validateUpdate(acervoDocumental, acervoDocumentalRepository, 
                                      tipoDocumentoRepository, entidadeProdutoraRepository);
-        return acervoDocumentalRepository.save(acervoDocumental);
+        AcervoDocumental acervoSalvo = acervoDocumentalRepository.save(acervoDocumental);
+        return acervoDocumentalRepository.findById(acervoSalvo.getId()).orElse(acervoSalvo);
     }
 }
