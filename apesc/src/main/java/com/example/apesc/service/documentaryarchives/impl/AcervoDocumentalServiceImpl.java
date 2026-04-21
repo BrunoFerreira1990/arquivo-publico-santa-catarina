@@ -29,8 +29,10 @@ public class AcervoDocumentalServiceImpl implements AcervoDocumentalService {
     public AcervoDocumental save(AcervoDocumental acervoDocumental) {
         acervoValidation.validateSave(acervoDocumental, acervoDocumentalRepository, 
                                    tipoDocumentoRepository, entidadeProdutoraRepository);
-        AcervoDocumental acervoSalvo = acervoDocumentalRepository.save(acervoDocumental);
-        return acervoDocumentalRepository.findById(acervoSalvo.getId()).orElse(acervoSalvo);
+        
+        rehydrateRelationships(acervoDocumental);
+
+        return acervoDocumentalRepository.save(acervoDocumental);
     }
 
     @Transactional(readOnly = true)
@@ -60,7 +62,21 @@ public class AcervoDocumentalServiceImpl implements AcervoDocumentalService {
     public AcervoDocumental update(AcervoDocumental acervoDocumental) {
         acervoValidation.validateUpdate(acervoDocumental, acervoDocumentalRepository, 
                                      tipoDocumentoRepository, entidadeProdutoraRepository);
-        AcervoDocumental acervoSalvo = acervoDocumentalRepository.save(acervoDocumental);
-        return acervoDocumentalRepository.findById(acervoSalvo.getId()).orElse(acervoSalvo);
+                                     
+        rehydrateRelationships(acervoDocumental);
+        
+        return acervoDocumentalRepository.save(acervoDocumental);
+    }
+
+    private void rehydrateRelationships(AcervoDocumental acervoDocumental) {
+        if (acervoDocumental.getTipoDocumento() != null && acervoDocumental.getTipoDocumento().getId() != null) {
+            acervoDocumental.setTipoDocumento(tipoDocumentoRepository.findById(acervoDocumental.getTipoDocumento().getId()).orElse(null));
+        }
+        if (acervoDocumental.getEntidadeProdutora() != null && acervoDocumental.getEntidadeProdutora().getId() != null) {
+            acervoDocumental.setEntidadeProdutora(entidadeProdutoraRepository.findById(acervoDocumental.getEntidadeProdutora().getId()).orElse(null));
+        }
+        if (acervoDocumental.getEntidadeReceptora() != null && acervoDocumental.getEntidadeReceptora().getId() != null) {
+            acervoDocumental.setEntidadeReceptora(entidadeProdutoraRepository.findById(acervoDocumental.getEntidadeReceptora().getId()).orElse(null));
+        }
     }
 }
