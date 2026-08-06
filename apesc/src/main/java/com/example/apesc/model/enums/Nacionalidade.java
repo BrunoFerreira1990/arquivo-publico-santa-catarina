@@ -1,10 +1,8 @@
 package com.example.apesc.model.enums;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
 public enum Nacionalidade {
 
     BRASILEIRA("Brasileira"),
@@ -219,6 +217,10 @@ public enum Nacionalidade {
     OUTRAS_NACIONALIDADES("Outras Nacionalidades");
 
     private final String displayName;
+
+    Nacionalidade(String displayName) {
+        this.displayName = displayName;
+    }
 
 }
 

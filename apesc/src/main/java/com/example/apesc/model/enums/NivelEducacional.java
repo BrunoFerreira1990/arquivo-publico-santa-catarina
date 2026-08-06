@@ -1,9 +1,7 @@
 package com.example.apesc.model.enums;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
 @Getter
 public enum NivelEducacional {
 
@@ -15,5 +13,9 @@ public enum NivelEducacional {
     DOUTORADO("Doutorado");
 
     private String displayName;
+
+    NivelEducacional(String displayName) {
+        this.displayName = displayName;
+    }
 
 }

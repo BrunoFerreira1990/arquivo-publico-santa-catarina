@@ -1,9 +1,7 @@
 package com.example.apesc.model.enums;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
 @Getter
 public enum PeriodoEstudo {
 
@@ -12,5 +10,9 @@ public enum PeriodoEstudo {
     REPUBLICANO("Republicano");
 
     private String displayName;
+
+    PeriodoEstudo(String displayName) {
+        this.displayName = displayName;
+    }
 
 }
