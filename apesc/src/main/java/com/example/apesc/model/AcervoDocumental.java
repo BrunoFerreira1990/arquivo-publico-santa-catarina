@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import com.example.apesc.model.enums.NaturezaTransacao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +32,9 @@ public class AcervoDocumental {
     @JoinColumn(name = "entidade_receptora_id", nullable = true)
     private EntidadeProdutora entidadeReceptora;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "natureza_transacao")
-    private String naturezaTransacao;
+    private NaturezaTransacao naturezaTransacao;
 
     @Column(name = "periodo")
     private String periodo;
