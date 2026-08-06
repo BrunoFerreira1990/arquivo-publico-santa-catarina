@@ -3,6 +3,7 @@ package com.example.apesc.dto;
 import com.example.apesc.model.AcervoDocumental;
 import com.example.apesc.model.EntidadeProdutora;
 import com.example.apesc.model.TipoDocumento;
+import com.example.apesc.model.enums.NaturezaTransacao;
 
 
 
@@ -13,7 +14,7 @@ public record AcervoDocumentalDTO(
         String entidadeProdutoraNome,
         Long entidadeReceptoraId,
         String entidadeReceptoraNome,
-        String naturezaTransacao,
+        NaturezaTransacao naturezaTransacao,
         String periodo,
         String estante,
         Integer quantidade,
