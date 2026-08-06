@@ -1,6 +1,7 @@
 package com.example.apesc.repository;
 
 import com.example.apesc.model.AcervoDocumental;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -10,4 +11,7 @@ public interface AcervoDocumentalRepository extends JpaRepository<AcervoDocument
     List<AcervoDocumental> findByTipoDocumentoId(Long tipoDocumentoId);
     
     boolean existsByTipoDocumentoId(Long tipoDocumentoId);
+
+    @org.springframework.data.jpa.repository.Query("SELECT a FROM AcervoDocumental a JOIN FETCH a.tipoDocumento JOIN FETCH a.entidadeProdutora LEFT JOIN FETCH a.entidadeReceptora")
+List<AcervoDocumental> findAllWithRelations();
 }

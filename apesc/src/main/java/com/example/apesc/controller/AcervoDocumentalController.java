@@ -2,6 +2,7 @@ package com.example.apesc.controller;
 
 import com.example.apesc.dto.AcervoDocumentalDTO;
 import com.example.apesc.model.AcervoDocumental;
+import com.example.apesc.repository.AcervoDocumentalRepository;
 import com.example.apesc.service.documentaryarchives.AcervoDocumentalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 public class AcervoDocumentalController {
     
     private final AcervoDocumentalService acervoDocumentalService;
+    private final AcervoDocumentalRepository acervoDocumentalRepository;
 
     @PostMapping
     public ResponseEntity<AcervoDocumentalDTO> save(@RequestBody @Validated AcervoDocumentalDTO dto) {
@@ -27,7 +29,7 @@ public class AcervoDocumentalController {
 
     @GetMapping
     public ResponseEntity<List<AcervoDocumentalDTO>> listAll() {
-        List<AcervoDocumentalDTO> acervos = acervoDocumentalService.findAll().stream()
+        List<AcervoDocumentalDTO> acervos = acervoDocumentalRepository.findAllWithRelations().stream()
                 .map(AcervoDocumentalDTO::fromEntity)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(acervos);
