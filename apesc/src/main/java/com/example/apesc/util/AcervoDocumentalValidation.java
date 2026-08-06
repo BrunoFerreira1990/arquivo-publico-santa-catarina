@@ -45,7 +45,7 @@ public class AcervoDocumentalValidation {
             );
         }
 
-        if (acervo.getNaturezaTransacao() == null || acervo.getNaturezaTransacao().trim().isEmpty()) {
+        if (acervo.getNaturezaTransacao() == null) {
             throw new CustomException(
                 ErrorConstants.NATUREZA_TRANSACAO_REQUIRED, 
                 HttpStatus.BAD_REQUEST
