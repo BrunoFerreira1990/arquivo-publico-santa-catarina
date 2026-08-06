@@ -36,8 +36,8 @@ public class AcervoDocumentalServiceImpl implements AcervoDocumentalService {
     }
 
     @Transactional(readOnly = true)
-    public List<AcervoDocumental> findAll() {
-        return acervoDocumentalRepository.findAll();
+    public List<AcervoDocumental> findAllWithRelations() {
+        return acervoDocumentalRepository.findAllWithRelations();
     }
 
     @Transactional(readOnly = true)

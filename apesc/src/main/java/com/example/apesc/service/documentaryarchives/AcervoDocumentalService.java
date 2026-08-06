@@ -9,7 +9,7 @@ public interface AcervoDocumentalService    {
 
     AcervoDocumental save(AcervoDocumental acervoDocumental);
 
-    List<AcervoDocumental> findAll();
+    List<AcervoDocumental> findAllWithRelations();
 
     Optional<AcervoDocumental> findById(Long id);
 
