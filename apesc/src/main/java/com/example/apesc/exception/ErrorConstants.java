@@ -22,7 +22,14 @@ public enum ErrorConstants {
     ENTIDADE_PRODUTORA_REQUIRED("Entidade produtora é obrigatória"),
     ENTIDADE_PRODUTORA_NOT_FOUND("Entidade produtora não encontrada"),
     NATUREZA_TRANSACAO_REQUIRED("Natureza da transação é obrigatória"),
-    QUANTIDADE_INVALIDA("Quantidade deve ser maior que zero");
+    QUANTIDADE_INVALIDA("Quantidade deve ser maior que zero"),
+    PERIODO_REQUIRED("Período é obrigatório"),
+    ESTANTE_REQUIRED("Estante é obrigatória"),
+    QUANTIDADE_REQUIRED("Quantidade é obrigatória"),
+    DUPLICATE_ACERVO("Já existe um registro no acervo documental com o mesmo tipo de documento, entidade produtora, entidade receptora e natureza de transação"),
+    SAME_ENTIDADE_ID("Entidade produtora e receptora não podem ter o mesmo ID"),
+    ENTIDADE_RECEPTORA_REQUIRED("Entidade receptora é obrigatória para esta natureza de transação"),
+    NATUREZA_TRANSACAO_INVALIDA("Natureza de transação inválida para entidade receptora informada");
 
     private final String description;
 
