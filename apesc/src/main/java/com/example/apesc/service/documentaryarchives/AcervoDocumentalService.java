@@ -1,6 +1,7 @@
 package com.example.apesc.service.documentaryarchives;
 
 import com.example.apesc.model.AcervoDocumental;
+import com.example.apesc.model.enums.NaturezaTransacao;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,4 +21,6 @@ public interface AcervoDocumentalService    {
     List<AcervoDocumental> findByTipoDocumento(Long tipoDocumentoId);
 
     AcervoDocumental update(AcervoDocumental acervoDocumental);
+
+    List<AcervoDocumental> search(String tipoDocumentoNome, String entidadeProdutoraNome, String entidadeReceptoraNome, NaturezaTransacao naturezaTransacao);
 }
