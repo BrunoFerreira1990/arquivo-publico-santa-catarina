@@ -11,6 +11,8 @@ public interface AcervoDocumentalService    {
 
     List<AcervoDocumental> findAllWithRelations();
 
+    Optional<AcervoDocumental> findByIdWithRelations(Long id);
+
     Optional<AcervoDocumental> findById(Long id);
 
     void delete(Long id);
