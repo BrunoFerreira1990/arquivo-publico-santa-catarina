@@ -4,12 +4,13 @@ import com.example.apesc.model.AcervoDocumental;
 import com.example.apesc.model.enums.NaturezaTransacao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface AcervoDocumentalRepository extends JpaRepository<AcervoDocumental, Long> {
+public interface AcervoDocumentalRepository extends JpaRepository<AcervoDocumental, Long>, JpaSpecificationExecutor<AcervoDocumental> {
 
     List<AcervoDocumental> findByTipoDocumentoId(Long tipoDocumentoId);
 
