@@ -57,7 +57,7 @@ public class AcervoDocumentalServiceImpl implements AcervoDocumentalService {
     @Transactional(readOnly = true)
     public List<AcervoDocumental> findByTipoDocumento(Long tipoDocumentoId) {
         acervoValidation.validateFindByTipoDocumento(tipoDocumentoId, tipoDocumentoRepository);
-        return acervoDocumentalRepository.findByTipoDocumentoId(tipoDocumentoId);
+        return acervoDocumentalRepository.findByTipoDocumentoIdWithRelations(tipoDocumentoId);
     }
 
     @Transactional
