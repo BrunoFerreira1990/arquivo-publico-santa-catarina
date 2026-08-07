@@ -1,7 +1,5 @@
 package com.example.apesc.service.documentaryarchives.impl;
 
-import com.example.apesc.exception.CustomException;
-import com.example.apesc.exception.ErrorConstants;
 import com.example.apesc.model.AcervoDocumental;
 import com.example.apesc.repository.AcervoDocumentalRepository;
 import com.example.apesc.repository.TipoDocumentoRepository;
@@ -9,7 +7,6 @@ import com.example.apesc.repository.EntidadeProdutoraRepository;
 import com.example.apesc.service.documentaryarchives.AcervoDocumentalService;
 import com.example.apesc.util.AcervoDocumentalValidation;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +35,11 @@ public class AcervoDocumentalServiceImpl implements AcervoDocumentalService {
     @Transactional(readOnly = true)
     public List<AcervoDocumental> findAllWithRelations() {
         return acervoDocumentalRepository.findAllWithRelations();
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<AcervoDocumental> findByIdWithRelations(Long id) {
+        return acervoDocumentalRepository.findByIdWithRelations(id);
     }
 
     @Transactional(readOnly = true)
