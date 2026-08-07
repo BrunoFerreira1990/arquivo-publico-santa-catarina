@@ -35,7 +35,7 @@ public class AcervoDocumentalController {
 
     @GetMapping("/{id}")
     public ResponseEntity<AcervoDocumentalDTO> findById(@PathVariable Long id) {
-        return acervoDocumentalService.findById(id)
+        return acervoDocumentalService.findByIdWithRelations(id)
                 .map(acervo -> ResponseEntity.ok(AcervoDocumentalDTO.fromEntity(acervo)))
                 .orElse(ResponseEntity.notFound().build());
     }
