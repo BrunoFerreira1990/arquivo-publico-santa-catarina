@@ -1,12 +1,15 @@
 package com.example.apesc.service.documentaryarchives.impl;
 
 import com.example.apesc.model.AcervoDocumental;
+import com.example.apesc.model.enums.NaturezaTransacao;
 import com.example.apesc.repository.AcervoDocumentalRepository;
 import com.example.apesc.repository.TipoDocumentoRepository;
 import com.example.apesc.repository.EntidadeProdutoraRepository;
 import com.example.apesc.service.documentaryarchives.AcervoDocumentalService;
+import com.example.apesc.specification.AcervoDocumentalSpecification;
 import com.example.apesc.util.AcervoDocumentalValidation;
 import lombok.AllArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,6 +61,17 @@ public class AcervoDocumentalServiceImpl implements AcervoDocumentalService {
     public List<AcervoDocumental> findByTipoDocumento(Long tipoDocumentoId) {
         acervoValidation.validateFindByTipoDocumento(tipoDocumentoId, tipoDocumentoRepository);
         return acervoDocumentalRepository.findByTipoDocumentoIdWithRelations(tipoDocumentoId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<AcervoDocumental> search(String tipoDocumentoNome, String entidadeProdutoraNome, String entidadeReceptoraNome, NaturezaTransacao naturezaTransacao) {
+        Specification<AcervoDocumental> spec = AcervoDocumentalSpecification.searchByFields(
+            tipoDocumentoNome,
+            entidadeProdutoraNome,
+            entidadeReceptoraNome,
+            naturezaTransacao
+        );
+        return acervoDocumentalRepository.findAll(spec);
     }
 
     @Transactional
