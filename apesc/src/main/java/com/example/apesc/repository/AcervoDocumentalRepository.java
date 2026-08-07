@@ -46,6 +46,9 @@ public interface AcervoDocumentalRepository extends JpaRepository<AcervoDocument
     @Query("SELECT a FROM AcervoDocumental a JOIN FETCH a.tipoDocumento JOIN FETCH a.entidadeProdutora LEFT JOIN FETCH a.entidadeReceptora")
     List<AcervoDocumental> findAllWithRelations();
 
+    @Query("SELECT a FROM AcervoDocumental a JOIN FETCH a.tipoDocumento JOIN FETCH a.entidadeProdutora LEFT JOIN FETCH a.entidadeReceptora WHERE a.tipoDocumento.id = :tipoDocumentoId")
+    List<AcervoDocumental> findByTipoDocumentoIdWithRelations(@org.springframework.data.repository.query.Param("tipoDocumentoId") Long tipoDocumentoId);
+
     @Query("SELECT a FROM AcervoDocumental a JOIN FETCH a.tipoDocumento JOIN FETCH a.entidadeProdutora LEFT JOIN FETCH a.entidadeReceptora WHERE a.id = :id")
     Optional<AcervoDocumental> findByIdWithRelations(@org.springframework.data.repository.query.Param("id") Long id);
 }
