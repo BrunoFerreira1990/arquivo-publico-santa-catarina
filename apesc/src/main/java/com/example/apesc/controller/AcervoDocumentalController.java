@@ -2,6 +2,7 @@ package com.example.apesc.controller;
 
 import com.example.apesc.dto.AcervoDocumentalDTO;
 import com.example.apesc.model.AcervoDocumental;
+import com.example.apesc.model.enums.NaturezaTransacao;
 import com.example.apesc.service.documentaryarchives.AcervoDocumentalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -64,6 +65,22 @@ public class AcervoDocumentalController {
         
         List<AcervoDocumentalDTO> acervos = acervoDocumentalService
                 .findByTipoDocumento(tipoDocumentoId).stream()
+                .map(AcervoDocumentalDTO::fromEntity)
+                .collect(Collectors.toList());
+                
+        return ResponseEntity.ok(acervos);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<AcervoDocumentalDTO>> search(
+            @RequestParam(required = false) String tipoDocumento,
+            @RequestParam(required = false) String entidadeProdutora,
+            @RequestParam(required = false) String entidadeReceptora,
+            @RequestParam(required = false) NaturezaTransacao naturezaTransacao) {
+        
+        List<AcervoDocumentalDTO> acervos = acervoDocumentalService
+                .search(tipoDocumento, entidadeProdutora, entidadeReceptora, naturezaTransacao)
+                .stream()
                 .map(AcervoDocumentalDTO::fromEntity)
                 .collect(Collectors.toList());
                 
