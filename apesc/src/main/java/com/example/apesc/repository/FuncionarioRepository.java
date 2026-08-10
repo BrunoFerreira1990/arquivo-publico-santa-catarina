@@ -7,4 +7,8 @@ public interface FuncionarioRepository extends JpaRepository<Funcionario, Long> 
 
     Funcionario findByNome(String nome);
 
+    boolean existsByNumeroMatricula(String numeroMatricula);
+
+    boolean existsByNumeroMatriculaAndIdNot(String numeroMatricula, Long id);
+
 }
