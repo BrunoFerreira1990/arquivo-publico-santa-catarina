@@ -29,7 +29,17 @@ public enum ErrorConstants {
     DUPLICATE_ACERVO("Já existe um registro no acervo documental com o mesmo tipo de documento, entidade produtora, entidade receptora e natureza de transação"),
     SAME_ENTIDADE_ID("Entidade produtora e receptora não podem ter o mesmo ID"),
     ENTIDADE_RECEPTORA_REQUIRED("Entidade receptora é obrigatória para esta natureza de transação"),
-    NATUREZA_TRANSACAO_INVALIDA("Natureza de transação inválida para entidade receptora informada");
+    NATUREZA_TRANSACAO_INVALIDA("Natureza de transação inválida para entidade receptora informada"),
+    NOME_REQUIRED("Nome é obrigatório"),
+    NOME_INCOMPLETE("Nome deve conter nome e sobrenome"),
+    DATA_NASCIMENTO_REQUIRED("Data de nascimento é obrigatória"),
+    GENERO_REQUIRED("Gênero é obrigatório"),
+    NUMERO_MATRICULA_REQUIRED("Número de matrícula é obrigatório"),
+    MATRICULA_DUPLICADA("Número de matrícula já existe"),
+    CARGO_REQUIRED("Cargo é obrigatório"),
+    SETOR_REQUIRED("Setor é obrigatório"),
+    EMAIL_REQUIRED("Email é obrigatório"),
+    EMAIL_INVALID("Email inválido");
 
     private final String description;
 
