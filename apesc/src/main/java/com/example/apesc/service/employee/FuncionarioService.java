@@ -2,14 +2,16 @@ package com.example.apesc.service.employee;
 
 import com.example.apesc.model.Funcionario;
 
+import java.util.List;
+
 public interface FuncionarioService {
-    
-    public Funcionario findByNome(String nome);
 
-    public Funcionario save(Funcionario funcionario);
+    Funcionario save(Funcionario funcionario);
 
-    public Funcionario update(Funcionario funcionario);
+    Funcionario update(Funcionario funcionario);
 
-    public void delete(Long id);
+    void delete(Long id);
+
+    List<Funcionario> findBySetor(String setor);
 
 }
