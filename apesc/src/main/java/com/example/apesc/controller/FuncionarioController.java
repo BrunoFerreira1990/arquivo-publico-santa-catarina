@@ -8,6 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/api/funcionario")
 @RequiredArgsConstructor
@@ -21,13 +24,16 @@ public class FuncionarioController {
         return ResponseEntity.status(HttpStatus.CREATED).body(FuncionarioDTO.fromEntity(salvo));
     }
 
-    @GetMapping("/nome/{nome}")
-    public ResponseEntity<FuncionarioDTO> findByName(@PathVariable String nome) {
-        Funcionario entidade = funcionarioService.findByNome(nome);
-        if (entidade != null) {
-            return ResponseEntity.ok(FuncionarioDTO.fromEntity(entidade));
+    @GetMapping("/setor/{setor}")
+    public ResponseEntity<List<FuncionarioDTO>> findBySetor(@PathVariable String setor) {
+        List<Funcionario> entidades = funcionarioService.findBySetor(setor);
+        if (entidades.isEmpty()) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
+        List<FuncionarioDTO> dtos = entidades.stream()
+            .map(FuncionarioDTO::fromEntity)
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
 
     @PatchMapping("/{id}")
