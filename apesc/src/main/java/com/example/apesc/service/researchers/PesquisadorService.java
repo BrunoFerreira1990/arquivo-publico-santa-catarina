@@ -8,10 +8,12 @@ public interface PesquisadorService {
 
     Pesquisador save(Pesquisador pesquisador);
 
+    Pesquisador findById(Long id);
+
     List<Pesquisador> findByNome(String nome);
 
     void delete(Long id);
 
     Pesquisador update(Pesquisador pesquisador);
-    
+
 }
