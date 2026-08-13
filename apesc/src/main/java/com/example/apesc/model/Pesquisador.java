@@ -1,11 +1,12 @@
 package com.example.apesc.model;
 
 import com.example.apesc.model.enums.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.persistence.Table;
 import lombok.*;
 import org.springframework.data.annotation.LastModifiedDate;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,7 +16,23 @@ import java.util.Set;
 @AllArgsConstructor
 @Data
 @Table(name = "pesquisador")
-public class Pesquisador extends Pessoa {
+public class Pesquisador {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    @Column(name = "nome")
+    private String nome;
+
+    @Column(name = "data_nascimento")
+    private LocalDate dataNascimento;
+
+    @Column(name = "genero")
+    private Generos genero;
+
+    @Column(name = "email")
+    private String email;
 
     @Column(name = "cpf")
     private String cpf;
@@ -48,7 +65,7 @@ public class Pesquisador extends Pessoa {
     private String cep;
 
     @Column(name = "nivel_educacional")
-    private NivelEducacional NivelEducacional;
+    private NivelEducacional nivelEducacional;
 
     @Column(name = "instituicao_ensino")
     private String instituicaoEnsino;
@@ -91,6 +108,7 @@ public class Pesquisador extends Pessoa {
     private LocalDateTime atualizadoEm;
 
     @OneToMany(mappedBy = "pesquisador", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private Set<RegistroConsulta> registroConsultas = new HashSet<>();
 
     public void addRegistroConsulta(RegistroConsulta rc) {

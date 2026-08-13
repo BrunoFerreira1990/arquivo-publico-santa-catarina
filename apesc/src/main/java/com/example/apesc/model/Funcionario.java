@@ -1,12 +1,11 @@
 package com.example.apesc.model;
 
+import com.example.apesc.model.enums.Generos;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +14,23 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "empregado")
-public class Funcionario extends Pessoa {
+public class Funcionario {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    @Column(name = "nome")
+    private String nome;
+
+    @Column(name = "data_nascimento")
+    private LocalDate dataNascimento;
+
+    @Column(name = "genero")
+    private Generos genero;
+
+    @Column(name = "email")
+    private String email;
 
     @Column(name = "numero_matricula")
     private String numeroMatricula;
