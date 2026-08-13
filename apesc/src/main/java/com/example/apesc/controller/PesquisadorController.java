@@ -21,13 +21,17 @@ public class PesquisadorController {
         return ResponseEntity.status(HttpStatus.CREATED).body(PesquisadorDTO.fromEntity(salvo));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<PesquisadorDTO> findById(@PathVariable Long id) {
+        Pesquisador pesquisador = pesquisadorService.findById(id);
+        if (pesquisador != null) {
+            return ResponseEntity.ok(PesquisadorDTO.fromEntity(pesquisador));
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     @GetMapping("/nome/{nome}")
     public ResponseEntity<PesquisadorDTO> findByName(@PathVariable String nome) {
-        // Assume retrieving the first one or adapting as the service returns a list.
-        // Assuming your service might return a single object or list,
-        // Since the interface says findByNome, and it's a list typically, let's just return the first one or modify to return list if it's a list
-        // Based on PesquisadorService impl it returns List<Pesquisador>. Let's return the first for simplicity or an array.
-        // I will just use the first one if it exists.
         java.util.List<Pesquisador> pesquisadores = pesquisadorService.findByNome(nome);
         if (pesquisadores != null && !pesquisadores.isEmpty()) {
             return ResponseEntity.ok(PesquisadorDTO.fromEntity(pesquisadores.get(0)));

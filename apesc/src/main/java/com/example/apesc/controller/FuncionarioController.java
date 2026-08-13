@@ -36,6 +36,15 @@ public class FuncionarioController {
         return ResponseEntity.ok(dtos);
     }
 
+    @GetMapping
+    public ResponseEntity<List<FuncionarioDTO>> findAll() {
+        List<Funcionario> entidades = funcionarioService.findAll();
+        List<FuncionarioDTO> dtos = entidades.stream()
+            .map(FuncionarioDTO::fromEntity)
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
+    }
+
     @PatchMapping("/{id}")
     public ResponseEntity<FuncionarioDTO> update(@PathVariable Long id, @RequestBody FuncionarioDTO dto) {
         Funcionario entity = dto.toEntity();
