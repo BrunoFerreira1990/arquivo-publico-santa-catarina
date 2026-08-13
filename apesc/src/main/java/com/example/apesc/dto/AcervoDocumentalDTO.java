@@ -4,7 +4,7 @@ import com.example.apesc.model.AcervoDocumental;
 import com.example.apesc.model.EntidadeProdutora;
 import com.example.apesc.model.TipoDocumento;
 import com.example.apesc.model.enums.NaturezaTransacao;
-
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 
 public record AcervoDocumentalDTO(
@@ -20,6 +20,11 @@ public record AcervoDocumentalDTO(
         Integer quantidade,
         Boolean disponibilidade
 ) {
+
+    @JsonSetter("naturezaTransacao")
+    public static NaturezaTransacao setNaturezaTransacao(String naturezaTransacao) {
+        return naturezaTransacao == null || naturezaTransacao.trim().isEmpty() ? null : NaturezaTransacao.valueOf(naturezaTransacao.toUpperCase());
+    }
 
     public static AcervoDocumentalDTO fromEntity(AcervoDocumental acervo) {
         return new AcervoDocumentalDTO(

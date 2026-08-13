@@ -2,6 +2,7 @@ package com.example.apesc.dto;
 
 import com.example.apesc.model.Funcionario;
 import com.example.apesc.model.enums.Generos;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,11 @@ public class FuncionarioDTO {
     private String numeroMatricula;
     private String cargo;
     private String setor;
+
+    @JsonSetter("genero")
+    public void setGenero(String genero) {
+        this.genero = genero == null || genero.trim().isEmpty() ? null : Generos.valueOf(genero.toUpperCase());
+    }
 
     public Funcionario toEntity() {
         Funcionario entity = new Funcionario();
