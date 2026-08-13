@@ -44,5 +44,9 @@ public class FuncionarioServiceImpl implements FuncionarioService {
     public List<Funcionario> findBySetor(String setor) {
         return funcionarioRepository.findBySetorContainingIgnoreCase(setor);
     }
+
+    public List<Funcionario> findAll() {
+        return funcionarioRepository.findAll();
+    }
     
 }

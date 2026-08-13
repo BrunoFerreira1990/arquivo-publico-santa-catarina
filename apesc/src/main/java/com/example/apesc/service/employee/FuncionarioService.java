@@ -14,4 +14,6 @@ public interface FuncionarioService {
 
     List<Funcionario> findBySetor(String setor);
 
+    List<Funcionario> findAll();
+
 }
