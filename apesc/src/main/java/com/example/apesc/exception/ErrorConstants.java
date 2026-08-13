@@ -39,7 +39,23 @@ public enum ErrorConstants {
     CARGO_REQUIRED("Cargo é obrigatório"),
     SETOR_REQUIRED("Setor é obrigatório"),
     EMAIL_REQUIRED("Email é obrigatório"),
-    EMAIL_INVALID("Email inválido");
+    EMAIL_INVALID("Email inválido"),
+    CPF_REQUIRED("CPF é obrigatório"),
+    CPF_DUPLICADO("CPF já cadastrado"),
+    NACIONALIDADE_REQUIRED("Nacionalidade é obrigatória"),
+    NUMERO_TELEFONE_REQUIRED("Número de telefone é obrigatório"),
+    LOGRADOURO_REQUIRED("Logradouro é obrigatório"),
+    NUMERO_CASA_REQUIRED("Número da casa é obrigatório"),
+    BAIRRO_REQUIRED("Bairro é obrigatório"),
+    CIDADE_REQUIRED("Cidade é obrigatória"),
+    ESTADO_REQUIRED("Estado é obrigatório"),
+    CEP_REQUIRED("CEP é obrigatório"),
+    NIVEL_EDUCACIONAL_REQUIRED("Nível educacional é obrigatório"),
+    PROFISSAO_REQUIRED("Profissão é obrigatória"),
+    ASSUNTO_PESQUISA_REQUIRED("Assunto da pesquisa é obrigatório"),
+    FINALIDADE_PESQUISA_REQUIRED("Finalidade da pesquisa é obrigatória"),
+    PERIODO_ESTUDO_REQUIRED("Período de estudo é obrigatório"),
+    AREA_ESTUDO_REQUIRED("Área de estudo é obrigatória");
 
     private final String description;
 
