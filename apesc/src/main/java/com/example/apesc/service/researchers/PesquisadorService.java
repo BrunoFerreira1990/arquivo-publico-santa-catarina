@@ -12,6 +12,8 @@ public interface PesquisadorService {
 
     List<Pesquisador> findByNome(String nome);
 
+    List<Pesquisador> search(String nome, String cpf);
+
     void delete(Long id);
 
     Pesquisador update(Pesquisador pesquisador);
