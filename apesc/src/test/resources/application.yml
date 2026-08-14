@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    # Sem nome fixo: cada contexto Spring (cada classe de teste que sobe um ApplicationContext
+    # diferente) recebe seu próprio banco H2 isolado em memória, evitando que dois contextos
+    # concorrentes (ex.: @SpringBootTest completo e @DataJpaTest) disputem o mesmo schema.
+    url: jdbc:h2:mem:;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    open-in-view: false
+
+server:
+  port: 0
+
+logging:
+  level:
+    com.example.apesc: INFO
+    org.hibernate.SQL: WARN

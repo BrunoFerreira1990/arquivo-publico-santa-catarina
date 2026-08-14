@@ -19,7 +19,7 @@ import java.util.Set;
 public class Pesquisador {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "nome")
@@ -82,7 +82,7 @@ public class Pesquisador {
     @Column(name = "finalidade_pesquisa")
     private String finalidadePesquisa;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "pesquisador_periodo_estudo",
             joinColumns = @JoinColumn(name = "pesquisador_id")
@@ -91,7 +91,7 @@ public class Pesquisador {
     @Enumerated(EnumType.STRING)
     private Set<PeriodoEstudo> periodoEstudo = new HashSet<>();
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "pesquisador_area_estudo",
             joinColumns = @JoinColumn(name = "pesquisador_id")

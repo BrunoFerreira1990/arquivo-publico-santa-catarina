@@ -8,6 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/api/pesquisador")
 @RequiredArgsConstructor
@@ -32,11 +35,21 @@ public class PesquisadorController {
 
     @GetMapping("/nome/{nome}")
     public ResponseEntity<PesquisadorDTO> findByName(@PathVariable String nome) {
-        java.util.List<Pesquisador> pesquisadores = pesquisadorService.findByNome(nome);
+        List<Pesquisador> pesquisadores = pesquisadorService.findByNome(nome);
         if (pesquisadores != null && !pesquisadores.isEmpty()) {
             return ResponseEntity.ok(PesquisadorDTO.fromEntity(pesquisadores.get(0)));
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<PesquisadorDTO>> search(
+            @RequestParam(required = false) String nome,
+            @RequestParam(required = false) String cpf) {
+        List<PesquisadorDTO> pesquisadores = pesquisadorService.search(nome, cpf).stream()
+                .map(PesquisadorDTO::fromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(pesquisadores);
     }
 
     @PatchMapping("/{id}")
