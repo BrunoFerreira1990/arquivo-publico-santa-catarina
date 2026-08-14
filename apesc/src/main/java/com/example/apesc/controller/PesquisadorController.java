@@ -2,7 +2,7 @@ package com.example.apesc.controller;
 
 import com.example.apesc.dto.PesquisadorDTO;
 import com.example.apesc.model.Pesquisador;
-import com.example.apesc.service.researchers.PesquisadorService;
+import com.example.apesc.service.pesquisador.PesquisadorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/pesquisador")
 @RequiredArgsConstructor
 public class PesquisadorController {
-    
+
     private final PesquisadorService pesquisadorService;
 
     @PostMapping
@@ -29,15 +29,6 @@ public class PesquisadorController {
         Pesquisador pesquisador = pesquisadorService.findById(id);
         if (pesquisador != null) {
             return ResponseEntity.ok(PesquisadorDTO.fromEntity(pesquisador));
-        }
-        return ResponseEntity.notFound().build();
-    }
-
-    @GetMapping("/nome/{nome}")
-    public ResponseEntity<PesquisadorDTO> findByName(@PathVariable String nome) {
-        List<Pesquisador> pesquisadores = pesquisadorService.findByNome(nome);
-        if (pesquisadores != null && !pesquisadores.isEmpty()) {
-            return ResponseEntity.ok(PesquisadorDTO.fromEntity(pesquisadores.get(0)));
         }
         return ResponseEntity.notFound().build();
     }

@@ -2,7 +2,7 @@ package com.example.apesc.controller;
 
 import com.example.apesc.dto.RegistroConsultaDTO;
 import com.example.apesc.model.RegistroConsulta;
-import com.example.apesc.service.consultationrecord.RegistroConsultaService;
+import com.example.apesc.service.registroconsulta.RegistroConsultaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

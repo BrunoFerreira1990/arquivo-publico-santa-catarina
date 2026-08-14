@@ -1,4 +1,4 @@
-package com.example.apesc.service.productionentity;
+package com.example.apesc.service.entidadeprodutora;
 
 import java.util.List;
 

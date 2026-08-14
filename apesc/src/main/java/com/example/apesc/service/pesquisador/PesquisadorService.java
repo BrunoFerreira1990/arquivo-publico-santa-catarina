@@ -1,4 +1,4 @@
-package com.example.apesc.service.researchers;
+package com.example.apesc.service.pesquisador;
 
 import java.util.List;
 
@@ -9,8 +9,6 @@ public interface PesquisadorService {
     Pesquisador save(Pesquisador pesquisador);
 
     Pesquisador findById(Long id);
-
-    List<Pesquisador> findByNome(String nome);
 
     List<Pesquisador> search(String nome, String cpf);
 

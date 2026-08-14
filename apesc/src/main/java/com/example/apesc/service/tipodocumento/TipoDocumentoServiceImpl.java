@@ -1,4 +1,4 @@
-package com.example.apesc.service.documenttype;
+package com.example.apesc.service.tipodocumento;
 
 import java.util.List;
 

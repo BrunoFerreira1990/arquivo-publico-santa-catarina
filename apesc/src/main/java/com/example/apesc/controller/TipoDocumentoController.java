@@ -2,7 +2,7 @@ package com.example.apesc.controller;
 
 import com.example.apesc.dto.TipoDocumentoDTO;
 import com.example.apesc.model.TipoDocumento;
-import com.example.apesc.service.documenttype.TipoDocumentoService;
+import com.example.apesc.service.tipodocumento.TipoDocumentoService;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;

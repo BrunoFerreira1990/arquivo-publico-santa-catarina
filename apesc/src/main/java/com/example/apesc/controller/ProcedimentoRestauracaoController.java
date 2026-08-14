@@ -2,7 +2,7 @@ package com.example.apesc.controller;
 
 import com.example.apesc.dto.ProcedimentoRestauracaoDTO;
 import com.example.apesc.model.ProcedimentoRestauracao;
-import com.example.apesc.service.restorationprocedure.ProcedimentoRestauracaoService;
+import com.example.apesc.service.procedimentorestauracao.ProcedimentoRestauracaoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

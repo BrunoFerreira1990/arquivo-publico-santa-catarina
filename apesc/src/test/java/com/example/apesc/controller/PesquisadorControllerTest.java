@@ -2,7 +2,7 @@ package com.example.apesc.controller;
 
 import com.example.apesc.model.Pesquisador;
 import com.example.apesc.model.enums.*;
-import com.example.apesc.service.researchers.PesquisadorService;
+import com.example.apesc.service.pesquisador.PesquisadorService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,24 +88,6 @@ class PesquisadorControllerTest {
         when(pesquisadorService.findById(99L)).thenReturn(null);
 
         mockMvc.perform(get("/api/pesquisador/99"))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void findByName_deveRetornar200ComPrimeiroResultadoQuandoEncontrado() throws Exception {
-        when(pesquisadorService.findByNome("Bruno"))
-                .thenReturn(List.of(umPesquisador(1L, "Bruno Ferreira"), umPesquisador(2L, "Bruno Souza")));
-
-        mockMvc.perform(get("/api/pesquisador/nome/Bruno"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1));
-    }
-
-    @Test
-    void findByName_deveRetornar404QuandoListaVazia() throws Exception {
-        when(pesquisadorService.findByNome("Inexistente")).thenReturn(List.of());
-
-        mockMvc.perform(get("/api/pesquisador/nome/Inexistente"))
                 .andExpect(status().isNotFound());
     }
 

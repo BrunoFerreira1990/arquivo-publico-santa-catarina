@@ -1,4 +1,4 @@
-package com.example.apesc.service.consultationrecord;
+package com.example.apesc.service.registroconsulta;
 
 import com.example.apesc.model.RegistroConsulta;
 

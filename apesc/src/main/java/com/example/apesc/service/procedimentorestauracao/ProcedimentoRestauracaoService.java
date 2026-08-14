@@ -1,4 +1,4 @@
-package com.example.apesc.service.restorationprocedure;
+package com.example.apesc.service.procedimentorestauracao;
 
 import com.example.apesc.model.ProcedimentoRestauracao;
 

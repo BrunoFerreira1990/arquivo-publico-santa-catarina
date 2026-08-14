@@ -1,4 +1,4 @@
-package com.example.apesc.service.documenttype;
+package com.example.apesc.service.tipodocumento;
 
 import com.example.apesc.model.TipoDocumento;
 

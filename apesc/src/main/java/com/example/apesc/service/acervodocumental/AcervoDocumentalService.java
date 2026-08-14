@@ -1,4 +1,4 @@
-package com.example.apesc.service.documentaryarchives;
+package com.example.apesc.service.acervodocumental;
 
 import com.example.apesc.model.AcervoDocumental;
 import com.example.apesc.model.enums.NaturezaTransacao;

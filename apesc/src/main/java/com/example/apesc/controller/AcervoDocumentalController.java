@@ -3,7 +3,7 @@ package com.example.apesc.controller;
 import com.example.apesc.dto.AcervoDocumentalDTO;
 import com.example.apesc.model.AcervoDocumental;
 import com.example.apesc.model.enums.NaturezaTransacao;
-import com.example.apesc.service.documentaryarchives.AcervoDocumentalService;
+import com.example.apesc.service.acervodocumental.AcervoDocumentalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

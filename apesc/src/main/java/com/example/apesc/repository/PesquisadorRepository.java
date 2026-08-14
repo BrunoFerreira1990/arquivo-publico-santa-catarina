@@ -2,15 +2,12 @@ package com.example.apesc.repository;
 
 import com.example.apesc.model.Pesquisador;
 
-import java.util.List;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface PesquisadorRepository extends JpaRepository<Pesquisador, Long>, JpaSpecificationExecutor<Pesquisador> {
-    List<Pesquisador> findByNome(String nome);
 
     // Compara só os dígitos dos dois lados, pra achar tanto CPF salvo com pontuação
     // (registros antigos) quanto CPF salvo só com números (a partir da normalização em PesquisadorValidation)

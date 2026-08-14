@@ -1,11 +1,11 @@
-package com.example.apesc.service.documentaryarchives.impl;
+package com.example.apesc.service.acervodocumental.impl;
 
 import com.example.apesc.model.AcervoDocumental;
 import com.example.apesc.model.enums.NaturezaTransacao;
 import com.example.apesc.repository.AcervoDocumentalRepository;
 import com.example.apesc.repository.TipoDocumentoRepository;
 import com.example.apesc.repository.EntidadeProdutoraRepository;
-import com.example.apesc.service.documentaryarchives.AcervoDocumentalService;
+import com.example.apesc.service.acervodocumental.AcervoDocumentalService;
 import com.example.apesc.specification.AcervoDocumentalSpecification;
 import com.example.apesc.util.AcervoDocumentalValidation;
 import lombok.AllArgsConstructor;

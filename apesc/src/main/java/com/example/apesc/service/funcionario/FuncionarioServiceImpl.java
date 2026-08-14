@@ -1,4 +1,4 @@
-package com.example.apesc.service.employee;
+package com.example.apesc.service.funcionario;
 
 import com.example.apesc.exception.CustomException;
 import com.example.apesc.exception.ErrorConstants;

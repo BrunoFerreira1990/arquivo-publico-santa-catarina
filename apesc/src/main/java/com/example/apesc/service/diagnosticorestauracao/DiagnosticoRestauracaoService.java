@@ -1,4 +1,4 @@
-package com.example.apesc.service.restorationdiagnosis;
+package com.example.apesc.service.diagnosticorestauracao;
 
 import com.example.apesc.model.DiagnosticoRestauracao;
 

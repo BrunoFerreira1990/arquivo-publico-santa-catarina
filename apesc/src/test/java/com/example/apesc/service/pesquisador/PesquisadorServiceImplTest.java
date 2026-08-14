@@ -1,7 +1,10 @@
-package com.example.apesc.service.researchers;
+package com.example.apesc.service.pesquisador;
 
+import com.example.apesc.exception.CustomException;
+import com.example.apesc.exception.ErrorConstants;
 import com.example.apesc.model.Pesquisador;
 import com.example.apesc.repository.PesquisadorRepository;
+import com.example.apesc.repository.RegistroConsultaRepository;
 import com.example.apesc.util.PesquisadorValidation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,11 +29,14 @@ class PesquisadorServiceImplTest {
     @Mock
     private PesquisadorValidation pesquisadorValidation;
 
+    @Mock
+    private RegistroConsultaRepository registroConsultaRepository;
+
     private PesquisadorServiceImpl service;
 
     @BeforeEach
     void setUp() {
-        service = new PesquisadorServiceImpl(pesquisadorRepository, pesquisadorValidation);
+        service = new PesquisadorServiceImpl(pesquisadorRepository, pesquisadorValidation, registroConsultaRepository);
     }
 
     private Pesquisador umPesquisador(Long id) {
@@ -95,16 +101,6 @@ class PesquisadorServiceImplTest {
     }
 
     @Test
-    void findByNome_deveDelegarParaORepositorio() {
-        List<Pesquisador> esperado = List.of(umPesquisador(1L), umPesquisador(2L));
-        when(pesquisadorRepository.findByNome("Maria")).thenReturn(esperado);
-
-        List<Pesquisador> resultado = service.findByNome("Maria");
-
-        assertThat(resultado).isEqualTo(esperado);
-    }
-
-    @Test
     void search_deveConstruirSpecificationEDelegarParaORepositorio() {
         List<Pesquisador> esperado = List.of(umPesquisador(1L));
         when(pesquisadorRepository.findAll(any(Specification.class))).thenReturn(esperado);
@@ -116,9 +112,34 @@ class PesquisadorServiceImplTest {
     }
 
     @Test
-    void delete_deveDelegarParaORepositorio() {
+    void delete_deveValidarEDelegarParaORepositorioQuandoNaoHaRegistroDeConsulta() {
+        when(registroConsultaRepository.existsByPesquisadorId(1L)).thenReturn(false);
+
         service.delete(1L);
 
+        verify(pesquisadorValidation).validateDelete(1L);
         verify(pesquisadorRepository).deleteById(1L);
+    }
+
+    @Test
+    void delete_naoDeveChamarRepositorioQuandoValidacaoFalhar() {
+        doThrow(new CustomException(ErrorConstants.ID_NOT_FOUND, org.springframework.http.HttpStatus.NOT_FOUND))
+                .when(pesquisadorValidation).validateDelete(99L);
+
+        org.junit.jupiter.api.Assertions.assertThrows(CustomException.class, () -> service.delete(99L));
+
+        verify(pesquisadorRepository, never()).deleteById(any());
+    }
+
+    @Test
+    void delete_deveLancarConflitoQuandoPesquisadorPossuiRegistroDeConsulta() {
+        when(registroConsultaRepository.existsByPesquisadorId(1L)).thenReturn(true);
+
+        assertThat(
+                org.junit.jupiter.api.Assertions.assertThrows(CustomException.class, () -> service.delete(1L))
+                        .getDescription()
+        ).isEqualTo(ErrorConstants.PESQUISADOR_HAS_REGISTRO_CONSULTA);
+
+        verify(pesquisadorRepository, never()).deleteById(any());
     }
 }

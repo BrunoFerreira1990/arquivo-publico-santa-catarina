@@ -1,4 +1,4 @@
-package com.example.apesc.service.restorationprocedure;
+package com.example.apesc.service.procedimentorestauracao;
 
 import org.springframework.stereotype.Service;
 

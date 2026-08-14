@@ -223,4 +223,33 @@ class PesquisadorValidationTest {
                 HttpStatus.CONFLICT
         );
     }
+
+    // ---------- validateDelete ----------
+
+    @Test
+    void validateDelete_deveLancarQuandoIdForNulo() {
+        assertValidationError(
+                () -> validation.validateDelete(null),
+                ErrorConstants.INVALID_ID,
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @Test
+    void validateDelete_deveLancarQuandoPesquisadorNaoExiste() {
+        when(pesquisadorRepository.findById(99L)).thenReturn(java.util.Optional.empty());
+
+        assertValidationError(
+                () -> validation.validateDelete(99L),
+                ErrorConstants.ID_NOT_FOUND,
+                HttpStatus.NOT_FOUND
+        );
+    }
+
+    @Test
+    void validateDelete_naoDeveLancarExcecaoQuandoPesquisadorExiste() {
+        when(pesquisadorRepository.findById(1L)).thenReturn(java.util.Optional.of(pesquisadorValido()));
+
+        assertThatCode(() -> validation.validateDelete(1L)).doesNotThrowAnyException();
+    }
 }

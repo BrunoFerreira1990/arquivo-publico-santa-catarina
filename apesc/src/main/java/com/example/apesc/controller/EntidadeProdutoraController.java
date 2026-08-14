@@ -2,7 +2,7 @@ package com.example.apesc.controller;
 
 import com.example.apesc.dto.EntidadeProdutoraDTO;
 import com.example.apesc.model.EntidadeProdutora;
-import com.example.apesc.service.productionentity.EntidadeProdutoraService;
+import com.example.apesc.service.entidadeprodutora.EntidadeProdutoraService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

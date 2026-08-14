@@ -64,6 +64,22 @@ public class PesquisadorValidation {
         validateAreaEstudo(pesquisador);
     }
 
+    public void validateDelete(Long id) {
+        if (id == null) {
+            throw new CustomException(
+                ErrorConstants.INVALID_ID,
+                HttpStatus.BAD_REQUEST
+            );
+        }
+
+        if (pesquisadorRepository.findById(id).isEmpty()) {
+            throw new CustomException(
+                ErrorConstants.ID_NOT_FOUND,
+                HttpStatus.NOT_FOUND
+            );
+        }
+    }
+
     private void validateNome(Pesquisador pesquisador) {
         if (pesquisador.getNome() == null || pesquisador.getNome().trim().isEmpty()) {
             throw new CustomException(

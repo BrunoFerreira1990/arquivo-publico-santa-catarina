@@ -2,7 +2,7 @@ package com.example.apesc.controller;
 
 import com.example.apesc.dto.FuncionarioDTO;
 import com.example.apesc.model.Funcionario;
-import com.example.apesc.service.employee.FuncionarioService;
+import com.example.apesc.service.funcionario.FuncionarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
