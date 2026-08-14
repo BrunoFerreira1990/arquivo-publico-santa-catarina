@@ -31,4 +31,11 @@ public class CommonUtils {
         }
         return text.trim().toUpperCase();
     }
+
+    public static String digitsOnly(String text) {
+        if (text == null) {
+            return null;
+        }
+        return text.replaceAll("\\D", "");
+    }
 }

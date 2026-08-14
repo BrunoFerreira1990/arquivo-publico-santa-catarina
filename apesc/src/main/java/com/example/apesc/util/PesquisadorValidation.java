@@ -111,7 +111,10 @@ public class PesquisadorValidation {
             );
         }
 
-        if (pesquisadorRepository.existsByCpf(pesquisador.getCpf())) {
+        String cpfNormalizado = CommonUtils.digitsOnly(pesquisador.getCpf());
+        pesquisador.setCpf(cpfNormalizado);
+
+        if (pesquisadorRepository.existsByCpf(cpfNormalizado)) {
             throw new CustomException(
                 ErrorConstants.CPF_DUPLICADO,
                 HttpStatus.CONFLICT
@@ -127,8 +130,11 @@ public class PesquisadorValidation {
             );
         }
 
+        String cpfNormalizado = CommonUtils.digitsOnly(pesquisador.getCpf());
+        pesquisador.setCpf(cpfNormalizado);
+
         if (pesquisadorRepository.existsByCpfAndIdNot(
-                pesquisador.getCpf(),
+                cpfNormalizado,
                 pesquisador.getId())) {
             throw new CustomException(
                 ErrorConstants.CPF_DUPLICADO,
