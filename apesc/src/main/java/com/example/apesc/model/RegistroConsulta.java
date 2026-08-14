@@ -8,13 +8,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "registro_consulta")
+@EntityListeners(AuditingEntityListener.class)
 public class RegistroConsulta {
 
     @Id
@@ -47,10 +48,12 @@ public class RegistroConsulta {
     private Funcionario funcionario;
 
     @CreatedDate
-    @Column(name = "data_registro")
+    @Column(name = "data_registro", updatable = false)
     private LocalDateTime dataRegistro;
 
-    @LastModifiedDate
+    // Preenchida manualmente pelo service, só quando o registro é de fato
+    // atualizado (não usa @LastModifiedDate porque essa anotação também
+    // dispara na criação, igualando data_atualizacao a data_registro).
     @Column(name = "data_atualizacao")
     private LocalDateTime dataAtualizacao;
 

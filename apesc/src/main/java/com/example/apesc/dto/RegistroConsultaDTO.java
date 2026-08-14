@@ -57,8 +57,8 @@ public class RegistroConsultaDTO {
             entity.setFuncionario(f);
         }
 
-        entity.setDataRegistro(this.dataRegistro);
-        entity.setDataAtualizacao(this.dataAtualizacao);
+        // dataRegistro e dataAtualizacao nao vem do cliente: sao preenchidas
+        // automaticamente pela auditoria do JPA (@CreatedDate/@LastModifiedDate).
 
         if (this.funcionarioAtualizacaoId != null) {
             Funcionario f = new Funcionario();

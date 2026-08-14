@@ -56,7 +56,13 @@ public enum ErrorConstants {
     FINALIDADE_PESQUISA_REQUIRED("Finalidade da pesquisa é obrigatória"),
     PERIODO_ESTUDO_REQUIRED("Período de estudo é obrigatório"),
     AREA_ESTUDO_REQUIRED("Área de estudo é obrigatória"),
-    PESQUISADOR_HAS_REGISTRO_CONSULTA("Pesquisador possui registros de consulta associados e não pode ser deletado");
+    PESQUISADOR_HAS_REGISTRO_CONSULTA("Pesquisador possui registros de consulta associados e não pode ser deletado"),
+    PESQUISADOR_REQUIRED("Pesquisador é obrigatório"),
+    DATA_PESQUISA_REQUIRED("Data da pesquisa é obrigatória"),
+    TIPO_CONSULTA_REQUIRED("Tipo de consulta é obrigatório"),
+    ACERVO_DOCUMENTAL_REQUIRED("Acervo documental é obrigatório"),
+    FUNCIONARIO_REQUIRED("Funcionário é obrigatório"),
+    REGISTRO_CONSULTA_DUPLICADO("Registro de consulta duplicado");
 
     private final String description;
 
