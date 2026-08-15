@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Import;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -132,31 +131,29 @@ class RegistroConsultaRepositoryTest {
         assertThat(salvo.getDataAtualizacao()).isNull();
     }
 
-    private boolean existeDuplicadoHoje(RegistroConsulta registro) {
-        LocalDate hoje = LocalDate.now();
-        return registroConsultaRepository.existsDuplicadoNoMesmoDia(
+    private boolean existeDuplicado(RegistroConsulta registro, Long idAtual) {
+        return registroConsultaRepository.existsDuplicado(
                 registro.getPesquisador().getId(),
                 registro.getDataPesquisa(),
                 registro.getTipoConsulta(),
                 registro.getAcervoDocumental().getId(),
                 registro.getPeriodo(),
                 registro.getQuantidade(),
-                registro.getFuncionario().getId(),
-                hoje.atStartOfDay(),
-                hoje.atTime(LocalTime.MAX)
+                idAtual
         );
     }
 
     @Test
-    void existsDuplicadoNoMesmoDia_deveRetornarTrueQuandoJaExisteRegistroIdenticoCriadoHoje() {
+    void existsDuplicado_deveRetornarTrueQuandoJaExisteRegistroIdenticoENenhumIdEhExcluido() {
         RegistroConsulta registro = umRegistroPersistivel();
         registroConsultaRepository.saveAndFlush(registro);
 
-        assertThat(existeDuplicadoHoje(registro)).isTrue();
+        // idAtual nulo simula o cenario de create: nao ha ID proprio a excluir da busca.
+        assertThat(existeDuplicado(registro, null)).isTrue();
     }
 
     @Test
-    void existsDuplicadoNoMesmoDia_deveRetornarFalseQuandoAlgumCampoDeNegocioDifere() {
+    void existsDuplicado_deveRetornarFalseQuandoAlgumCampoDeNegocioDifere() {
         RegistroConsulta registro = umRegistroPersistivel();
         registroConsultaRepository.saveAndFlush(registro);
 
@@ -166,21 +163,64 @@ class RegistroConsultaRepositoryTest {
         comparacao.setFuncionario(registro.getFuncionario());
         comparacao.setPeriodo("Tarde"); // único campo diferente
 
-        assertThat(existeDuplicadoHoje(comparacao)).isFalse();
+        assertThat(existeDuplicado(comparacao, null)).isFalse();
     }
 
     @Test
-    void existsDuplicadoNoMesmoDia_deveRetornarFalseQuandoRegistroIdenticoFoiCriadoEmOutroDia() {
+    void existsDuplicado_deveRetornarTrueMesmoComFuncionarioDiferente() {
         RegistroConsulta registro = umRegistroPersistivel();
         registroConsultaRepository.saveAndFlush(registro);
 
-        // backdata o registro pra ontem direto no banco (updatable=false impede via entidade)
+        Funcionario outroFuncionario = new Funcionario();
+        outroFuncionario.setNome("Ana Paula Souza");
+        outroFuncionario.setDataNascimento(LocalDate.of(1992, 3, 10));
+        outroFuncionario.setGenero(Generos.FEMININO);
+        outroFuncionario.setEmail("ana@apesc.sc.gov.br");
+        outroFuncionario.setNumeroMatricula("456");
+        outroFuncionario.setCargo("Arquivista");
+        outroFuncionario.setSetor("Acervo");
+        outroFuncionario = funcionarioRepository.save(outroFuncionario);
+
+        RegistroConsulta comparacao = umRegistroPersistivel();
+        comparacao.setPesquisador(registro.getPesquisador());
+        comparacao.setAcervoDocumental(registro.getAcervoDocumental());
+        comparacao.setFuncionario(outroFuncionario); // unico campo diferente
+
+        // funcionario nao entra na comparacao — outra pessoa registrando os mesmos
+        // dados tambem e barrada como duplicidade.
+        assertThat(existeDuplicado(comparacao, null)).isTrue();
+    }
+
+    @Test
+    void existsDuplicado_deveRetornarFalseQuandoOUnicoRegistroIdenticoEhOProprioSendoEditado() {
+        RegistroConsulta registro = umRegistroPersistivel();
+        registroConsultaRepository.saveAndFlush(registro);
+
+        // update: excluindo o proprio ID, nao sobra nenhum OUTRO registro identico -> permitido.
+        assertThat(existeDuplicado(registro, registro.getId())).isFalse();
+    }
+
+    @Test
+    void existsDuplicado_deveRetornarTrueQuandoOutroRegistroComIdDiferenteEhIdenticoMesmoCriadoEmOutroDia() {
+        // registro A: cadastrado ontem (backdatado direto no banco, ja que updatable=false
+        // impede alterar dataRegistro via entidade).
+        RegistroConsulta registroA = umRegistroPersistivel();
+        registroA = registroConsultaRepository.saveAndFlush(registroA);
         entityManager.createQuery("UPDATE RegistroConsulta rc SET rc.dataRegistro = :ontem WHERE rc.id = :id")
                 .setParameter("ontem", LocalDate.now().minusDays(1).atTime(10, 0))
-                .setParameter("id", registro.getId())
+                .setParameter("id", registroA.getId())
                 .executeUpdate();
         entityManager.clear();
 
-        assertThat(existeDuplicadoHoje(registro)).isFalse();
+        // registro B: mesmos dados de negocio de A, cadastrado hoje.
+        RegistroConsulta registroB = umRegistroPersistivel();
+        registroB.setPesquisador(pesquisadorRepository.findById(registroA.getPesquisador().getId()).orElseThrow());
+        registroB.setAcervoDocumental(acervoDocumentalRepository.findById(registroA.getAcervoDocumental().getId()).orElseThrow());
+        registroB.setFuncionario(funcionarioRepository.findById(registroA.getFuncionario().getId()).orElseThrow());
+        registroB = registroConsultaRepository.saveAndFlush(registroB);
+
+        // editando B (excluindo o ID de B da busca): mesmo A tendo sido cadastrado em outro
+        // dia, ele ainda e encontrado e bloqueia a edicao — fecha o gap de dia diferente.
+        assertThat(existeDuplicado(registroB, registroB.getId())).isTrue();
     }
 }

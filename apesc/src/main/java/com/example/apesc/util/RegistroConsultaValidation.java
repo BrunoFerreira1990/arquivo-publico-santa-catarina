@@ -8,10 +8,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-
 @Component
 @AllArgsConstructor
 public class RegistroConsultaValidation {
@@ -20,7 +16,8 @@ public class RegistroConsultaValidation {
 
     public void validateSave(RegistroConsulta registroConsulta) {
         validateCamposObrigatorios(registroConsulta);
-        validateDuplicadoNoMesmoDia(registroConsulta);
+        // create: nao ha ID proprio ainda, entao qualquer registro identico ja existente bloqueia.
+        validateDuplicado(registroConsulta, null);
     }
 
     public void validateUpdate(RegistroConsulta registroConsulta) {
@@ -31,23 +28,20 @@ public class RegistroConsultaValidation {
             );
         }
         validateCamposObrigatorios(registroConsulta);
+        // update: exclui o proprio ID da busca — salvar as mesmas informacoes de volta
+        // no mesmo registro e permitido, so bloqueia se houver OUTRO registro identico.
+        validateDuplicado(registroConsulta, registroConsulta.getId());
     }
 
-    private void validateDuplicadoNoMesmoDia(RegistroConsulta registroConsulta) {
-        LocalDate hoje = LocalDate.now();
-        LocalDateTime inicioDoDia = hoje.atStartOfDay();
-        LocalDateTime fimDoDia = hoje.atTime(LocalTime.MAX);
-
-        boolean duplicado = registroConsultaRepository.existsDuplicadoNoMesmoDia(
+    private void validateDuplicado(RegistroConsulta registroConsulta, Long idAtual) {
+        boolean duplicado = registroConsultaRepository.existsDuplicado(
                 registroConsulta.getPesquisador().getId(),
                 registroConsulta.getDataPesquisa(),
                 registroConsulta.getTipoConsulta(),
                 registroConsulta.getAcervoDocumental().getId(),
                 registroConsulta.getPeriodo(),
                 registroConsulta.getQuantidade(),
-                registroConsulta.getFuncionario().getId(),
-                inicioDoDia,
-                fimDoDia
+                idAtual
         );
 
         if (duplicado) {

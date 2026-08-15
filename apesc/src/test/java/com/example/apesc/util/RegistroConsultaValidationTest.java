@@ -26,6 +26,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -81,24 +83,39 @@ class RegistroConsultaValidationTest {
 
     @Test
     void validateSave_naoDeveLancarExcecaoQuandoTodosOsCamposValidosENaoHaDuplicidade() {
-        when(registroConsultaRepository.existsDuplicadoNoMesmoDia(
-                any(), any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(false);
+        when(registroConsultaRepository.existsDuplicado(
+                any(), any(), any(), any(), any(), any(), isNull())).thenReturn(false);
 
         assertThatCode(() -> validation.validateSave(registroValido())).doesNotThrowAnyException();
     }
 
-    // ---------- validateSave: duplicidade no mesmo dia ----------
+    // ---------- validateSave: duplicidade ----------
 
     @Test
-    void validateSave_deveLancarConflitoQuandoJaExisteRegistroIdenticoNoMesmoDia() {
-        when(registroConsultaRepository.existsDuplicadoNoMesmoDia(
-                any(), any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(true);
+    void validateSave_deveLancarConflitoQuandoJaExisteRegistroIdentico() {
+        when(registroConsultaRepository.existsDuplicado(
+                any(), any(), any(), any(), any(), any(), isNull())).thenReturn(true);
 
         assertValidationError(
                 () -> validation.validateSave(registroValido()),
                 ErrorConstants.REGISTRO_CONSULTA_DUPLICADO,
                 HttpStatus.CONFLICT
         );
+    }
+
+    @Test
+    void validateSave_naoDeveConsiderarOFuncionarioNaComparacaoDeDuplicidade() {
+        when(registroConsultaRepository.existsDuplicado(
+                any(), any(), any(), any(), any(), any(), any())).thenReturn(false);
+
+        validation.validateSave(registroValido());
+
+        // o funcionarioId nao entra como argumento da checagem — so os campos que
+        // descrevem a consulta em si. Isso e o que garante que uma pessoa diferente
+        // registrando os mesmos dados tambem seja pega como duplicidade.
+        verify(registroConsultaRepository).existsDuplicado(
+                eq(1L), eq(LocalDate.of(2026, 8, 14)), eq(TipoConsulta.PRESENCIAL),
+                eq(1L), eq("Manhã"), eq(3), isNull());
     }
 
     @Test
@@ -109,7 +126,7 @@ class RegistroConsultaValidationTest {
         assertThatThrownBy(() -> validation.validateSave(registro)).isInstanceOf(CustomException.class);
 
         verify(registroConsultaRepository, never())
-                .existsDuplicadoNoMesmoDia(any(), any(), any(), any(), any(), any(), any(), any(), any());
+                .existsDuplicado(any(), any(), any(), any(), any(), any(), any());
     }
 
     // ---------- validateSave: campos obrigatórios ----------
@@ -154,22 +171,43 @@ class RegistroConsultaValidationTest {
     }
 
     @Test
-    void validateUpdate_naoDeveLancarExcecaoQuandoTudoValido() {
+    void validateUpdate_devePermitirSalvarAsMesmasInformacoesDeVoltaNoProprioRegistro() {
         RegistroConsulta registro = registroValido();
         registro.setId(1L);
+        // o unico registro identico no banco e o proprio (mesmo ID) -> repositorio simula a exclusao.
+        when(registroConsultaRepository.existsDuplicado(
+                any(), any(), any(), any(), any(), any(), eq(1L))).thenReturn(false);
 
         assertThatCode(() -> validation.validateUpdate(registro)).doesNotThrowAnyException();
     }
 
     @Test
-    void validateUpdate_naoDeveConsultarDuplicidade() {
+    void validateUpdate_deveLancarConflitoQuandoOutroRegistroComIdDiferenteEhIdentico() {
         RegistroConsulta registro = registroValido();
         registro.setId(1L);
+        // existe outro registro (ID diferente) com os mesmos dados.
+        when(registroConsultaRepository.existsDuplicado(
+                any(), any(), any(), any(), any(), any(), eq(1L))).thenReturn(true);
+
+        assertValidationError(
+                () -> validation.validateUpdate(registro),
+                ErrorConstants.REGISTRO_CONSULTA_DUPLICADO,
+                HttpStatus.CONFLICT
+        );
+    }
+
+    @Test
+    void validateUpdate_deveExcluirOProprioIdDaBuscaDeDuplicidade() {
+        RegistroConsulta registro = registroValido();
+        registro.setId(7L);
+        when(registroConsultaRepository.existsDuplicado(
+                any(), any(), any(), any(), any(), any(), any())).thenReturn(false);
 
         validation.validateUpdate(registro);
 
-        verify(registroConsultaRepository, never())
-                .existsDuplicadoNoMesmoDia(any(), any(), any(), any(), any(), any(), any(), any(), any());
+        verify(registroConsultaRepository).existsDuplicado(
+                eq(1L), eq(LocalDate.of(2026, 8, 14)), eq(TipoConsulta.PRESENCIAL),
+                eq(1L), eq("Manhã"), eq(3), eq(7L));
     }
 
     @ParameterizedTest(name = "[{index}] {1}")
