@@ -35,6 +35,7 @@ public class RegistroConsultaServiceImpl implements RegistroConsultaService {
     
     @Transactional
     public void delete(Long id) {
+        registroConsultaValidation.validateDelete(id);
         registroConsultaRepository.deleteById(id);
     }
     

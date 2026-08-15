@@ -148,4 +148,22 @@ class RegistroConsultaServiceImplTest {
 
         verify(registroConsultaRepository, never()).save(any());
     }
+
+    @Test
+    void delete_deveValidarEDelegarParaORepositorio() {
+        service.delete(1L);
+
+        verify(registroConsultaValidation).validateDelete(1L);
+        verify(registroConsultaRepository).deleteById(1L);
+    }
+
+    @Test
+    void delete_naoDeveChamarRepositorioQuandoValidacaoFalhar() {
+        doThrow(new CustomException(ErrorConstants.ID_NOT_FOUND, org.springframework.http.HttpStatus.NOT_FOUND))
+                .when(registroConsultaValidation).validateDelete(99L);
+
+        org.junit.jupiter.api.Assertions.assertThrows(CustomException.class, () -> service.delete(99L));
+
+        verify(registroConsultaRepository, never()).deleteById(any());
+    }
 }

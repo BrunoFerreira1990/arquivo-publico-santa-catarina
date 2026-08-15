@@ -219,4 +219,33 @@ class RegistroConsultaValidationTest {
 
         assertValidationError(() -> validation.validateUpdate(registro), erroEsperado, HttpStatus.BAD_REQUEST);
     }
+
+    // ---------- validateDelete ----------
+
+    @Test
+    void validateDelete_deveLancarQuandoIdForNulo() {
+        assertValidationError(
+                () -> validation.validateDelete(null),
+                ErrorConstants.INVALID_ID,
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @Test
+    void validateDelete_deveLancarQuandoRegistroNaoExiste() {
+        when(registroConsultaRepository.findById(99L)).thenReturn(java.util.Optional.empty());
+
+        assertValidationError(
+                () -> validation.validateDelete(99L),
+                ErrorConstants.ID_NOT_FOUND,
+                HttpStatus.NOT_FOUND
+        );
+    }
+
+    @Test
+    void validateDelete_naoDeveLancarExcecaoQuandoRegistroExiste() {
+        when(registroConsultaRepository.findById(1L)).thenReturn(java.util.Optional.of(registroValido()));
+
+        assertThatCode(() -> validation.validateDelete(1L)).doesNotThrowAnyException();
+    }
 }

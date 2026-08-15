@@ -1,12 +1,14 @@
 package com.example.apesc.util;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+
 import com.example.apesc.exception.CustomException;
 import com.example.apesc.exception.ErrorConstants;
 import com.example.apesc.model.RegistroConsulta;
 import com.example.apesc.repository.RegistroConsultaRepository;
+
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
@@ -31,6 +33,22 @@ public class RegistroConsultaValidation {
         // update: exclui o proprio ID da busca — salvar as mesmas informacoes de volta
         // no mesmo registro e permitido, so bloqueia se houver OUTRO registro identico.
         validateDuplicado(registroConsulta, registroConsulta.getId());
+    }
+
+    public void validateDelete(Long id) {
+        if (id == null) {
+            throw new CustomException(
+                ErrorConstants.INVALID_ID,
+                HttpStatus.BAD_REQUEST
+            );
+        }
+
+        if (registroConsultaRepository.findById(id).isEmpty()) {
+            throw new CustomException(
+                ErrorConstants.ID_NOT_FOUND,
+                HttpStatus.NOT_FOUND
+            );
+        }
     }
 
     private void validateDuplicado(RegistroConsulta registroConsulta, Long idAtual) {
