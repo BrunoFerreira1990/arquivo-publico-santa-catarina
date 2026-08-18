@@ -6,6 +6,8 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -33,15 +35,24 @@ public class RegistroConsulta {
     @Column(name = "tipo_consulta")
     private TipoConsulta tipoConsulta;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "acervo_documental_id", nullable = false)
-    private AcervoDocumental acervoDocumental;
+    // Um registro de consulta pode envolver varios itens de acervo (documental,
+    // cartografico, ...), cada um com sua propria quantidade/periodo. Tabela
+    // associativa UNICA (registro_consulta_item), com uma FK nullable por tipo de
+    // acervo — cada linha preenche exatamente uma delas (ver @Check na entidade).
+    @OneToMany(mappedBy = "registroConsulta", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Set<RegistroConsultaItem> itens = new HashSet<>();
 
-    @Column(name = "periodo")
-    private String periodo;
+    public void addItem(RegistroConsultaItem item) {
+        itens.add(item);
+        item.setRegistroConsulta(this);
+    }
 
-    @Column(name = "quantidade")
-    private Integer quantidade;
+    public void removeItem(RegistroConsultaItem item) {
+        itens.remove(item);
+        item.setRegistroConsulta(null);
+    }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "funcionario_id", nullable = false)
