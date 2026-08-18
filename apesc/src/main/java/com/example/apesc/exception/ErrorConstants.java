@@ -60,9 +60,18 @@ public enum ErrorConstants {
     PESQUISADOR_REQUIRED("Pesquisador é obrigatório"),
     DATA_PESQUISA_REQUIRED("Data da pesquisa é obrigatória"),
     TIPO_CONSULTA_REQUIRED("Tipo de consulta é obrigatório"),
-    ACERVO_DOCUMENTAL_REQUIRED("Acervo documental é obrigatório"),
     FUNCIONARIO_REQUIRED("Funcionário é obrigatório"),
-    REGISTRO_CONSULTA_DUPLICADO("Registro de consulta duplicado");
+    REGISTRO_CONSULTA_DUPLICADO("Registro de consulta duplicado"),
+    ITENS_REQUIRED("Pelo menos um item de acervo é obrigatório"),
+    ACERVO_ITEM_REQUIRED("Cada item precisa referenciar um acervo (documental ou cartográfico)"),
+    ACERVO_ITEM_TIPO_AMBIGUO("Um item não pode referenciar mais de um tipo de acervo ao mesmo tempo"),
+    ACERVO_DOCUMENTAL_DUPLICADO_NO_REGISTRO("O mesmo acervo documental não pode aparecer mais de uma vez no mesmo registro de consulta"),
+    ACERVO_CARTOGRAFICO_DUPLICADO_NO_REGISTRO("O mesmo acervo cartográfico não pode aparecer mais de uma vez no mesmo registro de consulta"),
+    CODIGO_IDENTIFICACAO_REQUIRED("Código de identificação é obrigatório"),
+    CODIGO_IDENTIFICACAO_DUPLICADO("Código de identificação já cadastrado"),
+    TITULO_REQUIRED("Título é obrigatório"),
+    DIMENSAO_REQUIRED("Dimensão é obrigatória"),
+    LOCALIZACAO_REQUIRED("Localização é obrigatória");
 
     private final String description;
 
