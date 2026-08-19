@@ -58,25 +58,11 @@ public class RegistroConsultaValidation {
         }
     }
 
+    // ---------- duplicidade entre registros ----------
+
     private void validateDuplicado(RegistroConsulta registroConsulta, Long idAtual) {
         for (RegistroConsultaItem item : registroConsulta.getItens()) {
-            boolean duplicado = ehItemDocumental(item)
-                    ? registroConsultaItemRepository.existsDuplicadoDocumental(
-                            registroConsulta.getPesquisador().getId(),
-                            registroConsulta.getDataPesquisa(),
-                            registroConsulta.getTipoConsulta(),
-                            item.getAcervoDocumental().getId(),
-                            item.getPeriodo(),
-                            item.getQuantidade(),
-                            idAtual)
-                    : registroConsultaItemRepository.existsDuplicadoCartografico(
-                            registroConsulta.getPesquisador().getId(),
-                            registroConsulta.getDataPesquisa(),
-                            registroConsulta.getTipoConsulta(),
-                            item.getAcervoCartografico().getId(),
-                            item.getPeriodo(),
-                            item.getQuantidade(),
-                            idAtual);
+            boolean duplicado = existsDuplicadoDoItem(registroConsulta, item, idAtual);
 
             if (duplicado) {
                 throw new CustomException(
@@ -86,6 +72,44 @@ public class RegistroConsultaValidation {
             }
         }
     }
+
+    private boolean existsDuplicadoDoItem(RegistroConsulta registroConsulta, RegistroConsultaItem item, Long idAtual) {
+        Long pesquisadorId = registroConsulta.getPesquisador().getId();
+        var dataPesquisa = registroConsulta.getDataPesquisa();
+        var tipoConsulta = registroConsulta.getTipoConsulta();
+        Integer quantidade = item.getQuantidade();
+        String periodo = item.getPeriodo();
+
+        if (item.getAcervoDocumental() != null) {
+            return registroConsultaItemRepository.existsDuplicadoDocumental(
+                    pesquisadorId, dataPesquisa, tipoConsulta, item.getAcervoDocumental().getId(), periodo, quantidade, idAtual);
+        }
+        if (item.getAcervoDocumentalProcessos() != null) {
+            return registroConsultaItemRepository.existsDuplicadoDocumentalProcessos(
+                    pesquisadorId, dataPesquisa, tipoConsulta, item.getAcervoDocumentalProcessos().getId(), periodo, quantidade, idAtual);
+        }
+        if (item.getAcervoIconografico() != null) {
+            return registroConsultaItemRepository.existsDuplicadoIconografico(
+                    pesquisadorId, dataPesquisa, tipoConsulta, item.getAcervoIconografico().getId(), periodo, quantidade, idAtual);
+        }
+        if (item.getAcervoCartografico() != null) {
+            return registroConsultaItemRepository.existsDuplicadoCartografico(
+                    pesquisadorId, dataPesquisa, tipoConsulta, item.getAcervoCartografico().getId(), periodo, quantidade, idAtual);
+        }
+        if (item.getBibliotecaLivrosPeriodicos() != null) {
+            return registroConsultaItemRepository.existsDuplicadoBibliotecaLivrosPeriodicos(
+                    pesquisadorId, dataPesquisa, tipoConsulta, item.getBibliotecaLivrosPeriodicos().getId(), periodo, quantidade, idAtual);
+        }
+        if (item.getBibliotecaApoio() != null) {
+            return registroConsultaItemRepository.existsDuplicadoBibliotecaApoio(
+                    pesquisadorId, dataPesquisa, tipoConsulta, item.getBibliotecaApoio().getId(), periodo, quantidade, idAtual);
+        }
+        // Nunca deveria chegar aqui — validateItens ja garantiu que todo item tem
+        // exatamente 1 tipo de acervo antes de validateDuplicado ser chamado.
+        return false;
+    }
+
+    // ---------- campos obrigatorios ----------
 
     private void validateCamposObrigatorios(RegistroConsulta registroConsulta) {
         validatePesquisador(registroConsulta);
@@ -122,68 +146,84 @@ public class RegistroConsultaValidation {
         }
     }
 
+    // ---------- itens: pelo menos 1, exatamente 1 tipo por item, sem repetir no registro ----------
+    // Excecao: se semConsulta = true, o registro existe mas nao envolveu consulta a
+    // nenhum acervo, entao a exigencia de "pelo menos 1 item" nao se aplica. Se ainda
+    // assim vierem itens junto (por engano ou nao), eles continuam sendo validados
+    // normalmente — o flag so dispensa a obrigatoriedade, nao permite item invalido.
+
     private void validateItens(RegistroConsulta registroConsulta) {
-        if (registroConsulta.getItens() == null || registroConsulta.getItens().isEmpty()) {
+        boolean semItens = registroConsulta.getItens() == null || registroConsulta.getItens().isEmpty();
+
+        if (semItens) {
+            if (Boolean.TRUE.equals(registroConsulta.getSemConsulta())) {
+                return;
+            }
             throw new CustomException(
                 ErrorConstants.ITENS_REQUIRED,
                 HttpStatus.BAD_REQUEST
             );
         }
 
-        // IDs ja vistos nesta mesma submissao, um conjunto por tipo — o mesmo
-        // acervo_documental_id nao pode repetir entre itens, e o mesmo
-        // acervo_cartografico_id tambem nao, mas os dois "espacos" sao
-        // independentes entre si (a constraint unica do banco segue essa mesma logica).
-        Set<Long> documentaisJaVistos = new HashSet<>();
-        Set<Long> cartograficosJaVistos = new HashSet<>();
+        // Um Set por tipo, pra barrar o mesmo acervo (do mesmo tipo) repetido no
+        // mesmo registro — os 6 "espacos" de ID sao independentes entre si.
+        Set<Long> documentaisVistos = new HashSet<>();
+        Set<Long> documentalProcessosVistos = new HashSet<>();
+        Set<Long> iconograficosVistos = new HashSet<>();
+        Set<Long> cartograficosVistos = new HashSet<>();
+        Set<Long> bibliotecaLivrosVistos = new HashSet<>();
+        Set<Long> bibliotecaApoioVistos = new HashSet<>();
 
         for (RegistroConsultaItem item : registroConsulta.getItens()) {
             validateTipoDoItem(item);
             validatePeriodoDoItem(item.getPeriodo());
             validateQuantidadeDoItem(item.getQuantidade());
 
-            if (ehItemDocumental(item)) {
-                if (!documentaisJaVistos.add(item.getAcervoDocumental().getId())) {
-                    throw new CustomException(
-                        ErrorConstants.ACERVO_DOCUMENTAL_DUPLICADO_NO_REGISTRO,
-                        HttpStatus.BAD_REQUEST
-                    );
-                }
-            } else {
-                if (!cartograficosJaVistos.add(item.getAcervoCartografico().getId())) {
-                    throw new CustomException(
-                        ErrorConstants.ACERVO_CARTOGRAFICO_DUPLICADO_NO_REGISTRO,
-                        HttpStatus.BAD_REQUEST
-                    );
-                }
+            if (item.getAcervoDocumental() != null) {
+                validateSemRepeticao(documentaisVistos, item.getAcervoDocumental().getId(), ErrorConstants.ACERVO_DOCUMENTAL_DUPLICADO_NO_REGISTRO);
+            } else if (item.getAcervoDocumentalProcessos() != null) {
+                validateSemRepeticao(documentalProcessosVistos, item.getAcervoDocumentalProcessos().getId(), ErrorConstants.ACERVO_DOCUMENTAL_PROCESSOS_DUPLICADO_NO_REGISTRO);
+            } else if (item.getAcervoIconografico() != null) {
+                validateSemRepeticao(iconograficosVistos, item.getAcervoIconografico().getId(), ErrorConstants.ACERVO_ICONOGRAFICO_DUPLICADO_NO_REGISTRO);
+            } else if (item.getAcervoCartografico() != null) {
+                validateSemRepeticao(cartograficosVistos, item.getAcervoCartografico().getId(), ErrorConstants.ACERVO_CARTOGRAFICO_DUPLICADO_NO_REGISTRO);
+            } else if (item.getBibliotecaLivrosPeriodicos() != null) {
+                validateSemRepeticao(bibliotecaLivrosVistos, item.getBibliotecaLivrosPeriodicos().getId(), ErrorConstants.BIBLIOTECA_LIVROS_PERIODICOS_DUPLICADO_NO_REGISTRO);
+            } else if (item.getBibliotecaApoio() != null) {
+                validateSemRepeticao(bibliotecaApoioVistos, item.getBibliotecaApoio().getId(), ErrorConstants.BIBLIOTECA_APOIO_DUPLICADO_NO_REGISTRO);
             }
         }
     }
 
-    // Cada item precisa referenciar exatamente 1 tipo de acervo — nem 0, nem os 2 ao
-    // mesmo tempo. Isso espelha, no nivel de validacao de negocio, o @Check que a
-    // entidade RegistroConsultaItem tem no banco.
-    private void validateTipoDoItem(RegistroConsultaItem item) {
-        boolean temDocumental = item.getAcervoDocumental() != null && item.getAcervoDocumental().getId() != null;
-        boolean temCartografico = item.getAcervoCartografico() != null && item.getAcervoCartografico().getId() != null;
-
-        if (!temDocumental && !temCartografico) {
-            throw new CustomException(
-                ErrorConstants.ACERVO_ITEM_REQUIRED,
-                HttpStatus.BAD_REQUEST
-            );
-        }
-
-        if (temDocumental && temCartografico) {
-            throw new CustomException(
-                ErrorConstants.ACERVO_ITEM_TIPO_AMBIGUO,
-                HttpStatus.BAD_REQUEST
-            );
+    private void validateSemRepeticao(Set<Long> idsVistos, Long id, ErrorConstants erroSeDuplicado) {
+        if (!idsVistos.add(id)) {
+            throw new CustomException(erroSeDuplicado, HttpStatus.BAD_REQUEST);
         }
     }
 
-    private boolean ehItemDocumental(RegistroConsultaItem item) {
-        return item.getAcervoDocumental() != null && item.getAcervoDocumental().getId() != null;
+    // Cada item precisa referenciar exatamente 1 dos 6 tipos de acervo — nem 0, nem
+    // mais de 1. Isso espelha, no nivel de validacao de negocio, o @Check que a
+    // entidade RegistroConsultaItem tem no banco.
+    private void validateTipoDoItem(RegistroConsultaItem item) {
+        int quantosTipos = 0;
+        quantosTipos += temId(item.getAcervoDocumental() != null ? item.getAcervoDocumental().getId() : null) ? 1 : 0;
+        quantosTipos += temId(item.getAcervoDocumentalProcessos() != null ? item.getAcervoDocumentalProcessos().getId() : null) ? 1 : 0;
+        quantosTipos += temId(item.getAcervoIconografico() != null ? item.getAcervoIconografico().getId() : null) ? 1 : 0;
+        quantosTipos += temId(item.getAcervoCartografico() != null ? item.getAcervoCartografico().getId() : null) ? 1 : 0;
+        quantosTipos += temId(item.getBibliotecaLivrosPeriodicos() != null ? item.getBibliotecaLivrosPeriodicos().getId() : null) ? 1 : 0;
+        quantosTipos += temId(item.getBibliotecaApoio() != null ? item.getBibliotecaApoio().getId() : null) ? 1 : 0;
+
+        if (quantosTipos == 0) {
+            throw new CustomException(ErrorConstants.ACERVO_ITEM_REQUIRED, HttpStatus.BAD_REQUEST);
+        }
+
+        if (quantosTipos > 1) {
+            throw new CustomException(ErrorConstants.ACERVO_ITEM_TIPO_AMBIGUO, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    private boolean temId(Long id) {
+        return id != null;
     }
 
     private void validatePeriodoDoItem(String periodo) {
