@@ -35,10 +35,17 @@ public class AcervoCartografico {
     @Column(name = "localidade")
     private String localidade;
 
+    @Column(name = "ano", nullable = false)
+    private String ano;
+
     @Column(name = "quantidade_volume")
     private Integer quantidadeVolume;
 
     @Column(name = "disponibilidade")
     private Boolean disponibilidade;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "entidade_produtora_id")
+    private EntidadeProdutora entidadeProdutora;
 
 }
