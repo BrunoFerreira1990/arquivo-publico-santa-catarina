@@ -22,6 +22,7 @@ public class RegistroConsultaDTO {
     private Long pesquisadorId;
     private LocalDate dataPesquisa;
     private TipoConsulta tipoConsulta;
+    private Boolean semConsulta;
     private List<RegistroConsultaItemDTO> itens;
     private Long funcionarioId;
     private LocalDateTime dataRegistro;
@@ -40,6 +41,7 @@ public class RegistroConsultaDTO {
 
         entity.setDataPesquisa(this.dataPesquisa);
         entity.setTipoConsulta(this.tipoConsulta);
+        entity.setSemConsulta(this.semConsulta);
 
         if (this.itens != null) {
             this.itens.forEach(itemDTO -> entity.addItem(itemDTO.toEntity()));
@@ -70,6 +72,7 @@ public class RegistroConsultaDTO {
             entity.getPesquisador() != null ? entity.getPesquisador().getId() : null,
             entity.getDataPesquisa(),
             entity.getTipoConsulta(),
+            entity.getSemConsulta(),
             entity.getItens() != null
                 ? entity.getItens().stream().map(RegistroConsultaItemDTO::fromEntity).collect(Collectors.toList())
                 : null,
