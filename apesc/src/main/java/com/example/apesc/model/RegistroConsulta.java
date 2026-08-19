@@ -35,6 +35,12 @@ public class RegistroConsulta {
     @Column(name = "tipo_consulta")
     private TipoConsulta tipoConsulta;
 
+    // Quando true, dispensa a exigencia de pelo menos 1 item de acervo (ver
+    // RegistroConsultaValidation) — cobre o caso de um registro que existe mas nao
+    // envolveu consulta a nenhum acervo. Tratado como false quando null.
+    @Column(name = "sem_consulta")
+    private Boolean semConsulta;
+
     // Um registro de consulta pode envolver varios itens de acervo (documental,
     // cartografico, ...), cada um com sua propria quantidade/periodo. Tabela
     // associativa UNICA (registro_consulta_item), com uma FK nullable por tipo de
