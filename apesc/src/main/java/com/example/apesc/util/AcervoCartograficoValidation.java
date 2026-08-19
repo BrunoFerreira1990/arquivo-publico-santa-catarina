@@ -4,6 +4,7 @@ import com.example.apesc.exception.CustomException;
 import com.example.apesc.exception.ErrorConstants;
 import com.example.apesc.model.AcervoCartografico;
 import com.example.apesc.repository.AcervoCartograficoRepository;
+import com.example.apesc.repository.EntidadeProdutoraRepository;
 import com.example.apesc.repository.TipoDocumentoRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -13,15 +14,17 @@ public class AcervoCartograficoValidation {
 
     public void validateSave(AcervoCartografico acervo,
                               AcervoCartograficoRepository acervoRepository,
-                              TipoDocumentoRepository tipoDocumentoRepository) {
+                              TipoDocumentoRepository tipoDocumentoRepository,
+                              EntidadeProdutoraRepository entidadeProdutoraRepository) {
 
-        validateBasicFields(acervo, tipoDocumentoRepository);
+        validateBasicFields(acervo, tipoDocumentoRepository, entidadeProdutoraRepository);
         validateCodigoIdentificacaoDuplicado(acervo, acervoRepository, null);
     }
 
     public void validateUpdate(AcervoCartografico acervo,
                                 AcervoCartograficoRepository acervoRepository,
-                                TipoDocumentoRepository tipoDocumentoRepository) {
+                                TipoDocumentoRepository tipoDocumentoRepository,
+                                EntidadeProdutoraRepository entidadeProdutoraRepository) {
 
         if (acervo.getId() == null) {
             throw new CustomException(ErrorConstants.INVALID_ID, HttpStatus.BAD_REQUEST);
@@ -31,7 +34,7 @@ public class AcervoCartograficoValidation {
             throw new CustomException(ErrorConstants.ID_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
 
-        validateBasicFields(acervo, tipoDocumentoRepository);
+        validateBasicFields(acervo, tipoDocumentoRepository, entidadeProdutoraRepository);
         validateCodigoIdentificacaoDuplicado(acervo, acervoRepository, acervo.getId());
     }
 
@@ -63,7 +66,9 @@ public class AcervoCartograficoValidation {
         }
     }
 
-    private void validateBasicFields(AcervoCartografico acervo, TipoDocumentoRepository tipoDocumentoRepository) {
+    private void validateBasicFields(AcervoCartografico acervo,
+                                      TipoDocumentoRepository tipoDocumentoRepository,
+                                      EntidadeProdutoraRepository entidadeProdutoraRepository) {
         if (acervo.getTipoDocumento() == null || acervo.getTipoDocumento().getId() == null) {
             throw new CustomException(ErrorConstants.TIPO_DOCUMENTO_REQUIRED, HttpStatus.BAD_REQUEST);
         }
@@ -88,12 +93,23 @@ public class AcervoCartograficoValidation {
             throw new CustomException(ErrorConstants.LOCALIZACAO_REQUIRED, HttpStatus.BAD_REQUEST);
         }
 
+        if (acervo.getAno() == null || acervo.getAno().trim().isEmpty()) {
+            throw new CustomException(ErrorConstants.ANO_REQUIRED, HttpStatus.BAD_REQUEST);
+        }
+
         if (acervo.getQuantidadeVolume() == null) {
             throw new CustomException(ErrorConstants.QUANTIDADE_REQUIRED, HttpStatus.BAD_REQUEST);
         }
 
         if (acervo.getQuantidadeVolume() <= 0) {
             throw new CustomException(ErrorConstants.QUANTIDADE_INVALIDA, HttpStatus.BAD_REQUEST);
+        }
+
+        // entidade produtora eh opcional, mas se vier, precisa existir de verdade
+        if (acervo.getEntidadeProdutora() != null && acervo.getEntidadeProdutora().getId() != null) {
+            if (entidadeProdutoraRepository.findById(acervo.getEntidadeProdutora().getId()).isEmpty()) {
+                throw new CustomException(ErrorConstants.ENTIDADE_PRODUTORA_NOT_FOUND, HttpStatus.NOT_FOUND);
+            }
         }
     }
 }
