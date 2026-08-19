@@ -1,6 +1,7 @@
 package com.example.apesc.dto;
 
 import com.example.apesc.model.AcervoCartografico;
+import com.example.apesc.model.EntidadeProdutora;
 import com.example.apesc.model.TipoDocumento;
 
 public record AcervoCartograficoDTO(
@@ -12,8 +13,11 @@ public record AcervoCartograficoDTO(
         String dimensao,
         String localizacao,
         String localidade,
+        String ano,
         Integer quantidadeVolume,
-        Boolean disponibilidade
+        Boolean disponibilidade,
+        Long entidadeProdutoraId,
+        String entidadeProdutoraNome
 ) {
 
     public static AcervoCartograficoDTO fromEntity(AcervoCartografico acervo) {
@@ -26,8 +30,11 @@ public record AcervoCartograficoDTO(
                 acervo.getDimensao(),
                 acervo.getLocalizacao(),
                 acervo.getLocalidade(),
+                acervo.getAno(),
                 acervo.getQuantidadeVolume(),
-                acervo.getDisponibilidade()
+                acervo.getDisponibilidade(),
+                acervo.getEntidadeProdutora() != null ? acervo.getEntidadeProdutora().getId() : null,
+                acervo.getEntidadeProdutora() != null ? acervo.getEntidadeProdutora().getNome() : null
         );
     }
 
@@ -46,8 +53,15 @@ public record AcervoCartograficoDTO(
         acervo.setDimensao(this.dimensao);
         acervo.setLocalizacao(this.localizacao);
         acervo.setLocalidade(this.localidade);
+        acervo.setAno(this.ano);
         acervo.setQuantidadeVolume(this.quantidadeVolume);
         acervo.setDisponibilidade(this.disponibilidade);
+
+        if (this.entidadeProdutoraId != null) {
+            EntidadeProdutora entidadeProdutora = new EntidadeProdutora();
+            entidadeProdutora.setId(this.entidadeProdutoraId);
+            acervo.setEntidadeProdutora(entidadeProdutora);
+        }
 
         return acervo;
     }
