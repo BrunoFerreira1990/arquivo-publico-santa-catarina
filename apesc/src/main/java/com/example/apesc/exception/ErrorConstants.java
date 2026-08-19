@@ -71,7 +71,28 @@ public enum ErrorConstants {
     CODIGO_IDENTIFICACAO_DUPLICADO("Código de identificação já cadastrado"),
     TITULO_REQUIRED("Título é obrigatório"),
     DIMENSAO_REQUIRED("Dimensão é obrigatória"),
-    LOCALIZACAO_REQUIRED("Localização é obrigatória");
+    LOCALIZACAO_REQUIRED("Localização é obrigatória"),
+    NOME_REGRA_REQUIRED("Nome da regra é obrigatório"),
+    NOME_REGRA_DUPLICADA("Nome da regra já cadastrado"),
+    ASSUNTO_REQUIRED("Assunto é obrigatório"),
+    ASSUNTO_DUPLICADO("Assunto já cadastrado"),
+    ACERVO_DOCUMENTAL_REQUIRED("Acervo documental é obrigatório"),
+    ACERVO_DOCUMENTAL_NOT_FOUND("Acervo documental não encontrado"),
+    NUMERO_TOMBO_REQUIRED("Número de tombo é obrigatório"),
+    NUMERO_TOMBO_DUPLICADO("Número de tombo já cadastrado para este acervo documental"),
+    CAIXA_IDENTIFICACAO_REQUIRED("Caixa de identificação é obrigatória"),
+    NOME_PROCESSO_REQUIRED("Nome do processo é obrigatório"),
+    IDENTIFICACAO_PASTA_REQUIRED("Identificação da pasta é obrigatória"),
+    PROCESSO_DUPLICADO("Já existe um processo com esta caixa de identificação para este acervo documental"),
+    ASSUNTO_ICONOGRAFICO_REQUIRED("Assunto do acervo iconográfico é obrigatório"),
+    ASSUNTO_ICONOGRAFICO_NOT_FOUND("Assunto do acervo iconográfico não encontrado"),
+    AUTORES_REQUIRED("Autores é obrigatório"),
+    EDITORA_REQUIRED("Editora é obrigatória"),
+    ANO_REQUIRED("Ano é obrigatório"),
+    ACERVO_DOCUMENTAL_PROCESSOS_DUPLICADO_NO_REGISTRO("O mesmo processo documental não pode aparecer mais de uma vez no mesmo registro de consulta"),
+    ACERVO_ICONOGRAFICO_DUPLICADO_NO_REGISTRO("O mesmo acervo iconográfico não pode aparecer mais de uma vez no mesmo registro de consulta"),
+    BIBLIOTECA_LIVROS_PERIODICOS_DUPLICADO_NO_REGISTRO("O mesmo item da biblioteca de livros/periódicos não pode aparecer mais de uma vez no mesmo registro de consulta"),
+    BIBLIOTECA_APOIO_DUPLICADO_NO_REGISTRO("O mesmo item da biblioteca de apoio não pode aparecer mais de uma vez no mesmo registro de consulta");
 
     private final String description;
 
