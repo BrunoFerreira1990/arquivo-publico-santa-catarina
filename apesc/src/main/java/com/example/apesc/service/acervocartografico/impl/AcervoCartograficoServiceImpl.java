@@ -2,6 +2,7 @@ package com.example.apesc.service.acervocartografico.impl;
 
 import com.example.apesc.model.AcervoCartografico;
 import com.example.apesc.repository.AcervoCartograficoRepository;
+import com.example.apesc.repository.EntidadeProdutoraRepository;
 import com.example.apesc.repository.TipoDocumentoRepository;
 import com.example.apesc.service.acervocartografico.AcervoCartograficoService;
 import com.example.apesc.util.AcervoCartograficoValidation;
@@ -18,11 +19,12 @@ public class AcervoCartograficoServiceImpl implements AcervoCartograficoService 
 
     private final AcervoCartograficoRepository acervoCartograficoRepository;
     private final TipoDocumentoRepository tipoDocumentoRepository;
+    private final EntidadeProdutoraRepository entidadeProdutoraRepository;
     private final AcervoCartograficoValidation acervoCartograficoValidation;
 
     @Transactional
     public AcervoCartografico save(AcervoCartografico acervoCartografico) {
-        acervoCartograficoValidation.validateSave(acervoCartografico, acervoCartograficoRepository, tipoDocumentoRepository);
+        acervoCartograficoValidation.validateSave(acervoCartografico, acervoCartograficoRepository, tipoDocumentoRepository, entidadeProdutoraRepository);
 
         rehydrateRelationships(acervoCartografico);
 
@@ -58,7 +60,7 @@ public class AcervoCartograficoServiceImpl implements AcervoCartograficoService 
 
     @Transactional
     public AcervoCartografico update(AcervoCartografico acervoCartografico) {
-        acervoCartograficoValidation.validateUpdate(acervoCartografico, acervoCartograficoRepository, tipoDocumentoRepository);
+        acervoCartograficoValidation.validateUpdate(acervoCartografico, acervoCartograficoRepository, tipoDocumentoRepository, entidadeProdutoraRepository);
 
         rehydrateRelationships(acervoCartografico);
 
@@ -69,6 +71,11 @@ public class AcervoCartograficoServiceImpl implements AcervoCartograficoService 
         if (acervoCartografico.getTipoDocumento() != null && acervoCartografico.getTipoDocumento().getId() != null) {
             acervoCartografico.setTipoDocumento(
                     tipoDocumentoRepository.findById(acervoCartografico.getTipoDocumento().getId()).orElse(null)
+            );
+        }
+        if (acervoCartografico.getEntidadeProdutora() != null && acervoCartografico.getEntidadeProdutora().getId() != null) {
+            acervoCartografico.setEntidadeProdutora(
+                    entidadeProdutoraRepository.findById(acervoCartografico.getEntidadeProdutora().getId()).orElse(null)
             );
         }
     }
