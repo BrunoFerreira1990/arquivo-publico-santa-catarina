@@ -1,6 +1,7 @@
 package com.example.apesc.dto;
 
 import com.example.apesc.model.Funcionario;
+import com.example.apesc.model.Permissoes;
 import com.example.apesc.model.enums.Generos;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.AllArgsConstructor;
@@ -22,6 +23,8 @@ public class FuncionarioDTO {
     private String numeroMatricula;
     private String cargo;
     private String setor;
+    private Long permissoesId;
+    private String permissoesNomeRegra;
 
     @JsonSetter("genero")
     public void setGenero(String genero) {
@@ -38,6 +41,13 @@ public class FuncionarioDTO {
         entity.setNumeroMatricula(this.numeroMatricula);
         entity.setCargo(this.cargo);
         entity.setSetor(this.setor);
+
+        if (this.permissoesId != null) {
+            Permissoes permissoes = new Permissoes();
+            permissoes.setId(this.permissoesId);
+            entity.setPermissoes(permissoes);
+        }
+
         return entity;
     }
 
@@ -51,7 +61,9 @@ public class FuncionarioDTO {
             entity.getEmail(),
             entity.getNumeroMatricula(),
             entity.getCargo(),
-            entity.getSetor()
+            entity.getSetor(),
+            entity.getPermissoes() != null ? entity.getPermissoes().getId() : null,
+            entity.getPermissoes() != null ? entity.getPermissoes().getNomeRegra() : null
         );
     }
 }

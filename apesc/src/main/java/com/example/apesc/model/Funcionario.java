@@ -41,6 +41,12 @@ public class Funcionario {
     @Column(name = "setor")
     private String setor;
 
+    // Opcional de proposito: nem todo funcionario precisa ter uma regra de
+    // permissao atribuida no momento do cadastro.
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "permissoes_id")
+    private Permissoes permissoes;
+
     @OneToMany(mappedBy = "funcionario")
     @JsonIgnore
     private List<RegistroConsulta> registroConsultas = new ArrayList<>();

@@ -2,11 +2,14 @@ package com.example.apesc.util;
 
 import com.example.apesc.exception.CustomException;
 import com.example.apesc.exception.ErrorConstants;
+import com.example.apesc.model.AcervoCartografico;
 import com.example.apesc.model.AcervoDocumental;
 import com.example.apesc.model.Funcionario;
 import com.example.apesc.model.Pesquisador;
 import com.example.apesc.model.RegistroConsulta;
+import com.example.apesc.model.RegistroConsultaItem;
 import com.example.apesc.model.enums.TipoConsulta;
+import com.example.apesc.repository.RegistroConsultaItemRepository;
 import com.example.apesc.repository.RegistroConsultaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -38,13 +42,18 @@ class RegistroConsultaValidationTest {
     @Mock
     private RegistroConsultaRepository registroConsultaRepository;
 
+    @Mock
+    private RegistroConsultaItemRepository registroConsultaItemRepository;
+
     private RegistroConsultaValidation validation;
 
     @BeforeEach
     void setUp() {
-        validation = new RegistroConsultaValidation(registroConsultaRepository);
+        validation = new RegistroConsultaValidation(registroConsultaRepository, registroConsultaItemRepository);
     }
 
+    // Registro valido com exatamente 1 item documental, pra manter os casos de teste
+    // comparaveis com o comportamento anterior (1 registro = 1 acervo).
     private RegistroConsulta registroValido() {
         RegistroConsulta registro = new RegistroConsulta();
 
@@ -57,16 +66,33 @@ class RegistroConsultaValidationTest {
 
         AcervoDocumental acervo = new AcervoDocumental();
         acervo.setId(1L);
-        registro.setAcervoDocumental(acervo);
 
-        registro.setPeriodo("Manhã");
-        registro.setQuantidade(3);
+        RegistroConsultaItem item = new RegistroConsultaItem();
+        item.setAcervoDocumental(acervo);
+        item.setPeriodo("Manhã");
+        item.setQuantidade(3);
+        registro.addItem(item);
 
         Funcionario funcionario = new Funcionario();
         funcionario.setId(1L);
         registro.setFuncionario(funcionario);
 
         return registro;
+    }
+
+    private RegistroConsultaItem primeiroItem(RegistroConsulta registro) {
+        return registro.getItens().iterator().next();
+    }
+
+    private RegistroConsultaItem umItemCartografico() {
+        AcervoCartografico acervo = new AcervoCartografico();
+        acervo.setId(9L);
+
+        RegistroConsultaItem item = new RegistroConsultaItem();
+        item.setAcervoCartografico(acervo);
+        item.setPeriodo("1900-1910");
+        item.setQuantidade(2);
+        return item;
     }
 
     private void assertValidationError(Runnable action, ErrorConstants esperado, HttpStatus statusEsperado) {
@@ -83,7 +109,7 @@ class RegistroConsultaValidationTest {
 
     @Test
     void validateSave_naoDeveLancarExcecaoQuandoTodosOsCamposValidosENaoHaDuplicidade() {
-        when(registroConsultaRepository.existsDuplicado(
+        when(registroConsultaItemRepository.existsDuplicadoDocumental(
                 any(), any(), any(), any(), any(), any(), isNull())).thenReturn(false);
 
         assertThatCode(() -> validation.validateSave(registroValido())).doesNotThrowAnyException();
@@ -92,8 +118,8 @@ class RegistroConsultaValidationTest {
     // ---------- validateSave: duplicidade ----------
 
     @Test
-    void validateSave_deveLancarConflitoQuandoJaExisteRegistroIdentico() {
-        when(registroConsultaRepository.existsDuplicado(
+    void validateSave_deveLancarConflitoQuandoJaExisteItemIdentico() {
+        when(registroConsultaItemRepository.existsDuplicadoDocumental(
                 any(), any(), any(), any(), any(), any(), isNull())).thenReturn(true);
 
         assertValidationError(
@@ -105,7 +131,7 @@ class RegistroConsultaValidationTest {
 
     @Test
     void validateSave_naoDeveConsiderarOFuncionarioNaComparacaoDeDuplicidade() {
-        when(registroConsultaRepository.existsDuplicado(
+        when(registroConsultaItemRepository.existsDuplicadoDocumental(
                 any(), any(), any(), any(), any(), any(), any())).thenReturn(false);
 
         validation.validateSave(registroValido());
@@ -113,7 +139,7 @@ class RegistroConsultaValidationTest {
         // o funcionarioId nao entra como argumento da checagem — so os campos que
         // descrevem a consulta em si. Isso e o que garante que uma pessoa diferente
         // registrando os mesmos dados tambem seja pega como duplicidade.
-        verify(registroConsultaRepository).existsDuplicado(
+        verify(registroConsultaItemRepository).existsDuplicadoDocumental(
                 eq(1L), eq(LocalDate.of(2026, 8, 14)), eq(TipoConsulta.PRESENCIAL),
                 eq(1L), eq("Manhã"), eq(3), isNull());
     }
@@ -121,12 +147,14 @@ class RegistroConsultaValidationTest {
     @Test
     void validateSave_naoDeveConsultarDuplicidadeQuandoCampoObrigatorioAusente() {
         RegistroConsulta registro = registroValido();
-        registro.setPeriodo(null);
+        primeiroItem(registro).setPeriodo(null);
 
         assertThatThrownBy(() -> validation.validateSave(registro)).isInstanceOf(CustomException.class);
 
-        verify(registroConsultaRepository, never())
-                .existsDuplicado(any(), any(), any(), any(), any(), any(), any());
+        verify(registroConsultaItemRepository, never())
+                .existsDuplicadoDocumental(any(), any(), any(), any(), any(), any(), any());
+        verify(registroConsultaItemRepository, never())
+                .existsDuplicadoCartografico(any(), any(), any(), any(), any(), any(), any());
     }
 
     // ---------- validateSave: campos obrigatórios ----------
@@ -137,11 +165,12 @@ class RegistroConsultaValidationTest {
                 Arguments.of((Consumer<RegistroConsulta>) r -> r.getPesquisador().setId(null), ErrorConstants.PESQUISADOR_REQUIRED),
                 Arguments.of((Consumer<RegistroConsulta>) r -> r.setDataPesquisa(null), ErrorConstants.DATA_PESQUISA_REQUIRED),
                 Arguments.of((Consumer<RegistroConsulta>) r -> r.setTipoConsulta(null), ErrorConstants.TIPO_CONSULTA_REQUIRED),
-                Arguments.of((Consumer<RegistroConsulta>) r -> r.setAcervoDocumental(null), ErrorConstants.ACERVO_DOCUMENTAL_REQUIRED),
-                Arguments.of((Consumer<RegistroConsulta>) r -> r.getAcervoDocumental().setId(null), ErrorConstants.ACERVO_DOCUMENTAL_REQUIRED),
-                Arguments.of((Consumer<RegistroConsulta>) r -> r.setPeriodo(null), ErrorConstants.PERIODO_REQUIRED),
-                Arguments.of((Consumer<RegistroConsulta>) r -> r.setPeriodo("   "), ErrorConstants.PERIODO_REQUIRED),
-                Arguments.of((Consumer<RegistroConsulta>) r -> r.setQuantidade(null), ErrorConstants.QUANTIDADE_REQUIRED),
+                Arguments.of((Consumer<RegistroConsulta>) r -> r.setItens(new HashSet<>()), ErrorConstants.ITENS_REQUIRED),
+                Arguments.of((Consumer<RegistroConsulta>) r -> r.getItens().iterator().next().setAcervoDocumental(null), ErrorConstants.ACERVO_ITEM_REQUIRED),
+                Arguments.of((Consumer<RegistroConsulta>) r -> r.getItens().iterator().next().getAcervoDocumental().setId(null), ErrorConstants.ACERVO_ITEM_REQUIRED),
+                Arguments.of((Consumer<RegistroConsulta>) r -> r.getItens().iterator().next().setPeriodo(null), ErrorConstants.PERIODO_REQUIRED),
+                Arguments.of((Consumer<RegistroConsulta>) r -> r.getItens().iterator().next().setPeriodo("   "), ErrorConstants.PERIODO_REQUIRED),
+                Arguments.of((Consumer<RegistroConsulta>) r -> r.getItens().iterator().next().setQuantidade(null), ErrorConstants.QUANTIDADE_REQUIRED),
                 Arguments.of((Consumer<RegistroConsulta>) r -> r.setFuncionario(null), ErrorConstants.FUNCIONARIO_REQUIRED),
                 Arguments.of((Consumer<RegistroConsulta>) r -> r.getFuncionario().setId(null), ErrorConstants.FUNCIONARIO_REQUIRED)
         );
@@ -154,6 +183,175 @@ class RegistroConsultaValidationTest {
         mutador.accept(registro);
 
         assertValidationError(() -> validation.validateSave(registro), erroEsperado, HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void validateSave_deveRejeitarItemComOsDoisTiposDeAcervoAoMesmoTempo() {
+        RegistroConsulta registro = registroValido();
+        AcervoCartografico cartografico = new AcervoCartografico();
+        cartografico.setId(9L);
+        primeiroItem(registro).setAcervoCartografico(cartografico); // ja tem acervoDocumental do registroValido()
+
+        assertValidationError(
+                () -> validation.validateSave(registro),
+                ErrorConstants.ACERVO_ITEM_TIPO_AMBIGUO,
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @Test
+    void validateSave_deveRejeitarOMesmoAcervoDocumentalRepetidoNoMesmoRegistro() {
+        RegistroConsulta registro = registroValido();
+
+        AcervoDocumental mesmoAcervo = new AcervoDocumental();
+        mesmoAcervo.setId(primeiroItem(registro).getAcervoDocumental().getId());
+
+        RegistroConsultaItem itemRepetido = new RegistroConsultaItem();
+        itemRepetido.setAcervoDocumental(mesmoAcervo);
+        itemRepetido.setPeriodo("Tarde");
+        itemRepetido.setQuantidade(1);
+        registro.addItem(itemRepetido);
+
+        assertValidationError(
+                () -> validation.validateSave(registro),
+                ErrorConstants.ACERVO_DOCUMENTAL_DUPLICADO_NO_REGISTRO,
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    // ---------- validateSave: itens cartograficos, misturados com documentais ----------
+
+    @Test
+    void validateSave_devePermitirRegistroSoComItemCartograficoSemItemDocumental() {
+        RegistroConsulta registro = registroValido();
+        registro.setItens(new HashSet<>());
+        registro.addItem(umItemCartografico());
+
+        when(registroConsultaItemRepository.existsDuplicadoCartografico(
+                any(), any(), any(), any(), any(), any(), isNull())).thenReturn(false);
+
+        assertThatCode(() -> validation.validateSave(registro)).doesNotThrowAnyException();
+        verify(registroConsultaItemRepository, never())
+                .existsDuplicadoDocumental(any(), any(), any(), any(), any(), any(), any());
+    }
+
+    @Test
+    void validateSave_devePermitirRegistroComItemDocumentalEItemCartograficoMisturados() {
+        RegistroConsulta registro = registroValido();
+        registro.addItem(umItemCartografico());
+
+        when(registroConsultaItemRepository.existsDuplicadoDocumental(
+                any(), any(), any(), any(), any(), any(), isNull())).thenReturn(false);
+        when(registroConsultaItemRepository.existsDuplicadoCartografico(
+                any(), any(), any(), any(), any(), any(), isNull())).thenReturn(false);
+
+        assertThatCode(() -> validation.validateSave(registro)).doesNotThrowAnyException();
+        verify(registroConsultaItemRepository).existsDuplicadoDocumental(any(), any(), any(), any(), any(), any(), isNull());
+        verify(registroConsultaItemRepository).existsDuplicadoCartografico(any(), any(), any(), any(), any(), any(), isNull());
+    }
+
+    @Test
+    void validateSave_deveLancarConflitoQuandoItemCartograficoJaExisteIdentico() {
+        RegistroConsulta registro = registroValido();
+        registro.addItem(umItemCartografico());
+
+        // nao estuba existsDuplicadoDocumental: Mockito ja retorna false por padrao pra
+        // metodo boolean nao estubado, e a ordem de iteracao de um Set nao eh garantida
+        // (esse item pode ou nao chegar a ser checado antes do cartografico abaixo).
+        when(registroConsultaItemRepository.existsDuplicadoCartografico(
+                any(), any(), any(), any(), any(), any(), isNull())).thenReturn(true);
+
+        assertValidationError(
+                () -> validation.validateSave(registro),
+                ErrorConstants.REGISTRO_CONSULTA_DUPLICADO,
+                HttpStatus.CONFLICT
+        );
+    }
+
+    @Test
+    void validateSave_deveRejeitarOMesmoAcervoCartograficoRepetidoNoMesmoRegistro() {
+        RegistroConsulta registro = registroValido();
+        registro.addItem(umItemCartografico());
+
+        // segundo item com o MESMO acervoId (9L), mas periodo/quantidade diferentes —
+        // precisa ser um objeto distinto (equals/hashCode diferente) pra nao ser
+        // silenciosamente descartado pelo Set antes mesmo de chegar na validacao.
+        AcervoCartografico mesmoAcervo = new AcervoCartografico();
+        mesmoAcervo.setId(9L);
+        RegistroConsultaItem itemRepetido = new RegistroConsultaItem();
+        itemRepetido.setAcervoCartografico(mesmoAcervo);
+        itemRepetido.setPeriodo("Outro periodo");
+        itemRepetido.setQuantidade(5);
+        registro.addItem(itemRepetido);
+
+        assertValidationError(
+                () -> validation.validateSave(registro),
+                ErrorConstants.ACERVO_CARTOGRAFICO_DUPLICADO_NO_REGISTRO,
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @Test
+    void validateSave_deveLancarQuandoNaoHaItemDocumentalNemCartografico() {
+        RegistroConsulta registro = registroValido();
+        registro.setItens(new HashSet<>());
+
+        assertValidationError(
+                () -> validation.validateSave(registro),
+                ErrorConstants.ITENS_REQUIRED,
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    // ---------- semConsulta: dispensa a exigencia de pelo menos 1 item ----------
+
+    @Test
+    void validateSave_devePermitirRegistroSemItensQuandoSemConsultaEhTrue() {
+        RegistroConsulta registro = registroValido();
+        registro.setItens(new HashSet<>());
+        registro.setSemConsulta(true);
+
+        assertThatCode(() -> validation.validateSave(registro)).doesNotThrowAnyException();
+        verify(registroConsultaItemRepository, never())
+                .existsDuplicadoDocumental(any(), any(), any(), any(), any(), any(), any());
+    }
+
+    @Test
+    void validateSave_deveContinuarExigindoItemQuandoSemConsultaEhFalseOuNulo() {
+        RegistroConsulta registroFalse = registroValido();
+        registroFalse.setItens(new HashSet<>());
+        registroFalse.setSemConsulta(false);
+
+        assertValidationError(
+                () -> validation.validateSave(registroFalse),
+                ErrorConstants.ITENS_REQUIRED,
+                HttpStatus.BAD_REQUEST
+        );
+
+        RegistroConsulta registroNulo = registroValido();
+        registroNulo.setItens(new HashSet<>());
+        registroNulo.setSemConsulta(null);
+
+        assertValidationError(
+                () -> validation.validateSave(registroNulo),
+                ErrorConstants.ITENS_REQUIRED,
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @Test
+    void validateSave_deveValidarItensNormalmenteMesmoComSemConsultaTrueSeItensForemEnviados() {
+        RegistroConsulta registro = registroValido();
+        registro.setSemConsulta(true);
+        // registroValido() ja vem com 1 item documental — semConsulta=true nao
+        // isenta esse item de ser validado normalmente (ex.: periodo ausente).
+        primeiroItem(registro).setPeriodo(null);
+
+        assertValidationError(
+                () -> validation.validateSave(registro),
+                ErrorConstants.PERIODO_REQUIRED,
+                HttpStatus.BAD_REQUEST
+        );
     }
 
     // ---------- validateUpdate ----------
@@ -174,8 +372,8 @@ class RegistroConsultaValidationTest {
     void validateUpdate_devePermitirSalvarAsMesmasInformacoesDeVoltaNoProprioRegistro() {
         RegistroConsulta registro = registroValido();
         registro.setId(1L);
-        // o unico registro identico no banco e o proprio (mesmo ID) -> repositorio simula a exclusao.
-        when(registroConsultaRepository.existsDuplicado(
+        // o unico item identico no banco e do proprio registro (mesmo ID) -> repositorio simula a exclusao.
+        when(registroConsultaItemRepository.existsDuplicadoDocumental(
                 any(), any(), any(), any(), any(), any(), eq(1L))).thenReturn(false);
 
         assertThatCode(() -> validation.validateUpdate(registro)).doesNotThrowAnyException();
@@ -185,8 +383,8 @@ class RegistroConsultaValidationTest {
     void validateUpdate_deveLancarConflitoQuandoOutroRegistroComIdDiferenteEhIdentico() {
         RegistroConsulta registro = registroValido();
         registro.setId(1L);
-        // existe outro registro (ID diferente) com os mesmos dados.
-        when(registroConsultaRepository.existsDuplicado(
+        // existe item identico em outro registro (ID diferente).
+        when(registroConsultaItemRepository.existsDuplicadoDocumental(
                 any(), any(), any(), any(), any(), any(), eq(1L))).thenReturn(true);
 
         assertValidationError(
@@ -200,12 +398,12 @@ class RegistroConsultaValidationTest {
     void validateUpdate_deveExcluirOProprioIdDaBuscaDeDuplicidade() {
         RegistroConsulta registro = registroValido();
         registro.setId(7L);
-        when(registroConsultaRepository.existsDuplicado(
+        when(registroConsultaItemRepository.existsDuplicadoDocumental(
                 any(), any(), any(), any(), any(), any(), any())).thenReturn(false);
 
         validation.validateUpdate(registro);
 
-        verify(registroConsultaRepository).existsDuplicado(
+        verify(registroConsultaItemRepository).existsDuplicadoDocumental(
                 eq(1L), eq(LocalDate.of(2026, 8, 14)), eq(TipoConsulta.PRESENCIAL),
                 eq(1L), eq("Manhã"), eq(3), eq(7L));
     }

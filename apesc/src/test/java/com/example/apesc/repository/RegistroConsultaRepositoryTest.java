@@ -23,6 +23,9 @@ class RegistroConsultaRepositoryTest {
     private RegistroConsultaRepository registroConsultaRepository;
 
     @Autowired
+    private RegistroConsultaItemRepository registroConsultaItemRepository;
+
+    @Autowired
     private PesquisadorRepository pesquisadorRepository;
 
     @Autowired
@@ -40,6 +43,29 @@ class RegistroConsultaRepositoryTest {
     @Autowired
     private EntityManager entityManager;
 
+    private AcervoDocumental umAcervoDocumentalPersistivel() {
+        TipoDocumento tipoDocumento = new TipoDocumento();
+        tipoDocumento.setNomeDocumento("Ofício");
+        tipoDocumento = tipoDocumentoRepository.save(tipoDocumento);
+
+        EntidadeProdutora entidadeProdutora = new EntidadeProdutora();
+        entidadeProdutora.setNome("Secretaria de Estado");
+        entidadeProdutora.setAbreviacao("SE");
+        entidadeProdutora = entidadeProdutoraRepository.save(entidadeProdutora);
+
+        AcervoDocumental acervo = new AcervoDocumental();
+        acervo.setTipoDocumento(tipoDocumento);
+        acervo.setEntidadeProdutora(entidadeProdutora);
+        acervo.setNaturezaTransacao(NaturezaTransacao.EXPEDIDOS);
+        acervo.setPeriodo("2020");
+        acervo.setEstante("A1");
+        acervo.setQuantidade(1);
+        acervo.setDisponibilidade(true);
+        return acervoDocumentalRepository.save(acervo);
+    }
+
+    // Registro persistivel com exatamente 1 item documental, pra manter os testes de
+    // duplicidade comparaveis com o comportamento anterior (1 registro = 1 acervo).
     private RegistroConsulta umRegistroPersistivel() {
         Pesquisador pesquisador = new Pesquisador();
         pesquisador.setNome("Maria Aparecida Silva");
@@ -70,34 +96,25 @@ class RegistroConsultaRepositoryTest {
         funcionario.setSetor("Acervo");
         funcionario = funcionarioRepository.save(funcionario);
 
-        TipoDocumento tipoDocumento = new TipoDocumento();
-        tipoDocumento.setNomeDocumento("Ofício");
-        tipoDocumento = tipoDocumentoRepository.save(tipoDocumento);
-
-        EntidadeProdutora entidadeProdutora = new EntidadeProdutora();
-        entidadeProdutora.setNome("Secretaria de Estado");
-        entidadeProdutora.setAbreviacao("SE");
-        entidadeProdutora = entidadeProdutoraRepository.save(entidadeProdutora);
-
-        AcervoDocumental acervo = new AcervoDocumental();
-        acervo.setTipoDocumento(tipoDocumento);
-        acervo.setEntidadeProdutora(entidadeProdutora);
-        acervo.setNaturezaTransacao(NaturezaTransacao.EXPEDIDOS);
-        acervo.setPeriodo("2020");
-        acervo.setEstante("A1");
-        acervo.setQuantidade(1);
-        acervo.setDisponibilidade(true);
-        acervo = acervoDocumentalRepository.save(acervo);
+        AcervoDocumental acervo = umAcervoDocumentalPersistivel();
 
         RegistroConsulta registro = new RegistroConsulta();
         registro.setPesquisador(pesquisador);
         registro.setDataPesquisa(LocalDate.of(2026, 8, 14));
         registro.setTipoConsulta(TipoConsulta.PRESENCIAL);
-        registro.setAcervoDocumental(acervo);
-        registro.setPeriodo("Manhã");
-        registro.setQuantidade(3);
         registro.setFuncionario(funcionario);
+
+        RegistroConsultaItem item = new RegistroConsultaItem();
+        item.setAcervoDocumental(acervo);
+        item.setPeriodo("Manhã");
+        item.setQuantidade(3);
+        registro.addItem(item);
+
         return registro;
+    }
+
+    private RegistroConsultaItem primeiroItem(RegistroConsulta registro) {
+        return registro.getItens().iterator().next();
     }
 
     @Test
@@ -131,43 +148,56 @@ class RegistroConsultaRepositoryTest {
         assertThat(salvo.getDataAtualizacao()).isNull();
     }
 
-    private boolean existeDuplicado(RegistroConsulta registro, Long idAtual) {
-        return registroConsultaRepository.existsDuplicado(
+    @Test
+    void save_devePersistirOsItensJuntoComORegistroViaCascade() {
+        RegistroConsulta registro = umRegistroPersistivel();
+
+        RegistroConsulta salvo = registroConsultaRepository.saveAndFlush(registro);
+
+        assertThat(salvo.getItens()).hasSize(1);
+        assertThat(primeiroItem(salvo).getId()).isNotNull();
+        assertThat(primeiroItem(salvo).getAcervoCartografico()).isNull();
+        assertThat(registroConsultaItemRepository.findAll()).hasSize(1);
+    }
+
+    private boolean existeDuplicadoDocumental(RegistroConsulta registro, Long idAtual) {
+        RegistroConsultaItem item = primeiroItem(registro);
+        return registroConsultaItemRepository.existsDuplicadoDocumental(
                 registro.getPesquisador().getId(),
                 registro.getDataPesquisa(),
                 registro.getTipoConsulta(),
-                registro.getAcervoDocumental().getId(),
-                registro.getPeriodo(),
-                registro.getQuantidade(),
+                item.getAcervoDocumental().getId(),
+                item.getPeriodo(),
+                item.getQuantidade(),
                 idAtual
         );
     }
 
     @Test
-    void existsDuplicado_deveRetornarTrueQuandoJaExisteRegistroIdenticoENenhumIdEhExcluido() {
+    void existsDuplicadoDocumental_deveRetornarTrueQuandoJaExisteItemIdenticoENenhumRegistroEhExcluido() {
         RegistroConsulta registro = umRegistroPersistivel();
         registroConsultaRepository.saveAndFlush(registro);
 
         // idAtual nulo simula o cenario de create: nao ha ID proprio a excluir da busca.
-        assertThat(existeDuplicado(registro, null)).isTrue();
+        assertThat(existeDuplicadoDocumental(registro, null)).isTrue();
     }
 
     @Test
-    void existsDuplicado_deveRetornarFalseQuandoAlgumCampoDeNegocioDifere() {
+    void existsDuplicadoDocumental_deveRetornarFalseQuandoAlgumCampoDeNegocioDifere() {
         RegistroConsulta registro = umRegistroPersistivel();
         registroConsultaRepository.saveAndFlush(registro);
 
         RegistroConsulta comparacao = umRegistroPersistivel();
         comparacao.setPesquisador(registro.getPesquisador());
-        comparacao.setAcervoDocumental(registro.getAcervoDocumental());
         comparacao.setFuncionario(registro.getFuncionario());
-        comparacao.setPeriodo("Tarde"); // único campo diferente
+        primeiroItem(comparacao).setAcervoDocumental(primeiroItem(registro).getAcervoDocumental());
+        primeiroItem(comparacao).setPeriodo("Tarde"); // único campo diferente
 
-        assertThat(existeDuplicado(comparacao, null)).isFalse();
+        assertThat(existeDuplicadoDocumental(comparacao, null)).isFalse();
     }
 
     @Test
-    void existsDuplicado_deveRetornarTrueMesmoComFuncionarioDiferente() {
+    void existsDuplicadoDocumental_deveRetornarTrueMesmoComFuncionarioDiferente() {
         RegistroConsulta registro = umRegistroPersistivel();
         registroConsultaRepository.saveAndFlush(registro);
 
@@ -183,25 +213,26 @@ class RegistroConsultaRepositoryTest {
 
         RegistroConsulta comparacao = umRegistroPersistivel();
         comparacao.setPesquisador(registro.getPesquisador());
-        comparacao.setAcervoDocumental(registro.getAcervoDocumental());
         comparacao.setFuncionario(outroFuncionario); // unico campo diferente
+        primeiroItem(comparacao).setAcervoDocumental(primeiroItem(registro).getAcervoDocumental());
 
         // funcionario nao entra na comparacao — outra pessoa registrando os mesmos
         // dados tambem e barrada como duplicidade.
-        assertThat(existeDuplicado(comparacao, null)).isTrue();
+        assertThat(existeDuplicadoDocumental(comparacao, null)).isTrue();
     }
 
     @Test
-    void existsDuplicado_deveRetornarFalseQuandoOUnicoRegistroIdenticoEhOProprioSendoEditado() {
+    void existsDuplicadoDocumental_deveRetornarFalseQuandoOUnicoItemIdenticoEhDoProprioRegistroSendoEditado() {
         RegistroConsulta registro = umRegistroPersistivel();
         registroConsultaRepository.saveAndFlush(registro);
 
-        // update: excluindo o proprio ID, nao sobra nenhum OUTRO registro identico -> permitido.
-        assertThat(existeDuplicado(registro, registro.getId())).isFalse();
+        // update: excluindo o proprio ID do registro, nao sobra nenhum item de OUTRO
+        // registro identico -> permitido.
+        assertThat(existeDuplicadoDocumental(registro, registro.getId())).isFalse();
     }
 
     @Test
-    void existsDuplicado_deveRetornarTrueQuandoOutroRegistroComIdDiferenteEhIdenticoMesmoCriadoEmOutroDia() {
+    void existsDuplicadoDocumental_deveRetornarTrueQuandoOutroRegistroComIdDiferenteEhIdenticoMesmoCriadoEmOutroDia() {
         // registro A: cadastrado ontem (backdatado direto no banco, ja que updatable=false
         // impede alterar dataRegistro via entidade).
         RegistroConsulta registroA = umRegistroPersistivel();
@@ -212,15 +243,17 @@ class RegistroConsultaRepositoryTest {
                 .executeUpdate();
         entityManager.clear();
 
-        // registro B: mesmos dados de negocio de A, cadastrado hoje.
+        // registro B: mesmos dados de negocio de A (mesmo pesquisador, funcionario e
+        // acervo/periodo/quantidade do item), cadastrado hoje.
         RegistroConsulta registroB = umRegistroPersistivel();
         registroB.setPesquisador(pesquisadorRepository.findById(registroA.getPesquisador().getId()).orElseThrow());
-        registroB.setAcervoDocumental(acervoDocumentalRepository.findById(registroA.getAcervoDocumental().getId()).orElseThrow());
         registroB.setFuncionario(funcionarioRepository.findById(registroA.getFuncionario().getId()).orElseThrow());
+        AcervoDocumental acervoDeA = primeiroItem(registroA).getAcervoDocumental();
+        primeiroItem(registroB).setAcervoDocumental(acervoDocumentalRepository.findById(acervoDeA.getId()).orElseThrow());
         registroB = registroConsultaRepository.saveAndFlush(registroB);
 
         // editando B (excluindo o ID de B da busca): mesmo A tendo sido cadastrado em outro
         // dia, ele ainda e encontrado e bloqueia a edicao — fecha o gap de dia diferente.
-        assertThat(existeDuplicado(registroB, registroB.getId())).isTrue();
+        assertThat(existeDuplicadoDocumental(registroB, registroB.getId())).isTrue();
     }
 }
