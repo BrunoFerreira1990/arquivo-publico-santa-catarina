@@ -255,8 +255,9 @@ class RegistroConsultaValidationTest {
         RegistroConsulta registro = registroValido();
         registro.addItem(umItemCartografico());
 
-        when(registroConsultaItemRepository.existsDuplicadoDocumental(
-                any(), any(), any(), any(), any(), any(), isNull())).thenReturn(false);
+        // nao estuba existsDuplicadoDocumental: Mockito ja retorna false por padrao pra
+        // metodo boolean nao estubado, e a ordem de iteracao de um Set nao eh garantida
+        // (esse item pode ou nao chegar a ser checado antes do cartografico abaixo).
         when(registroConsultaItemRepository.existsDuplicadoCartografico(
                 any(), any(), any(), any(), any(), any(), isNull())).thenReturn(true);
 
@@ -298,6 +299,57 @@ class RegistroConsultaValidationTest {
         assertValidationError(
                 () -> validation.validateSave(registro),
                 ErrorConstants.ITENS_REQUIRED,
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    // ---------- semConsulta: dispensa a exigencia de pelo menos 1 item ----------
+
+    @Test
+    void validateSave_devePermitirRegistroSemItensQuandoSemConsultaEhTrue() {
+        RegistroConsulta registro = registroValido();
+        registro.setItens(new HashSet<>());
+        registro.setSemConsulta(true);
+
+        assertThatCode(() -> validation.validateSave(registro)).doesNotThrowAnyException();
+        verify(registroConsultaItemRepository, never())
+                .existsDuplicadoDocumental(any(), any(), any(), any(), any(), any(), any());
+    }
+
+    @Test
+    void validateSave_deveContinuarExigindoItemQuandoSemConsultaEhFalseOuNulo() {
+        RegistroConsulta registroFalse = registroValido();
+        registroFalse.setItens(new HashSet<>());
+        registroFalse.setSemConsulta(false);
+
+        assertValidationError(
+                () -> validation.validateSave(registroFalse),
+                ErrorConstants.ITENS_REQUIRED,
+                HttpStatus.BAD_REQUEST
+        );
+
+        RegistroConsulta registroNulo = registroValido();
+        registroNulo.setItens(new HashSet<>());
+        registroNulo.setSemConsulta(null);
+
+        assertValidationError(
+                () -> validation.validateSave(registroNulo),
+                ErrorConstants.ITENS_REQUIRED,
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @Test
+    void validateSave_deveValidarItensNormalmenteMesmoComSemConsultaTrueSeItensForemEnviados() {
+        RegistroConsulta registro = registroValido();
+        registro.setSemConsulta(true);
+        // registroValido() ja vem com 1 item documental — semConsulta=true nao
+        // isenta esse item de ser validado normalmente (ex.: periodo ausente).
+        primeiroItem(registro).setPeriodo(null);
+
+        assertValidationError(
+                () -> validation.validateSave(registro),
+                ErrorConstants.PERIODO_REQUIRED,
                 HttpStatus.BAD_REQUEST
         );
     }
