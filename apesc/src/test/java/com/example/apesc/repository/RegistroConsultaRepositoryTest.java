@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 // Importa explicitamente a config de auditoria (@EnableJpaAuditing) porque o slice
 // @DataJpaTest, por padrão, nao carrega @Configuration da aplicacao.
@@ -158,6 +159,22 @@ class RegistroConsultaRepositoryTest {
         assertThat(primeiroItem(salvo).getId()).isNotNull();
         assertThat(primeiroItem(salvo).getAcervoCartografico()).isNull();
         assertThat(registroConsultaItemRepository.findAll()).hasSize(1);
+    }
+
+    @Test
+    void findByIdWithRelations_deveTrazerItensJaCarregadosSemLancarLazyInitializationException() {
+        RegistroConsulta registro = umRegistroPersistivel();
+        Long id = registroConsultaRepository.saveAndFlush(registro).getId();
+
+        // Simula o fim da transacao/sessao (open-in-view=false): limpa o contexto de
+        // persistencia entre o save e a busca, antes de acessar "itens".
+        entityManager.clear();
+
+        RegistroConsulta encontrado = registroConsultaRepository.findByIdWithRelations(id).orElseThrow();
+        entityManager.clear();
+
+        assertThatCode(() -> encontrado.getItens().size()).doesNotThrowAnyException();
+        assertThat(encontrado.getItens()).hasSize(1);
     }
 
     private boolean existeDuplicadoDocumental(RegistroConsulta registro, Long idAtual) {
