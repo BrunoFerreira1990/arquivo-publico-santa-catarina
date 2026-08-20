@@ -59,6 +59,7 @@ public enum ErrorConstants {
     PESQUISADOR_HAS_REGISTRO_CONSULTA("Pesquisador possui registros de consulta associados e não pode ser deletado"),
     PESQUISADOR_REQUIRED("Pesquisador é obrigatório"),
     DATA_PESQUISA_REQUIRED("Data da pesquisa é obrigatória"),
+    DATA_PESQUISA_INTERVALO_INCOMPLETO("Para buscar por intervalo, informe tanto a data inicial quanto a data final"),
     TIPO_CONSULTA_REQUIRED("Tipo de consulta é obrigatório"),
     FUNCIONARIO_REQUIRED("Funcionário é obrigatório"),
     REGISTRO_CONSULTA_DUPLICADO("Registro de consulta duplicado"),
