@@ -9,6 +9,7 @@ import com.example.apesc.model.RegistroConsulta;
 import com.example.apesc.model.RegistroConsultaItem;
 import com.example.apesc.repository.RegistroConsultaItemRepository;
 import com.example.apesc.repository.RegistroConsultaRepository;
+import com.example.apesc.specification.RegistroConsultaSearchFilter;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -21,6 +22,23 @@ public class RegistroConsultaValidation {
 
     private final RegistroConsultaRepository registroConsultaRepository;
     private final RegistroConsultaItemRepository registroConsultaItemRepository;
+
+    // dataPesquisaInicio/dataPesquisaFim so fazem sentido combinados — sozinho, cada
+    // um vira um filtro "aberto de um lado" (>= ou <=), que na pratica nao restringe
+    // pra um intervalo e costuma confundir quem esta chamando a busca (ex.: so
+    // dataPesquisaFim retorna TUDO ate aquela data, nao so aquele dia). Por isso
+    // exige as duas juntas, ou nenhuma das duas.
+    public void validateSearch(RegistroConsultaSearchFilter filtro) {
+        boolean temInicio = filtro.dataPesquisaInicio() != null;
+        boolean temFim = filtro.dataPesquisaFim() != null;
+
+        if (temInicio != temFim) {
+            throw new CustomException(
+                ErrorConstants.DATA_PESQUISA_INTERVALO_INCOMPLETO,
+                HttpStatus.BAD_REQUEST
+            );
+        }
+    }
 
     public void validateSave(RegistroConsulta registroConsulta) {
         validateCamposObrigatorios(registroConsulta);
