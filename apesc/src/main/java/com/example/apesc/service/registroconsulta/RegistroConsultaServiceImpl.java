@@ -8,12 +8,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.apesc.exception.CustomException;
 import com.example.apesc.exception.ErrorConstants;
 import com.example.apesc.model.RegistroConsulta;
-import com.example.apesc.model.enums.TipoConsulta;
 import com.example.apesc.repository.RegistroConsultaRepository;
+import com.example.apesc.specification.RegistroConsultaSearchFilter;
 import com.example.apesc.specification.RegistroConsultaSpecification;
 import com.example.apesc.util.RegistroConsultaValidation;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -35,7 +34,7 @@ public class RegistroConsultaServiceImpl implements RegistroConsultaService {
 
     @Transactional(readOnly = true)
     public RegistroConsulta findById(Long id) {
-        return registroConsultaRepository.findById(id).orElse(null);
+        return registroConsultaRepository.findByIdWithRelations(id).orElse(null);
     }
 
     @Transactional
@@ -62,16 +61,9 @@ public class RegistroConsultaServiceImpl implements RegistroConsultaService {
     }
 
     @Transactional(readOnly = true)
-    public List<RegistroConsulta> search(
-            LocalDate dataPesquisa,
-            String nomePesquisador,
-            String nomeFuncionario,
-            TipoConsulta tipoConsulta,
-            Boolean semConsulta) {
-
-        Specification<RegistroConsulta> spec = RegistroConsultaSpecification.searchByFields(
-                dataPesquisa, nomePesquisador, nomeFuncionario, tipoConsulta, semConsulta
-        );
+    public List<RegistroConsulta> search(RegistroConsultaSearchFilter filtro) {
+        registroConsultaValidation.validateSearch(filtro);
+        Specification<RegistroConsulta> spec = RegistroConsultaSpecification.searchByFields(filtro);
         return registroConsultaRepository.findAll(spec);
     }
 
