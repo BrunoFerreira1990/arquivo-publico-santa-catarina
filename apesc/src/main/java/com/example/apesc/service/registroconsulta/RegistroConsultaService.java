@@ -1,9 +1,8 @@
 package com.example.apesc.service.registroconsulta;
 
 import com.example.apesc.model.RegistroConsulta;
-import com.example.apesc.model.enums.TipoConsulta;
+import com.example.apesc.specification.RegistroConsultaSearchFilter;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public interface RegistroConsultaService {
@@ -16,11 +15,5 @@ public interface RegistroConsultaService {
 
     RegistroConsulta update(RegistroConsulta registroConsulta);
 
-    List<RegistroConsulta> search(
-            LocalDate dataPesquisa,
-            String nomePesquisador,
-            String nomeFuncionario,
-            TipoConsulta tipoConsulta,
-            Boolean semConsulta
-    );
+    List<RegistroConsulta> search(RegistroConsultaSearchFilter filtro);
 }
