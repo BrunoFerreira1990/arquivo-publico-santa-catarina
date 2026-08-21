@@ -15,6 +15,7 @@ public class AcervoDocumentalTomboDTO {
     private Long acervoDocumentalId;
     private Integer numeroTombo;
     private String periodo;
+    private Boolean semConsulta;
 
     public AcervoDocumentalTombo toEntity() {
         AcervoDocumentalTombo entity = new AcervoDocumentalTombo();
@@ -28,6 +29,7 @@ public class AcervoDocumentalTomboDTO {
 
         entity.setNumeroTombo(this.numeroTombo);
         entity.setPeriodo(this.periodo);
+        entity.setSemConsulta(this.semConsulta);
         return entity;
     }
 
@@ -37,7 +39,8 @@ public class AcervoDocumentalTomboDTO {
             entity.getId(),
             entity.getAcervoDocumental() != null ? entity.getAcervoDocumental().getId() : null,
             entity.getNumeroTombo(),
-            entity.getPeriodo()
+            entity.getPeriodo(),
+            entity.getSemConsulta()
         );
     }
 }

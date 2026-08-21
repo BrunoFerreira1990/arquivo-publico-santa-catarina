@@ -69,6 +69,28 @@ class RegistroConsultaServiceImplTest {
     }
 
     @Test
+    void findById_deveDelegarParaFindByIdWithRelations() {
+        RegistroConsulta registro = new RegistroConsulta();
+        registro.setId(1L);
+        when(registroConsultaRepository.findByIdWithRelations(1L)).thenReturn(Optional.of(registro));
+
+        RegistroConsulta resultado = service.findById(1L);
+
+        assertThat(resultado).isEqualTo(registro);
+        // findById "simples" (sem fetch de itens) nunca deve ser chamado aqui — usa-lo
+        // quebraria com LazyInitializationException no mapeamento pro DTO, ja que o
+        // controller acessa "itens" fora da transacao (open-in-view=false).
+        verify(registroConsultaRepository, never()).findById(any());
+    }
+
+    @Test
+    void findById_deveRetornarNullQuandoNaoEncontrado() {
+        when(registroConsultaRepository.findByIdWithRelations(99L)).thenReturn(Optional.empty());
+
+        assertThat(service.findById(99L)).isNull();
+    }
+
+    @Test
     void update_deveValidarEDelegarParaORepositorio() {
         RegistroConsulta existente = new RegistroConsulta();
         existente.setId(1L);

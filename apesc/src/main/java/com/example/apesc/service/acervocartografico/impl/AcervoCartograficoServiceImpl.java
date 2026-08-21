@@ -5,8 +5,11 @@ import com.example.apesc.repository.AcervoCartograficoRepository;
 import com.example.apesc.repository.EntidadeProdutoraRepository;
 import com.example.apesc.repository.TipoDocumentoRepository;
 import com.example.apesc.service.acervocartografico.AcervoCartograficoService;
+import com.example.apesc.specification.AcervoCartograficoSearchFilter;
+import com.example.apesc.specification.AcervoCartograficoSpecification;
 import com.example.apesc.util.AcervoCartograficoValidation;
 import lombok.AllArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,16 +35,6 @@ public class AcervoCartograficoServiceImpl implements AcervoCartograficoService 
     }
 
     @Transactional(readOnly = true)
-    public List<AcervoCartografico> findAllWithRelations() {
-        return acervoCartograficoRepository.findAllWithRelations();
-    }
-
-    @Transactional(readOnly = true)
-    public Optional<AcervoCartografico> findByIdWithRelations(Long id) {
-        return acervoCartograficoRepository.findByIdWithRelations(id);
-    }
-
-    @Transactional(readOnly = true)
     public Optional<AcervoCartografico> findById(Long id) {
         acervoCartograficoValidation.validateFindById(id);
         return acervoCartograficoRepository.findById(id);
@@ -54,17 +47,59 @@ public class AcervoCartograficoServiceImpl implements AcervoCartograficoService 
     }
 
     @Transactional(readOnly = true)
-    public List<AcervoCartografico> findByTipoDocumento(Long tipoDocumentoId) {
-        return acervoCartograficoRepository.findByTipoDocumentoId(tipoDocumentoId);
+    public List<AcervoCartografico> search(AcervoCartograficoSearchFilter filtro) {
+        Specification<AcervoCartografico> spec = AcervoCartograficoSpecification.searchByFields(filtro);
+        return acervoCartograficoRepository.findAll(spec);
     }
 
+    // PATCH: so os campos presentes no corpo (nao-nulos) sobrescrevem o registro
+    // existente — os demais mantem o valor atual. Depois do merge, valida o
+    // resultado combinado (que precisa ter todos os campos obrigatorios preenchidos).
     @Transactional
     public AcervoCartografico update(AcervoCartografico acervoCartografico) {
-        acervoCartograficoValidation.validateUpdate(acervoCartografico, acervoCartograficoRepository, tipoDocumentoRepository, entidadeProdutoraRepository);
+        AcervoCartografico existente = acervoCartograficoValidation.fetchExistenteParaUpdate(
+                acervoCartografico.getId(), acervoCartograficoRepository);
 
-        rehydrateRelationships(acervoCartografico);
+        aplicarPatch(existente, acervoCartografico);
 
-        return acervoCartograficoRepository.save(acervoCartografico);
+        acervoCartograficoValidation.validateUpdate(existente, acervoCartograficoRepository, tipoDocumentoRepository, entidadeProdutoraRepository);
+
+        rehydrateRelationships(existente);
+
+        return acervoCartograficoRepository.save(existente);
+    }
+
+    private void aplicarPatch(AcervoCartografico existente, AcervoCartografico patch) {
+        if (patch.getTipoDocumento() != null) {
+            existente.setTipoDocumento(patch.getTipoDocumento());
+        }
+        if (patch.getCodigoIdentificacao() != null) {
+            existente.setCodigoIdentificacao(patch.getCodigoIdentificacao());
+        }
+        if (patch.getTitulo() != null) {
+            existente.setTitulo(patch.getTitulo());
+        }
+        if (patch.getDimensao() != null) {
+            existente.setDimensao(patch.getDimensao());
+        }
+        if (patch.getLocalizacao() != null) {
+            existente.setLocalizacao(patch.getLocalizacao());
+        }
+        if (patch.getLocalidade() != null) {
+            existente.setLocalidade(patch.getLocalidade());
+        }
+        if (patch.getAno() != null) {
+            existente.setAno(patch.getAno());
+        }
+        if (patch.getQuantidadeVolume() != null) {
+            existente.setQuantidadeVolume(patch.getQuantidadeVolume());
+        }
+        if (patch.getDisponibilidade() != null) {
+            existente.setDisponibilidade(patch.getDisponibilidade());
+        }
+        if (patch.getEntidadeProdutora() != null) {
+            existente.setEntidadeProdutora(patch.getEntidadeProdutora());
+        }
     }
 
     private void rehydrateRelationships(AcervoCartografico acervoCartografico) {

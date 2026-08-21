@@ -11,6 +11,7 @@ import com.example.apesc.model.RegistroConsultaItem;
 import com.example.apesc.model.enums.TipoConsulta;
 import com.example.apesc.repository.RegistroConsultaItemRepository;
 import com.example.apesc.repository.RegistroConsultaRepository;
+import com.example.apesc.specification.RegistroConsultaSearchFilter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -445,5 +446,48 @@ class RegistroConsultaValidationTest {
         when(registroConsultaRepository.findById(1L)).thenReturn(java.util.Optional.of(registroValido()));
 
         assertThatCode(() -> validation.validateDelete(1L)).doesNotThrowAnyException();
+    }
+
+    // ---------- validateSearch: dataPesquisaInicio/dataPesquisaFim so juntas ou nenhuma ----------
+
+    private RegistroConsultaSearchFilter filtroComIntervalo(LocalDate inicio, LocalDate fim) {
+        return new RegistroConsultaSearchFilter(
+                null, inicio, fim, null, null, null, null,
+                null, null, null, null,
+                null, null, null,
+                null, null, null, null,
+                null, null, null,
+                null, null, null, null
+        );
+    }
+
+    @Test
+    void validateSearch_naoDeveLancarQuandoNenhumaDataDeIntervaloEhInformada() {
+        assertThatCode(() -> validation.validateSearch(filtroComIntervalo(null, null))).doesNotThrowAnyException();
+    }
+
+    @Test
+    void validateSearch_naoDeveLancarQuandoAsDuasDatasDeIntervaloSaoInformadas() {
+        assertThatCode(() -> validation.validateSearch(
+                filtroComIntervalo(LocalDate.of(2026, 8, 1), LocalDate.of(2026, 8, 31))
+        )).doesNotThrowAnyException();
+    }
+
+    @Test
+    void validateSearch_deveLancarQuandoSoDataPesquisaInicioEhInformada() {
+        assertValidationError(
+                () -> validation.validateSearch(filtroComIntervalo(LocalDate.of(2026, 8, 1), null)),
+                ErrorConstants.DATA_PESQUISA_INTERVALO_INCOMPLETO,
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @Test
+    void validateSearch_deveLancarQuandoSoDataPesquisaFimEhInformada() {
+        assertValidationError(
+                () -> validation.validateSearch(filtroComIntervalo(null, LocalDate.of(2026, 8, 31))),
+                ErrorConstants.DATA_PESQUISA_INTERVALO_INCOMPLETO,
+                HttpStatus.BAD_REQUEST
+        );
     }
 }

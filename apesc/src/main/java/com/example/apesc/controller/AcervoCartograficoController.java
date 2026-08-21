@@ -3,6 +3,7 @@ package com.example.apesc.controller;
 import com.example.apesc.dto.AcervoCartograficoDTO;
 import com.example.apesc.model.AcervoCartografico;
 import com.example.apesc.service.acervocartografico.AcervoCartograficoService;
+import com.example.apesc.specification.AcervoCartograficoSearchFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,21 +25,6 @@ public class AcervoCartograficoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(AcervoCartograficoDTO.fromEntity(salvo));
     }
 
-    @GetMapping
-    public ResponseEntity<List<AcervoCartograficoDTO>> listAll() {
-        List<AcervoCartograficoDTO> acervos = acervoCartograficoService.findAllWithRelations().stream()
-                .map(AcervoCartograficoDTO::fromEntity)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(acervos);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<AcervoCartograficoDTO> findById(@PathVariable Long id) {
-        return acervoCartograficoService.findByIdWithRelations(id)
-                .map(acervo -> ResponseEntity.ok(AcervoCartograficoDTO.fromEntity(acervo)))
-                .orElse(ResponseEntity.notFound().build());
-    }
-
     @PatchMapping("/{id}")
     public ResponseEntity<AcervoCartograficoDTO> update(
             @PathVariable Long id,
@@ -57,12 +43,12 @@ public class AcervoCartograficoController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/tipo-documento/{tipoDocumentoId}")
-    public ResponseEntity<List<AcervoCartograficoDTO>> findByTipoDocumento(
-            @PathVariable Long tipoDocumentoId) {
+    @GetMapping("/search")
+    public ResponseEntity<List<AcervoCartograficoDTO>> search(@ModelAttribute AcervoCartograficoSearchFilter filtro) {
 
         List<AcervoCartograficoDTO> acervos = acervoCartograficoService
-                .findByTipoDocumento(tipoDocumentoId).stream()
+                .search(filtro)
+                .stream()
                 .map(AcervoCartograficoDTO::fromEntity)
                 .collect(Collectors.toList());
 

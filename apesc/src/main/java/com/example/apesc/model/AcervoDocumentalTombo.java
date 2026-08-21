@@ -26,4 +26,7 @@ public class AcervoDocumentalTombo {
     @Column(name = "periodo", nullable = false)
     private String periodo;
 
+    @Column(name = "sem_consulta")
+    private Boolean semConsulta;
+
 }

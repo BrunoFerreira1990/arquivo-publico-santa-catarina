@@ -3,16 +3,20 @@ package com.example.apesc.controller;
 import com.example.apesc.dto.RegistroConsultaDTO;
 import com.example.apesc.model.RegistroConsulta;
 import com.example.apesc.service.registroconsulta.RegistroConsultaService;
+import com.example.apesc.specification.RegistroConsultaSearchFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/api/registro-consulta")
 @RequiredArgsConstructor
 public class RegistroConsultaController {
-    
+
     private final RegistroConsultaService registroConsultaService;
 
     @PostMapping
@@ -42,5 +46,17 @@ public class RegistroConsultaController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         registroConsultaService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<RegistroConsultaDTO>> search(@ModelAttribute RegistroConsultaSearchFilter filtro) {
+
+        List<RegistroConsultaDTO> registros = registroConsultaService
+                .search(filtro)
+                .stream()
+                .map(RegistroConsultaDTO::fromEntity)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(registros);
     }
 }
