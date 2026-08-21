@@ -38,6 +38,18 @@ public class AcervoCartograficoValidation {
         validateCodigoIdentificacaoDuplicado(acervo, acervoRepository, acervo.getId());
     }
 
+    // Busca o registro existente pra servir de base do merge de um PATCH (ver
+    // AcervoCartograficoServiceImpl.update) — falha do mesmo jeito que validateUpdate
+    // falharia se o id fosse invalido/inexistente, só que retornando a entidade.
+    public AcervoCartografico fetchExistenteParaUpdate(Long id, AcervoCartograficoRepository acervoRepository) {
+        if (id == null) {
+            throw new CustomException(ErrorConstants.INVALID_ID, HttpStatus.BAD_REQUEST);
+        }
+
+        return acervoRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorConstants.ID_NOT_FOUND, HttpStatus.NOT_FOUND));
+    }
+
     public void validateDelete(Long id, AcervoCartograficoRepository acervoRepository) {
         if (id == null) {
             throw new CustomException(ErrorConstants.INVALID_ID, HttpStatus.BAD_REQUEST);
@@ -93,6 +105,10 @@ public class AcervoCartograficoValidation {
             throw new CustomException(ErrorConstants.LOCALIZACAO_REQUIRED, HttpStatus.BAD_REQUEST);
         }
 
+        if (acervo.getLocalidade() == null || acervo.getLocalidade().trim().isEmpty()) {
+            throw new CustomException(ErrorConstants.LOCALIDADE_REQUIRED, HttpStatus.BAD_REQUEST);
+        }
+
         if (acervo.getAno() == null || acervo.getAno().trim().isEmpty()) {
             throw new CustomException(ErrorConstants.ANO_REQUIRED, HttpStatus.BAD_REQUEST);
         }
@@ -105,11 +121,16 @@ public class AcervoCartograficoValidation {
             throw new CustomException(ErrorConstants.QUANTIDADE_INVALIDA, HttpStatus.BAD_REQUEST);
         }
 
-        // entidade produtora eh opcional, mas se vier, precisa existir de verdade
-        if (acervo.getEntidadeProdutora() != null && acervo.getEntidadeProdutora().getId() != null) {
-            if (entidadeProdutoraRepository.findById(acervo.getEntidadeProdutora().getId()).isEmpty()) {
-                throw new CustomException(ErrorConstants.ENTIDADE_PRODUTORA_NOT_FOUND, HttpStatus.NOT_FOUND);
-            }
+        if (acervo.getDisponibilidade() == null) {
+            throw new CustomException(ErrorConstants.DISPONIBILIDADE_REQUIRED, HttpStatus.BAD_REQUEST);
+        }
+
+        if (acervo.getEntidadeProdutora() == null || acervo.getEntidadeProdutora().getId() == null) {
+            throw new CustomException(ErrorConstants.ENTIDADE_PRODUTORA_REQUIRED, HttpStatus.BAD_REQUEST);
+        }
+
+        if (entidadeProdutoraRepository.findById(acervo.getEntidadeProdutora().getId()).isEmpty()) {
+            throw new CustomException(ErrorConstants.ENTIDADE_PRODUTORA_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
     }
 }
