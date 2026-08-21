@@ -193,6 +193,9 @@ public class RegistroConsultaValidation {
         Set<Long> bibliotecaApoioVistos = new HashSet<>();
 
         for (RegistroConsultaItem item : registroConsulta.getItens()) {
+            // Remove espacos em branco no inicio/fim antes de validar e persistir.
+            item.setPeriodo(CommonUtils.trim(item.getPeriodo()));
+
             validateTipoDoItem(item);
             validatePeriodoDoItem(item.getPeriodo());
             validateQuantidadeDoItem(item.getQuantidade());
