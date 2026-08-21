@@ -92,6 +92,8 @@ public enum ErrorConstants {
     AUTORES_REQUIRED("Autores é obrigatório"),
     EDITORA_REQUIRED("Editora é obrigatória"),
     ANO_REQUIRED("Ano é obrigatório"),
+    CLASSIFICACAO_REQUIRED("Classificação é obrigatória"),
+    BIBLIOTECA_LIVROS_PERIODICOS_DUPLICADO("Registro já existe"),
     ACERVO_DOCUMENTAL_PROCESSOS_DUPLICADO_NO_REGISTRO("O mesmo processo documental não pode aparecer mais de uma vez no mesmo registro de consulta"),
     ACERVO_ICONOGRAFICO_DUPLICADO_NO_REGISTRO("O mesmo acervo iconográfico não pode aparecer mais de uma vez no mesmo registro de consulta"),
     BIBLIOTECA_LIVROS_PERIODICOS_DUPLICADO_NO_REGISTRO("O mesmo item da biblioteca de livros/periódicos não pode aparecer mais de uma vez no mesmo registro de consulta"),
