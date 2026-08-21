@@ -73,6 +73,8 @@ public enum ErrorConstants {
     TITULO_REQUIRED("Título é obrigatório"),
     DIMENSAO_REQUIRED("Dimensão é obrigatória"),
     LOCALIZACAO_REQUIRED("Localização é obrigatória"),
+    LOCALIDADE_REQUIRED("Localidade é obrigatória"),
+    DISPONIBILIDADE_REQUIRED("Disponibilidade é obrigatória"),
     NOME_REGRA_REQUIRED("Nome da regra é obrigatório"),
     NOME_REGRA_DUPLICADA("Nome da regra já cadastrado"),
     ASSUNTO_REQUIRED("Assunto é obrigatório"),
