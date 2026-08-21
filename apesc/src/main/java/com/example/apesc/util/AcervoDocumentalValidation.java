@@ -130,9 +130,13 @@ public class AcervoDocumentalValidation {
         validateSameEntidadeId(acervo);
     }
 
-    private void validateBasicFields(AcervoDocumental acervo, 
+    private void validateBasicFields(AcervoDocumental acervo,
                                     TipoDocumentoRepository tipoDocumentoRepository,
                                     EntidadeProdutoraRepository entidadeRepository) {
+        // Remove espacos em branco no inicio/fim antes de validar e persistir.
+        acervo.setPeriodo(CommonUtils.trim(acervo.getPeriodo()));
+        acervo.setEstante(CommonUtils.trim(acervo.getEstante()));
+
         if (acervo.getTipoDocumento() == null || acervo.getTipoDocumento().getId() == null) {
             throw new CustomException(
                 ErrorConstants.TIPO_DOCUMENTO_REQUIRED, 
