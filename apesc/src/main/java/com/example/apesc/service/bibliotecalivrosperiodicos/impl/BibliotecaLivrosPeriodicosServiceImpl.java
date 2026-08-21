@@ -4,13 +4,15 @@ import com.example.apesc.model.BibliotecaLivrosPeriodicos;
 import com.example.apesc.repository.BibliotecaLivrosPeriodicosRepository;
 import com.example.apesc.repository.TipoDocumentoRepository;
 import com.example.apesc.service.bibliotecalivrosperiodicos.BibliotecaLivrosPeriodicosService;
+import com.example.apesc.specification.BibliotecaLivrosPeriodicosSearchFilter;
+import com.example.apesc.specification.BibliotecaLivrosPeriodicosSpecification;
 import com.example.apesc.util.BibliotecaLivrosPeriodicosValidation;
 import lombok.AllArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -22,24 +24,9 @@ public class BibliotecaLivrosPeriodicosServiceImpl implements BibliotecaLivrosPe
 
     @Transactional
     public BibliotecaLivrosPeriodicos save(BibliotecaLivrosPeriodicos livro) {
-        livroValidation.validateSave(livro, tipoDocumentoRepository);
+        livroValidation.validateSave(livro, livroRepository, tipoDocumentoRepository);
         rehydrateRelationships(livro);
         return livroRepository.save(livro);
-    }
-
-    @Transactional(readOnly = true)
-    public List<BibliotecaLivrosPeriodicos> findAllWithRelations() {
-        return livroRepository.findAllWithRelations();
-    }
-
-    @Transactional(readOnly = true)
-    public Optional<BibliotecaLivrosPeriodicos> findByIdWithRelations(Long id) {
-        return livroRepository.findByIdWithRelations(id);
-    }
-
-    @Transactional(readOnly = true)
-    public List<BibliotecaLivrosPeriodicos> findByTipoDocumento(Long tipoDocumentoId) {
-        return livroRepository.findByTipoDocumentoId(tipoDocumentoId);
     }
 
     @Transactional
@@ -53,6 +40,12 @@ public class BibliotecaLivrosPeriodicosServiceImpl implements BibliotecaLivrosPe
     public void delete(Long id) {
         livroValidation.validateDelete(id, livroRepository);
         livroRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public List<BibliotecaLivrosPeriodicos> search(BibliotecaLivrosPeriodicosSearchFilter filtro) {
+        Specification<BibliotecaLivrosPeriodicos> spec = BibliotecaLivrosPeriodicosSpecification.searchByFields(filtro);
+        return livroRepository.findAll(spec);
     }
 
     private void rehydrateRelationships(BibliotecaLivrosPeriodicos livro) {
