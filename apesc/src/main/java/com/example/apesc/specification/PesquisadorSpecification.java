@@ -13,13 +13,16 @@ import java.util.List;
 public class PesquisadorSpecification {
 
     public static Specification<Pesquisador> searchByFields(String nome, String cpf) {
+        // Remove espacos em branco no inicio/fim do nome digitado na busca.
+        final String nomeFiltro = nome == null ? null : nome.trim();
+
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (nome != null && !nome.trim().isEmpty()) {
+            if (nomeFiltro != null && !nomeFiltro.isEmpty()) {
                 predicates.add(cb.like(
                         cb.lower(root.get("nome")),
-                        "%" + nome.toLowerCase() + "%"
+                        "%" + nomeFiltro.toLowerCase() + "%"
                 ));
             }
 
