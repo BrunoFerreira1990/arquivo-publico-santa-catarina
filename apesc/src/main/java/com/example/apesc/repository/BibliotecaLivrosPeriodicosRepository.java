@@ -2,19 +2,13 @@ package com.example.apesc.repository;
 
 import com.example.apesc.model.BibliotecaLivrosPeriodicos;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-import java.util.List;
-import java.util.Optional;
+public interface BibliotecaLivrosPeriodicosRepository extends JpaRepository<BibliotecaLivrosPeriodicos, Long>, JpaSpecificationExecutor<BibliotecaLivrosPeriodicos> {
 
-public interface BibliotecaLivrosPeriodicosRepository extends JpaRepository<BibliotecaLivrosPeriodicos, Long> {
+    boolean existsByTituloAndSubtituloAndAutoresAndEditoraAndEdicao(
+            String titulo, String subtitulo, String autores, String editora, String edicao);
 
-    List<BibliotecaLivrosPeriodicos> findByTipoDocumentoId(Long tipoDocumentoId);
-
-    @Query("SELECT b FROM BibliotecaLivrosPeriodicos b JOIN FETCH b.tipoDocumento")
-    List<BibliotecaLivrosPeriodicos> findAllWithRelations();
-
-    @Query("SELECT b FROM BibliotecaLivrosPeriodicos b JOIN FETCH b.tipoDocumento WHERE b.id = :id")
-    Optional<BibliotecaLivrosPeriodicos> findByIdWithRelations(@Param("id") Long id);
+    boolean existsByTituloAndSubtituloAndAutoresAndEditoraAndEdicaoAndIdNot(
+            String titulo, String subtitulo, String autores, String editora, String edicao, Long id);
 }

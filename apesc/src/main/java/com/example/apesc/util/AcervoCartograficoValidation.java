@@ -81,6 +81,14 @@ public class AcervoCartograficoValidation {
     private void validateBasicFields(AcervoCartografico acervo,
                                       TipoDocumentoRepository tipoDocumentoRepository,
                                       EntidadeProdutoraRepository entidadeProdutoraRepository) {
+        // Remove espacos em branco no inicio/fim antes de validar e persistir.
+        acervo.setCodigoIdentificacao(CommonUtils.trim(acervo.getCodigoIdentificacao()));
+        acervo.setTitulo(CommonUtils.trim(acervo.getTitulo()));
+        acervo.setDimensao(CommonUtils.trim(acervo.getDimensao()));
+        acervo.setLocalizacao(CommonUtils.trim(acervo.getLocalizacao()));
+        acervo.setLocalidade(CommonUtils.trim(acervo.getLocalidade()));
+        acervo.setAno(CommonUtils.trim(acervo.getAno()));
+
         if (acervo.getTipoDocumento() == null || acervo.getTipoDocumento().getId() == null) {
             throw new CustomException(ErrorConstants.TIPO_DOCUMENTO_REQUIRED, HttpStatus.BAD_REQUEST);
         }

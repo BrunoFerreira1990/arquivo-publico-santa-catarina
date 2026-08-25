@@ -54,4 +54,31 @@ public record RegistroConsultaSearchFilter(
         String tipoDocumentoNomeBibliotecaApoio,
         String entidadeProdutoraNomeBibliotecaApoio
 ) {
+    // Remove espacos em branco no inicio/fim de cada parametro digitado na busca.
+    public RegistroConsultaSearchFilter {
+        nomePesquisador = trim(nomePesquisador);
+        nomeFuncionario = trim(nomeFuncionario);
+        tipoDocumentoNomeDocumental = trim(tipoDocumentoNomeDocumental);
+        entidadeProdutoraNomeDocumental = trim(entidadeProdutoraNomeDocumental);
+        entidadeReceptoraNomeDocumental = trim(entidadeReceptoraNomeDocumental);
+        nomeProcessoDocumentalProcessos = trim(nomeProcessoDocumentalProcessos);
+        tituloIconografico = trim(tituloIconografico);
+        codigoIconografico = trim(codigoIconografico);
+        tipoDocumentoNomeIconografico = trim(tipoDocumentoNomeIconografico);
+        tituloCartografico = trim(tituloCartografico);
+        codigoCartografico = trim(codigoCartografico);
+        tipoDocumentoNomeCartografico = trim(tipoDocumentoNomeCartografico);
+        entidadeProdutoraNomeCartografico = trim(entidadeProdutoraNomeCartografico);
+        tituloBibliotecaLivros = trim(tituloBibliotecaLivros);
+        autoresBibliotecaLivros = trim(autoresBibliotecaLivros);
+        tipoDocumentoNomeBibliotecaLivros = trim(tipoDocumentoNomeBibliotecaLivros);
+        tituloBibliotecaApoio = trim(tituloBibliotecaApoio);
+        identificadorBibliotecaApoio = trim(identificadorBibliotecaApoio);
+        tipoDocumentoNomeBibliotecaApoio = trim(tipoDocumentoNomeBibliotecaApoio);
+        entidadeProdutoraNomeBibliotecaApoio = trim(entidadeProdutoraNomeBibliotecaApoio);
+    }
+
+    private static String trim(String s) {
+        return s == null ? null : s.trim();
+    }
 }

@@ -16,28 +16,33 @@ public class AcervoDocumentalSpecification {
             String entidadeProdutoraNome,
             String entidadeReceptoraNome,
             NaturezaTransacao naturezaTransacao) {
-        
+
+        // Remove espacos em branco no inicio/fim de cada parametro digitado na busca.
+        final String tipoDocumentoNomeFiltro = trim(tipoDocumentoNome);
+        final String entidadeProdutoraNomeFiltro = trim(entidadeProdutoraNome);
+        final String entidadeReceptoraNomeFiltro = trim(entidadeReceptoraNome);
+
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (tipoDocumentoNome != null && !tipoDocumentoNome.trim().isEmpty()) {
+            if (tipoDocumentoNomeFiltro != null && !tipoDocumentoNomeFiltro.isEmpty()) {
                 predicates.add(cb.like(
                     cb.lower(root.join("tipoDocumento").get("nomeDocumento")),
-                    "%" + tipoDocumentoNome.toLowerCase() + "%"
+                    "%" + tipoDocumentoNomeFiltro.toLowerCase() + "%"
                 ));
             }
 
-            if (entidadeProdutoraNome != null && !entidadeProdutoraNome.trim().isEmpty()) {
+            if (entidadeProdutoraNomeFiltro != null && !entidadeProdutoraNomeFiltro.isEmpty()) {
                 predicates.add(cb.like(
                     cb.lower(root.join("entidadeProdutora").get("nome")),
-                    "%" + entidadeProdutoraNome.toLowerCase() + "%"
+                    "%" + entidadeProdutoraNomeFiltro.toLowerCase() + "%"
                 ));
             }
 
-            if (entidadeReceptoraNome != null && !entidadeReceptoraNome.trim().isEmpty()) {
+            if (entidadeReceptoraNomeFiltro != null && !entidadeReceptoraNomeFiltro.isEmpty()) {
                 predicates.add(cb.like(
                     cb.lower(root.join("entidadeReceptora").get("nome")),
-                    "%" + entidadeReceptoraNome.toLowerCase() + "%"
+                    "%" + entidadeReceptoraNomeFiltro.toLowerCase() + "%"
                 ));
             }
 
@@ -53,5 +58,9 @@ public class AcervoDocumentalSpecification {
             // Use AND to match only the specified fields
             return cb.and(predicates.toArray(new Predicate[0]));
         };
+    }
+
+    private static String trim(String s) {
+        return s == null ? null : s.trim();
     }
 }

@@ -12,8 +12,14 @@ import org.springframework.stereotype.Component;
 public class BibliotecaLivrosPeriodicosValidation {
 
     public void validateSave(BibliotecaLivrosPeriodicos livro,
+                              BibliotecaLivrosPeriodicosRepository livroRepository,
                               TipoDocumentoRepository tipoDocumentoRepository) {
         validateBasicFields(livro, tipoDocumentoRepository);
+
+        if (livroRepository.existsByTituloAndSubtituloAndAutoresAndEditoraAndEdicao(
+                livro.getTitulo(), livro.getSubtitulo(), livro.getAutores(), livro.getEditora(), livro.getEdicao())) {
+            throw new CustomException(ErrorConstants.BIBLIOTECA_LIVROS_PERIODICOS_DUPLICADO, HttpStatus.CONFLICT);
+        }
     }
 
     public void validateUpdate(BibliotecaLivrosPeriodicos livro,
@@ -29,6 +35,11 @@ public class BibliotecaLivrosPeriodicosValidation {
         }
 
         validateBasicFields(livro, tipoDocumentoRepository);
+
+        if (livroRepository.existsByTituloAndSubtituloAndAutoresAndEditoraAndEdicaoAndIdNot(
+                livro.getTitulo(), livro.getSubtitulo(), livro.getAutores(), livro.getEditora(), livro.getEdicao(), livro.getId())) {
+            throw new CustomException(ErrorConstants.BIBLIOTECA_LIVROS_PERIODICOS_DUPLICADO, HttpStatus.CONFLICT);
+        }
     }
 
     public void validateDelete(Long id, BibliotecaLivrosPeriodicosRepository livroRepository) {
@@ -72,6 +83,14 @@ public class BibliotecaLivrosPeriodicosValidation {
 
         if (livro.getQuantidadeExemplar() <= 0) {
             throw new CustomException(ErrorConstants.QUANTIDADE_INVALIDA, HttpStatus.BAD_REQUEST);
+        }
+
+        if (livro.getClassificacao() == null || livro.getClassificacao().trim().isEmpty()) {
+            throw new CustomException(ErrorConstants.CLASSIFICACAO_REQUIRED, HttpStatus.BAD_REQUEST);
+        }
+
+        if (livro.getDisponibilidade() == null) {
+            throw new CustomException(ErrorConstants.DISPONIBILIDADE_REQUIRED, HttpStatus.BAD_REQUEST);
         }
     }
 }

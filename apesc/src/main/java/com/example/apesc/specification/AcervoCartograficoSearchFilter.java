@@ -15,4 +15,16 @@ public record AcervoCartograficoSearchFilter(
         // Busca pelo NOME da entidade produtora, nao pelo id.
         String entidadeProdutoraNome
 ) {
+    // Remove espacos em branco no inicio/fim de cada parametro digitado na busca.
+    public AcervoCartograficoSearchFilter {
+        tipoDocumentoNome = trim(tipoDocumentoNome);
+        codigoIdentificacao = trim(codigoIdentificacao);
+        localidade = trim(localidade);
+        ano = trim(ano);
+        entidadeProdutoraNome = trim(entidadeProdutoraNome);
+    }
+
+    private static String trim(String s) {
+        return s == null ? null : s.trim();
+    }
 }

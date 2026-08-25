@@ -15,6 +15,7 @@ public class PesquisadorValidation {
     private final PesquisadorRepository pesquisadorRepository;
 
     public void validateSave(Pesquisador pesquisador) {
+        trimFields(pesquisador);
         validateNome(pesquisador);
         validateDataNascimento(pesquisador);
         validateGenero(pesquisador);
@@ -43,6 +44,7 @@ public class PesquisadorValidation {
                 HttpStatus.BAD_REQUEST
             );
         }
+        trimFields(pesquisador);
         validateNome(pesquisador);
         validateDataNascimento(pesquisador);
         validateGenero(pesquisador);
@@ -78,6 +80,27 @@ public class PesquisadorValidation {
                 HttpStatus.NOT_FOUND
             );
         }
+    }
+
+    // Remove espacos em branco no inicio/fim de todos os campos de texto antes de
+    // validar e persistir (cpf fica de fora, ja que validateCpf/validateCpfForUpdate
+    // ja o normalizam via CommonUtils.digitsOnly, que remove espacos junto com
+    // qualquer outro caractere nao numerico).
+    private void trimFields(Pesquisador pesquisador) {
+        pesquisador.setNome(CommonUtils.trim(pesquisador.getNome()));
+        pesquisador.setEmail(CommonUtils.trim(pesquisador.getEmail()));
+        pesquisador.setNumeroTelefone(CommonUtils.trim(pesquisador.getNumeroTelefone()));
+        pesquisador.setLogradouro(CommonUtils.trim(pesquisador.getLogradouro()));
+        pesquisador.setNumeroCasa(CommonUtils.trim(pesquisador.getNumeroCasa()));
+        pesquisador.setComplemento(CommonUtils.trim(pesquisador.getComplemento()));
+        pesquisador.setBairro(CommonUtils.trim(pesquisador.getBairro()));
+        pesquisador.setCidade(CommonUtils.trim(pesquisador.getCidade()));
+        pesquisador.setCep(CommonUtils.trim(pesquisador.getCep()));
+        pesquisador.setInstituicaoEnsino(CommonUtils.trim(pesquisador.getInstituicaoEnsino()));
+        pesquisador.setCurso(CommonUtils.trim(pesquisador.getCurso()));
+        pesquisador.setProfissao(CommonUtils.trim(pesquisador.getProfissao()));
+        pesquisador.setAssuntoPesquisa(CommonUtils.trim(pesquisador.getAssuntoPesquisa()));
+        pesquisador.setFinalidadePesquisa(CommonUtils.trim(pesquisador.getFinalidadePesquisa()));
     }
 
     private void validateNome(Pesquisador pesquisador) {

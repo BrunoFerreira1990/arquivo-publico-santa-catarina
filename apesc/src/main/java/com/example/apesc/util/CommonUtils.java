@@ -38,4 +38,10 @@ public class CommonUtils {
         }
         return text.replaceAll("\\D", "");
     }
+
+    // Remove espacos em branco no inicio/fim, preservando null (nao confundir com
+    // "obrigatorio" — quem decide isso e a validacao de cada campo).
+    public static String trim(String text) {
+        return text == null ? null : text.trim();
+    }
 }
