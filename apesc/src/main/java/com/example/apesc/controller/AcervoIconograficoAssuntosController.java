@@ -3,6 +3,7 @@ package com.example.apesc.controller;
 import com.example.apesc.dto.AcervoIconograficoAssuntosDTO;
 import com.example.apesc.model.AcervoIconograficoAssuntos;
 import com.example.apesc.service.acervoiconograficoassuntos.AcervoIconograficoAssuntosService;
+import com.example.apesc.specification.AcervoIconograficoAssuntosSearchFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/acervo-iconografico-assuntos")
+@RequestMapping("/api/acervo-iconografico/assuntos")
 @RequiredArgsConstructor
 public class AcervoIconograficoAssuntosController {
 
@@ -32,11 +33,12 @@ public class AcervoIconograficoAssuntosController {
         return ResponseEntity.ok(assuntos);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<AcervoIconograficoAssuntosDTO> findById(@PathVariable Long id) {
-        return assuntosService.findById(id)
-                .map(a -> ResponseEntity.ok(AcervoIconograficoAssuntosDTO.fromEntity(a)))
-                .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/search")
+    public ResponseEntity<List<AcervoIconograficoAssuntosDTO>> search(@ModelAttribute AcervoIconograficoAssuntosSearchFilter filtro) {
+        List<AcervoIconograficoAssuntosDTO> assuntos = assuntosService.search(filtro).stream()
+                .map(AcervoIconograficoAssuntosDTO::fromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(assuntos);
     }
 
     @PatchMapping("/{id}")

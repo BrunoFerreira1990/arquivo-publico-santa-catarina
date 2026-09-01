@@ -1,9 +1,9 @@
 package com.example.apesc.service.acervoiconograficoassuntos;
 
 import com.example.apesc.model.AcervoIconograficoAssuntos;
+import com.example.apesc.specification.AcervoIconograficoAssuntosSearchFilter;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface AcervoIconograficoAssuntosService {
 
@@ -11,7 +11,7 @@ public interface AcervoIconograficoAssuntosService {
 
     List<AcervoIconograficoAssuntos> findAll();
 
-    Optional<AcervoIconograficoAssuntos> findById(Long id);
+    List<AcervoIconograficoAssuntos> search(AcervoIconograficoAssuntosSearchFilter filtro);
 
     AcervoIconograficoAssuntos update(AcervoIconograficoAssuntos assunto);
 

@@ -16,7 +16,7 @@ public class AcervoIconograficoAssuntos {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "assuntos")
-    private String assuntos;
+    @Column(name = "descricao")
+    private String descricao;
 
 }

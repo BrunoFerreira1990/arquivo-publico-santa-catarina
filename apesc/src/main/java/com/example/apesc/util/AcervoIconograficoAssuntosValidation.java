@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component;
 public class AcervoIconograficoAssuntosValidation {
 
     public void validateSave(AcervoIconograficoAssuntos assunto, AcervoIconograficoAssuntosRepository repository) {
-        validateAssuntos(assunto);
+        validateDescricao(assunto);
 
-        if (!repository.findByAssuntosIgnoreCase(assunto.getAssuntos()).isEmpty()) {
+        if (!repository.findByDescricaoIgnoreCase(assunto.getDescricao()).isEmpty()) {
             throw new CustomException(ErrorConstants.ASSUNTO_DUPLICADO, HttpStatus.CONFLICT);
         }
     }
@@ -27,9 +27,9 @@ public class AcervoIconograficoAssuntosValidation {
             throw new CustomException(ErrorConstants.ID_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
 
-        validateAssuntos(assunto);
+        validateDescricao(assunto);
 
-        java.util.List<AcervoIconograficoAssuntos> existentes = repository.findByAssuntosIgnoreCase(assunto.getAssuntos());
+        java.util.List<AcervoIconograficoAssuntos> existentes = repository.findByDescricaoIgnoreCase(assunto.getDescricao());
         if (!existentes.isEmpty() && !existentes.get(0).getId().equals(assunto.getId())) {
             throw new CustomException(ErrorConstants.ASSUNTO_DUPLICADO, HttpStatus.CONFLICT);
         }
@@ -45,8 +45,11 @@ public class AcervoIconograficoAssuntosValidation {
         }
     }
 
-    private void validateAssuntos(AcervoIconograficoAssuntos assunto) {
-        if (assunto.getAssuntos() == null || assunto.getAssuntos().trim().isEmpty()) {
+    private void validateDescricao(AcervoIconograficoAssuntos assunto) {
+        // Remove espacos em branco no inicio/fim antes de validar e persistir.
+        assunto.setDescricao(CommonUtils.trim(assunto.getDescricao()));
+
+        if (assunto.getDescricao() == null || assunto.getDescricao().isEmpty()) {
             throw new CustomException(ErrorConstants.ASSUNTO_REQUIRED, HttpStatus.BAD_REQUEST);
         }
     }

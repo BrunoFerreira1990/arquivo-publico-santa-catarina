@@ -11,17 +11,17 @@ import lombok.NoArgsConstructor;
 public class AcervoIconograficoAssuntosDTO {
 
     private Long id;
-    private String assuntos;
+    private String descricao;
 
     public AcervoIconograficoAssuntos toEntity() {
         AcervoIconograficoAssuntos entity = new AcervoIconograficoAssuntos();
         entity.setId(this.id);
-        entity.setAssuntos(this.assuntos);
+        entity.setDescricao(this.descricao);
         return entity;
     }
 
     public static AcervoIconograficoAssuntosDTO fromEntity(AcervoIconograficoAssuntos entity) {
         if (entity == null) return null;
-        return new AcervoIconograficoAssuntosDTO(entity.getId(), entity.getAssuntos());
+        return new AcervoIconograficoAssuntosDTO(entity.getId(), entity.getDescricao());
     }
 }
