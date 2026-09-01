@@ -44,4 +44,14 @@ public class CommonUtils {
     public static String trim(String text) {
         return text == null ? null : text.trim();
     }
+
+    // Capitaliza somente o primeiro caractere, preservando o resto do texto como
+    // foi digitado (diferente de toTitleCase, que capitaliza cada palavra e forca
+    // o restante para minusculo).
+    public static String capitalizeFirst(String text) {
+        if (text == null || text.isEmpty()) {
+            return text;
+        }
+        return Character.toUpperCase(text.charAt(0)) + text.substring(1);
+    }
 }

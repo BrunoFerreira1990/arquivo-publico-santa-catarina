@@ -32,6 +32,9 @@ public class AcervoIconografico {
     @Column(name = "localizacao")
     private String localizacao;
 
+    @Column(name = "localidade")
+    private String localidade;
+
     @Column(name = "disponibilidade")
     private Boolean disponibilidade;
 
@@ -50,5 +53,16 @@ public class AcervoIconografico {
             inverseJoinColumns = @JoinColumn(name = "assunto_id")
     )
     private Set<AcervoIconograficoAssuntos> assuntos = new HashSet<>();
+
+    // Mesmo padrao dos assuntos: N:N puro, sem colunas extras na relacao, entao
+    // @ManyToMany direto na tabela associativa "acervo_iconografico_personalidades_vinculo"
+    // resolve sem precisar de entidade Java propria pra ela.
+    @ManyToMany
+    @JoinTable(
+            name = "acervo_iconografico_personalidades_vinculo",
+            joinColumns = @JoinColumn(name = "acervo_iconografico_id"),
+            inverseJoinColumns = @JoinColumn(name = "personalidade_id")
+    )
+    private Set<AcervoIconograficoPersonalidades> personalidades = new HashSet<>();
 
 }

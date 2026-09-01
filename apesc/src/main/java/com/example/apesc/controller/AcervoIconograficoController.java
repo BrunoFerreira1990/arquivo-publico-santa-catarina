@@ -3,6 +3,7 @@ package com.example.apesc.controller;
 import com.example.apesc.dto.AcervoIconograficoDTO;
 import com.example.apesc.model.AcervoIconografico;
 import com.example.apesc.service.acervoiconografico.AcervoIconograficoService;
+import com.example.apesc.specification.AcervoIconograficoSearchFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,11 +33,12 @@ public class AcervoIconograficoController {
         return ResponseEntity.ok(acervos);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<AcervoIconograficoDTO> findById(@PathVariable Long id) {
-        return acervoIconograficoService.findByIdWithRelations(id)
-                .map(a -> ResponseEntity.ok(AcervoIconograficoDTO.fromEntity(a)))
-                .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/search")
+    public ResponseEntity<List<AcervoIconograficoDTO>> search(@ModelAttribute AcervoIconograficoSearchFilter filtro) {
+        List<AcervoIconograficoDTO> acervos = acervoIconograficoService.search(filtro).stream()
+                .map(AcervoIconograficoDTO::fromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(acervos);
     }
 
     @PatchMapping("/{id}")
