@@ -103,7 +103,7 @@ class RegistroConsultaSpecificationTest {
 
     private AcervoIconografico umAcervoIconografico(TipoDocumento tipoDocumento, String titulo, String codigo) {
         AcervoIconograficoAssuntos assunto = new AcervoIconograficoAssuntos();
-        assunto.setAssuntos("História Regional");
+        assunto.setDescricao("História Regional");
         assunto = acervoIconograficoAssuntosRepository.save(assunto);
 
         AcervoIconografico acervo = new AcervoIconografico();

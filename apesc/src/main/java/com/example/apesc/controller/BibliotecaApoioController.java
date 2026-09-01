@@ -3,6 +3,7 @@ package com.example.apesc.controller;
 import com.example.apesc.dto.BibliotecaApoioDTO;
 import com.example.apesc.model.BibliotecaApoio;
 import com.example.apesc.service.bibliotecaapoio.BibliotecaApoioService;
+import com.example.apesc.specification.BibliotecaApoioSearchFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,14 @@ public class BibliotecaApoioController {
     @GetMapping
     public ResponseEntity<List<BibliotecaApoioDTO>> listAll() {
         List<BibliotecaApoioDTO> apoios = apoioService.findAllWithRelations().stream()
+                .map(BibliotecaApoioDTO::fromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(apoios);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<BibliotecaApoioDTO>> search(@ModelAttribute BibliotecaApoioSearchFilter filtro) {
+        List<BibliotecaApoioDTO> apoios = apoioService.search(filtro).stream()
                 .map(BibliotecaApoioDTO::fromEntity)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(apoios);

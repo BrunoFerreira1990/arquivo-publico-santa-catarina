@@ -13,9 +13,16 @@ import org.springframework.stereotype.Component;
 public class BibliotecaApoioValidation {
 
     public void validateSave(BibliotecaApoio apoio,
+                              BibliotecaApoioRepository apoioRepository,
                               TipoDocumentoRepository tipoDocumentoRepository,
                               EntidadeProdutoraRepository entidadeProdutoraRepository) {
         validateBasicFields(apoio, tipoDocumentoRepository, entidadeProdutoraRepository);
+
+        if (apoioRepository.existsByTipoDocumentoIdAndEntidadeProdutoraIdAndTituloAndPeriodo(
+                apoio.getTipoDocumento().getId(), apoio.getEntidadeProdutora().getId(),
+                apoio.getTitulo(), apoio.getPeriodo())) {
+            throw new CustomException(ErrorConstants.BIBLIOTECA_APOIO_DUPLICADO, HttpStatus.CONFLICT);
+        }
     }
 
     public void validateUpdate(BibliotecaApoio apoio,
@@ -32,6 +39,12 @@ public class BibliotecaApoioValidation {
         }
 
         validateBasicFields(apoio, tipoDocumentoRepository, entidadeProdutoraRepository);
+
+        if (apoioRepository.existsByTipoDocumentoIdAndEntidadeProdutoraIdAndTituloAndPeriodoAndIdNot(
+                apoio.getTipoDocumento().getId(), apoio.getEntidadeProdutora().getId(),
+                apoio.getTitulo(), apoio.getPeriodo(), apoio.getId())) {
+            throw new CustomException(ErrorConstants.BIBLIOTECA_APOIO_DUPLICADO, HttpStatus.CONFLICT);
+        }
     }
 
     public void validateDelete(Long id, BibliotecaApoioRepository apoioRepository) {
@@ -47,6 +60,14 @@ public class BibliotecaApoioValidation {
     private void validateBasicFields(BibliotecaApoio apoio,
                                       TipoDocumentoRepository tipoDocumentoRepository,
                                       EntidadeProdutoraRepository entidadeProdutoraRepository) {
+        // Remove espacos em branco no inicio/fim antes de validar e persistir.
+        // Ids externos (tipoDocumento, entidadeProdutora) e campos nao-texto
+        // (quantidadeVolume, disponibilidade) ficam de fora.
+        apoio.setTitulo(CommonUtils.trim(apoio.getTitulo()));
+        apoio.setPeriodo(CommonUtils.trim(apoio.getPeriodo()));
+        apoio.setIdentificador(CommonUtils.trim(apoio.getIdentificador()));
+        apoio.setLocalizacao(CommonUtils.trim(apoio.getLocalizacao()));
+
         if (apoio.getTipoDocumento() == null || apoio.getTipoDocumento().getId() == null) {
             throw new CustomException(ErrorConstants.TIPO_DOCUMENTO_REQUIRED, HttpStatus.BAD_REQUEST);
         }

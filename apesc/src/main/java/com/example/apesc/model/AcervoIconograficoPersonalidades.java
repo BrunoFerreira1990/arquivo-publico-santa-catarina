@@ -9,14 +9,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Table(name = "acervo_iconografico_assuntos")
-public class AcervoIconograficoAssuntos {
+@Table(name = "acervo_iconografico_personalidades")
+public class AcervoIconograficoPersonalidades {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "descricao")
-    private String descricao;
+    @Column(name = "nome")
+    private String nome;
 
 }

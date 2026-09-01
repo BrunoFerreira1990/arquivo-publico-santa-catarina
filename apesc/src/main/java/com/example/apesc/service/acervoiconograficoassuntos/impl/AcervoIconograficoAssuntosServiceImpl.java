@@ -3,13 +3,15 @@ package com.example.apesc.service.acervoiconograficoassuntos.impl;
 import com.example.apesc.model.AcervoIconograficoAssuntos;
 import com.example.apesc.repository.AcervoIconograficoAssuntosRepository;
 import com.example.apesc.service.acervoiconograficoassuntos.AcervoIconograficoAssuntosService;
+import com.example.apesc.specification.AcervoIconograficoAssuntosSearchFilter;
+import com.example.apesc.specification.AcervoIconograficoAssuntosSpecification;
 import com.example.apesc.util.AcervoIconograficoAssuntosValidation;
 import lombok.AllArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -30,8 +32,9 @@ public class AcervoIconograficoAssuntosServiceImpl implements AcervoIconografico
     }
 
     @Transactional(readOnly = true)
-    public Optional<AcervoIconograficoAssuntos> findById(Long id) {
-        return assuntosRepository.findById(id);
+    public List<AcervoIconograficoAssuntos> search(AcervoIconograficoAssuntosSearchFilter filtro) {
+        Specification<AcervoIconograficoAssuntos> spec = AcervoIconograficoAssuntosSpecification.searchByFields(filtro);
+        return assuntosRepository.findAll(spec);
     }
 
     @Transactional
