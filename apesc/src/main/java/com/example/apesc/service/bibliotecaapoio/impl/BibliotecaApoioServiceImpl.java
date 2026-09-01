@@ -5,8 +5,11 @@ import com.example.apesc.repository.BibliotecaApoioRepository;
 import com.example.apesc.repository.EntidadeProdutoraRepository;
 import com.example.apesc.repository.TipoDocumentoRepository;
 import com.example.apesc.service.bibliotecaapoio.BibliotecaApoioService;
+import com.example.apesc.specification.BibliotecaApoioSearchFilter;
+import com.example.apesc.specification.BibliotecaApoioSpecification;
 import com.example.apesc.util.BibliotecaApoioValidation;
 import lombok.AllArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,9 +27,15 @@ public class BibliotecaApoioServiceImpl implements BibliotecaApoioService {
 
     @Transactional
     public BibliotecaApoio save(BibliotecaApoio apoio) {
-        apoioValidation.validateSave(apoio, tipoDocumentoRepository, entidadeProdutoraRepository);
+        apoioValidation.validateSave(apoio, apoioRepository, tipoDocumentoRepository, entidadeProdutoraRepository);
         rehydrateRelationships(apoio);
         return apoioRepository.save(apoio);
+    }
+
+    @Transactional(readOnly = true)
+    public List<BibliotecaApoio> search(BibliotecaApoioSearchFilter filtro) {
+        Specification<BibliotecaApoio> spec = BibliotecaApoioSpecification.searchByFields(filtro);
+        return apoioRepository.findAll(spec);
     }
 
     @Transactional(readOnly = true)
