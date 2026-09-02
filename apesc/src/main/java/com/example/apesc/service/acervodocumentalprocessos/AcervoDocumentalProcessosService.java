@@ -1,9 +1,9 @@
 package com.example.apesc.service.acervodocumentalprocessos;
 
 import com.example.apesc.model.AcervoDocumentalProcessos;
+import com.example.apesc.specification.AcervoDocumentalProcessosSearchFilter;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface AcervoDocumentalProcessosService {
 
@@ -11,9 +11,7 @@ public interface AcervoDocumentalProcessosService {
 
     List<AcervoDocumentalProcessos> findAllWithRelations();
 
-    Optional<AcervoDocumentalProcessos> findByIdWithRelations(Long id);
-
-    List<AcervoDocumentalProcessos> findByAcervoDocumento(Long acervoDocumentalId);
+    List<AcervoDocumentalProcessos> search(AcervoDocumentalProcessosSearchFilter filtro);
 
     AcervoDocumentalProcessos update(AcervoDocumentalProcessos processo);
 

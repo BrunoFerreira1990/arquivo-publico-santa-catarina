@@ -3,6 +3,7 @@ package com.example.apesc.controller;
 import com.example.apesc.dto.AcervoDocumentalProcessosDTO;
 import com.example.apesc.model.AcervoDocumentalProcessos;
 import com.example.apesc.service.acervodocumentalprocessos.AcervoDocumentalProcessosService;
+import com.example.apesc.specification.AcervoDocumentalProcessosSearchFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/acervo-documental-processos")
+@RequestMapping("/api/acervo-documental/processos")
 @RequiredArgsConstructor
 public class AcervoDocumentalProcessosController {
 
@@ -32,11 +33,12 @@ public class AcervoDocumentalProcessosController {
         return ResponseEntity.ok(processos);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<AcervoDocumentalProcessosDTO> findById(@PathVariable Long id) {
-        return processoService.findByIdWithRelations(id)
-                .map(p -> ResponseEntity.ok(AcervoDocumentalProcessosDTO.fromEntity(p)))
-                .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/search")
+    public ResponseEntity<List<AcervoDocumentalProcessosDTO>> search(@ModelAttribute AcervoDocumentalProcessosSearchFilter filtro) {
+        List<AcervoDocumentalProcessosDTO> processos = processoService.search(filtro).stream()
+                .map(AcervoDocumentalProcessosDTO::fromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(processos);
     }
 
     @PatchMapping("/{id}")
@@ -51,13 +53,5 @@ public class AcervoDocumentalProcessosController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         processoService.delete(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/acervo-documental/{acervoDocumentalId}")
-    public ResponseEntity<List<AcervoDocumentalProcessosDTO>> findByAcervoDocumento(@PathVariable Long acervoDocumentalId) {
-        List<AcervoDocumentalProcessosDTO> processos = processoService.findByAcervoDocumento(acervoDocumentalId).stream()
-                .map(AcervoDocumentalProcessosDTO::fromEntity)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(processos);
     }
 }

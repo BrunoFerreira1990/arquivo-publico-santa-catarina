@@ -72,7 +72,7 @@ public class RegistroConsultaSpecification {
             if (isPresent(filtro.nomeProcessoDocumentalProcessos())) {
                 Join<RegistroConsultaItem, AcervoDocumentalProcessos> processos =
                         root.join("itens", JoinType.LEFT).join("acervoDocumentalProcessos", JoinType.LEFT);
-                predicates.add(cb.like(cb.lower(processos.get("nomeProcesso")), like(filtro.nomeProcessoDocumentalProcessos())));
+                predicates.add(cb.like(cb.lower(processos.get("nome")), like(filtro.nomeProcessoDocumentalProcessos())));
             }
 
             if (temFiltroIconografico(filtro)) {

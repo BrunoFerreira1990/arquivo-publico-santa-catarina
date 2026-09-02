@@ -15,7 +15,7 @@ public class AcervoDocumentalProcessosDTO {
     private Long acervoDocumentalId;
     private String caixaIdentificacao;
     private String localizacao;
-    private String nomeProcesso;
+    private String nome;
     private String data;
     private String identificacaoPasta;
     private Boolean disponibilidade;
@@ -32,7 +32,7 @@ public class AcervoDocumentalProcessosDTO {
 
         entity.setCaixaIdentificacao(this.caixaIdentificacao);
         entity.setLocalizacao(this.localizacao);
-        entity.setNomeProcesso(this.nomeProcesso);
+        entity.setNome(this.nome);
         entity.setData(this.data);
         entity.setIdentificacaoPasta(this.identificacaoPasta);
         entity.setDisponibilidade(this.disponibilidade);
@@ -46,7 +46,7 @@ public class AcervoDocumentalProcessosDTO {
             entity.getAcervoDocumental() != null ? entity.getAcervoDocumental().getId() : null,
             entity.getCaixaIdentificacao(),
             entity.getLocalizacao(),
-            entity.getNomeProcesso(),
+            entity.getNome(),
             entity.getData(),
             entity.getIdentificacaoPasta(),
             entity.getDisponibilidade()

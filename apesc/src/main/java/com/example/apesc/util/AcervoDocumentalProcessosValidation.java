@@ -54,6 +54,13 @@ public class AcervoDocumentalProcessosValidation {
     }
 
     private void validateBasicFields(AcervoDocumentalProcessos processo, AcervoDocumentalRepository acervoDocumentalRepository) {
+        // Remove espacos em branco no inicio/fim antes de validar e persistir.
+        processo.setCaixaIdentificacao(CommonUtils.trim(processo.getCaixaIdentificacao()));
+        processo.setLocalizacao(CommonUtils.trim(processo.getLocalizacao()));
+        processo.setNome(CommonUtils.trim(processo.getNome()));
+        processo.setData(CommonUtils.trim(processo.getData()));
+        processo.setIdentificacaoPasta(CommonUtils.trim(processo.getIdentificacaoPasta()));
+
         if (processo.getAcervoDocumental() == null || processo.getAcervoDocumental().getId() == null) {
             throw new CustomException(ErrorConstants.ACERVO_DOCUMENTAL_REQUIRED, HttpStatus.BAD_REQUEST);
         }
@@ -62,20 +69,16 @@ public class AcervoDocumentalProcessosValidation {
             throw new CustomException(ErrorConstants.ACERVO_DOCUMENTAL_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
 
-        if (processo.getCaixaIdentificacao() == null || processo.getCaixaIdentificacao().trim().isEmpty()) {
+        if (processo.getCaixaIdentificacao() == null || processo.getCaixaIdentificacao().isEmpty()) {
             throw new CustomException(ErrorConstants.CAIXA_IDENTIFICACAO_REQUIRED, HttpStatus.BAD_REQUEST);
         }
 
-        if (processo.getNomeProcesso() == null || processo.getNomeProcesso().trim().isEmpty()) {
-            throw new CustomException(ErrorConstants.NOME_PROCESSO_REQUIRED, HttpStatus.BAD_REQUEST);
+        if (processo.getNome() == null || processo.getNome().isEmpty()) {
+            throw new CustomException(ErrorConstants.NOME_REQUIRED, HttpStatus.BAD_REQUEST);
         }
 
-        if (processo.getLocalizacao() == null || processo.getLocalizacao().trim().isEmpty()) {
+        if (processo.getLocalizacao() == null || processo.getLocalizacao().isEmpty()) {
             throw new CustomException(ErrorConstants.LOCALIZACAO_REQUIRED, HttpStatus.BAD_REQUEST);
-        }
-
-        if (processo.getIdentificacaoPasta() == null || processo.getIdentificacaoPasta().trim().isEmpty()) {
-            throw new CustomException(ErrorConstants.IDENTIFICACAO_PASTA_REQUIRED, HttpStatus.BAD_REQUEST);
         }
     }
 }

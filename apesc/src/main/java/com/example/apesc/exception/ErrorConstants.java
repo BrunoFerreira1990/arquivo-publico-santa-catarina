@@ -84,8 +84,6 @@ public enum ErrorConstants {
     NUMERO_TOMBO_REQUIRED("Número de tombo é obrigatório"),
     NUMERO_TOMBO_DUPLICADO("Número de tombo já cadastrado para este acervo documental"),
     CAIXA_IDENTIFICACAO_REQUIRED("Caixa de identificação é obrigatória"),
-    NOME_PROCESSO_REQUIRED("Nome do processo é obrigatório"),
-    IDENTIFICACAO_PASTA_REQUIRED("Identificação da pasta é obrigatória"),
     PROCESSO_DUPLICADO("Já existe um processo com esta caixa de identificação para este acervo documental"),
     ASSUNTO_ICONOGRAFICO_REQUIRED("Assunto do acervo iconográfico é obrigatório"),
     ASSUNTO_ICONOGRAFICO_NOT_FOUND("Assunto do acervo iconográfico não encontrado"),

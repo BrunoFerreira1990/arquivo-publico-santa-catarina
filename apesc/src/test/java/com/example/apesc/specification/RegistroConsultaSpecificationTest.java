@@ -94,7 +94,7 @@ class RegistroConsultaSpecificationTest {
         processo.setAcervoDocumental(acervoDocumental);
         processo.setCaixaIdentificacao("CX-01");
         processo.setLocalizacao("Estante C1");
-        processo.setNomeProcesso(nomeProcesso);
+        processo.setNome(nomeProcesso);
         processo.setData("2020");
         processo.setIdentificacaoPasta("P-01");
         processo.setDisponibilidade(true);
