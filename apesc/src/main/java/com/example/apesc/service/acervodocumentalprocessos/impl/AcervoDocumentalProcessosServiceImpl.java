@@ -4,13 +4,15 @@ import com.example.apesc.model.AcervoDocumentalProcessos;
 import com.example.apesc.repository.AcervoDocumentalProcessosRepository;
 import com.example.apesc.repository.AcervoDocumentalRepository;
 import com.example.apesc.service.acervodocumentalprocessos.AcervoDocumentalProcessosService;
+import com.example.apesc.specification.AcervoDocumentalProcessosSearchFilter;
+import com.example.apesc.specification.AcervoDocumentalProcessosSpecification;
 import com.example.apesc.util.AcervoDocumentalProcessosValidation;
 import lombok.AllArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -33,13 +35,9 @@ public class AcervoDocumentalProcessosServiceImpl implements AcervoDocumentalPro
     }
 
     @Transactional(readOnly = true)
-    public Optional<AcervoDocumentalProcessos> findByIdWithRelations(Long id) {
-        return processoRepository.findByIdWithRelations(id);
-    }
-
-    @Transactional(readOnly = true)
-    public List<AcervoDocumentalProcessos> findByAcervoDocumento(Long acervoDocumentalId) {
-        return processoRepository.findByAcervoDocumentalId(acervoDocumentalId);
+    public List<AcervoDocumentalProcessos> search(AcervoDocumentalProcessosSearchFilter filtro) {
+        Specification<AcervoDocumentalProcessos> spec = AcervoDocumentalProcessosSpecification.searchByFields(filtro);
+        return processoRepository.findAll(spec);
     }
 
     @Transactional

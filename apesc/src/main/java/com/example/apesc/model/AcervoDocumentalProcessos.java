@@ -26,8 +26,8 @@ public class AcervoDocumentalProcessos {
     @Column(name = "localizacao")
     private String localizacao;
 
-    @Column(name = "nome_processo")
-    private String nomeProcesso;
+    @Column(name = "nome")
+    private String nome;
 
     @Column(name = "data")
     private String data;
