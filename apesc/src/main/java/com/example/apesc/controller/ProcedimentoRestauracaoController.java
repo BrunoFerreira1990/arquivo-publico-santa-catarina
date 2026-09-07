@@ -8,12 +8,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
-@RequestMapping("/api/procedimento-restauracao")
+@RequestMapping("/api/laboratorio/restauracao")
 @RequiredArgsConstructor
 public class ProcedimentoRestauracaoController {
-    
+
     private final ProcedimentoRestauracaoService procedimentoRestauracaoService;
+
+    @GetMapping
+    public ResponseEntity<List<ProcedimentoRestauracaoDTO>> findAll() {
+        List<ProcedimentoRestauracao> procedimentos = procedimentoRestauracaoService.findAll();
+        return ResponseEntity.ok(procedimentos.stream().map(ProcedimentoRestauracaoDTO::fromEntity).collect(Collectors.toList()));
+    }
 
     @PostMapping
     public ResponseEntity<ProcedimentoRestauracaoDTO> save(@RequestBody ProcedimentoRestauracaoDTO dto) {
@@ -28,6 +37,12 @@ public class ProcedimentoRestauracaoController {
             return ResponseEntity.ok(ProcedimentoRestauracaoDTO.fromEntity(entidade));
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/numero-documento/{numeroDocumento}")
+    public ResponseEntity<ProcedimentoRestauracaoDTO> findByNumeroDocumento(@PathVariable Integer numeroDocumento) {
+        ProcedimentoRestauracao entidade = procedimentoRestauracaoService.findByNumeroDocumento(numeroDocumento);
+        return ResponseEntity.ok(ProcedimentoRestauracaoDTO.fromEntity(entidade));
     }
 
     @PatchMapping("/{id}")

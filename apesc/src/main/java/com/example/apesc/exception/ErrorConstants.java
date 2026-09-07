@@ -82,7 +82,7 @@ public enum ErrorConstants {
     ACERVO_DOCUMENTAL_REQUIRED("Acervo documental é obrigatório"),
     ACERVO_DOCUMENTAL_NOT_FOUND("Acervo documental não encontrado"),
     NUMERO_TOMBO_REQUIRED("Número de tombo é obrigatório"),
-    NUMERO_TOMBO_DUPLICADO("Número de tombo já cadastrado para este acervo documental"),
+    NUMERO_TOMBO_DUPLICADO("Número de tombo já cadastrado"),
     CAIXA_IDENTIFICACAO_REQUIRED("Caixa de identificação é obrigatória"),
     PROCESSO_DUPLICADO("Já existe um processo com esta caixa de identificação para este acervo documental"),
     ASSUNTO_ICONOGRAFICO_REQUIRED("Assunto do acervo iconográfico é obrigatório"),
@@ -99,7 +99,23 @@ public enum ErrorConstants {
     ACERVO_DOCUMENTAL_PROCESSOS_DUPLICADO_NO_REGISTRO("O mesmo processo documental não pode aparecer mais de uma vez no mesmo registro de consulta"),
     ACERVO_ICONOGRAFICO_DUPLICADO_NO_REGISTRO("O mesmo acervo iconográfico não pode aparecer mais de uma vez no mesmo registro de consulta"),
     BIBLIOTECA_LIVROS_PERIODICOS_DUPLICADO_NO_REGISTRO("O mesmo item da biblioteca de livros/periódicos não pode aparecer mais de uma vez no mesmo registro de consulta"),
-    BIBLIOTECA_APOIO_DUPLICADO_NO_REGISTRO("O mesmo item da biblioteca de apoio não pode aparecer mais de uma vez no mesmo registro de consulta");
+    BIBLIOTECA_APOIO_DUPLICADO_NO_REGISTRO("O mesmo item da biblioteca de apoio não pode aparecer mais de uma vez no mesmo registro de consulta"),
+    NUMERO_DOCUMENTO_REQUIRED("Número do documento (número da ficha de diagnóstico) é obrigatório"),
+    NUMERO_DOCUMENTO_DUPLICADO("Número do documento (número da ficha de diagnóstico) já cadastrado"),
+    NUMERO_DOCUMENTO_NOT_FOUND("Número do documento (número da ficha de diagnóstico) não encontrado"),
+    DATA_DIAGNOSTICO_REQUIRED("Data de entrada é obrigatória"),
+    FUNCIONARIO_NOT_FOUND("Funcionário não encontrado"),
+    DIAGNOSTICO_RESTAURACAO_ACERVO_REQUIRED("Diagnóstico de restauração precisa referenciar pelo menos um acervo (documental por tombo, processos, cartográfico, iconográfico, biblioteca de livros/periódicos ou biblioteca de apoio)"),
+    ACERVO_DOCUMENTAL_TOMBO_NOT_FOUND("Acervo documental (tombo) não encontrado"),
+    ACERVO_DOCUMENTAL_PROCESSOS_NOT_FOUND("Processo do acervo documental não encontrado"),
+    ACERVO_CARTOGRAFICO_NOT_FOUND("Acervo cartográfico não encontrado"),
+    ACERVO_ICONOGRAFICO_NOT_FOUND("Acervo iconográfico não encontrado"),
+    BIBLIOTECA_LIVROS_PERIODICOS_NOT_FOUND("Item da biblioteca de livros/periódicos não encontrado"),
+    BIBLIOTECA_APOIO_NOT_FOUND("Item da biblioteca de apoio não encontrado"),
+    DIAGNOSTICO_RESTAURACAO_REQUIRED("Diagnóstico de restauração é obrigatório"),
+    DIAGNOSTICO_RESTAURACAO_NOT_FOUND("Diagnóstico de restauração não encontrado"),
+    DIAGNOSTICO_RESTAURACAO_JA_POSSUI_PROCEDIMENTO("Este diagnóstico de restauração já possui um procedimento de restauração cadastrado"),
+    DATA_SAIDA_REQUIRED("Data de saída é obrigatória");
 
     private final String description;
 
