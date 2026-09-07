@@ -6,9 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import com.example.apesc.model.enums.NaturezaTransacao;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -47,8 +44,5 @@ public class AcervoDocumental {
 
     @Column(name = "disponibilidade")
     private Boolean disponibilidade;
-
-    @OneToMany(mappedBy = "acervoDocumental")
-    private List<DiagnosticoRestauracao> diagnosticoRestauracao = new ArrayList<>();
 
 }

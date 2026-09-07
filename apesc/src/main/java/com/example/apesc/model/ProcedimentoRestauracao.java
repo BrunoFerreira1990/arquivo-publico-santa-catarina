@@ -23,7 +23,7 @@ public class ProcedimentoRestauracao {
     private DiagnosticoRestauracao diagnosticoRestauracao;
 
     @ManyToOne
-    @JoinColumn(name = "funcionario_id", nullable = false, unique = true)
+    @JoinColumn(name = "funcionario_id", nullable = false)
     private Funcionario responsavelRestauracao;
     
     @Column(name = "data_saida")

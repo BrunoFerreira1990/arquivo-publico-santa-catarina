@@ -22,7 +22,7 @@ public class DiagnosticoRestauracao {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "funcionario_id", nullable = false, unique = true)
+    @JoinColumn(name = "funcionario_id", nullable = false)
     private Funcionario responsavelRestauracao;
 
     @Column(name = "data_diagnostico")
@@ -31,9 +31,33 @@ public class DiagnosticoRestauracao {
     @Column(name = "numero_documento")
     private Integer numeroDocumento;
 
+    // O documento restaurado vem de exatamente um destes acervos por registro
+    // (associacao polimorfica via FKs nulinaveis, uma por tipo de acervo).
+    // AcervoDocumental nao entra aqui: o tombo e a unidade individual do acervo
+    // documental, entao a referencia e para AcervoDocumentalTombo.
     @ManyToOne
-    @JoinColumn(name = "documento_id", nullable = false)
-    private AcervoDocumental acervoDocumental;
+    @JoinColumn(name = "acervo_documental_tombo_id")
+    private AcervoDocumentalTombo acervoDocumentalTombo;
+
+    @ManyToOne
+    @JoinColumn(name = "acervo_documental_processos_id")
+    private AcervoDocumentalProcessos acervoDocumentalProcessos;
+
+    @ManyToOne
+    @JoinColumn(name = "acervo_cartografico_id")
+    private AcervoCartografico acervoCartografico;
+
+    @ManyToOne
+    @JoinColumn(name = "acervo_iconografico_id")
+    private AcervoIconografico acervoIconografico;
+
+    @ManyToOne
+    @JoinColumn(name = "biblioteca_livros_periodicos_id")
+    private BibliotecaLivrosPeriodicos bibliotecaLivrosPeriodicos;
+
+    @ManyToOne
+    @JoinColumn(name = "biblioteca_apoio_id")
+    private BibliotecaApoio bibliotecaApoio;
 
     @Column(name = "autor")
     private String autor;

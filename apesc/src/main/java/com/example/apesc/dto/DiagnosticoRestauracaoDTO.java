@@ -2,7 +2,12 @@ package com.example.apesc.dto;
 
 import com.example.apesc.model.DiagnosticoRestauracao;
 import com.example.apesc.model.Funcionario;
-import com.example.apesc.model.AcervoDocumental;
+import com.example.apesc.model.AcervoDocumentalTombo;
+import com.example.apesc.model.AcervoDocumentalProcessos;
+import com.example.apesc.model.AcervoCartografico;
+import com.example.apesc.model.AcervoIconografico;
+import com.example.apesc.model.BibliotecaLivrosPeriodicos;
+import com.example.apesc.model.BibliotecaApoio;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,7 +23,12 @@ public class DiagnosticoRestauracaoDTO {
     private Long responsavelRestauracaoId;
     private LocalDate dataDiagnostico;
     private Integer numeroDocumento;
-    private Long acervoDocumentalId;
+    private Long acervoDocumentalTomboId;
+    private Long acervoDocumentalProcessosId;
+    private Long acervoCartograficoId;
+    private Long acervoIconograficoId;
+    private Long bibliotecaLivrosPeriodicosId;
+    private Long bibliotecaApoioId;
     private String autor;
     private String titulo;
     private String local;
@@ -51,17 +61,47 @@ public class DiagnosticoRestauracaoDTO {
     public DiagnosticoRestauracao toEntity() {
         DiagnosticoRestauracao entity = new DiagnosticoRestauracao();
         entity.setId(this.id);
-        
+
         if (this.responsavelRestauracaoId != null) {
             Funcionario func = new Funcionario();
             func.setId(this.responsavelRestauracaoId);
             entity.setResponsavelRestauracao(func);
         }
-        
-        if (this.acervoDocumentalId != null) {
-            AcervoDocumental acervo = new AcervoDocumental();
-            acervo.setId(this.acervoDocumentalId);
-            entity.setAcervoDocumental(acervo);
+
+        if (this.acervoDocumentalTomboId != null) {
+            AcervoDocumentalTombo acervo = new AcervoDocumentalTombo();
+            acervo.setId(this.acervoDocumentalTomboId);
+            entity.setAcervoDocumentalTombo(acervo);
+        }
+
+        if (this.acervoDocumentalProcessosId != null) {
+            AcervoDocumentalProcessos acervo = new AcervoDocumentalProcessos();
+            acervo.setId(this.acervoDocumentalProcessosId);
+            entity.setAcervoDocumentalProcessos(acervo);
+        }
+
+        if (this.acervoCartograficoId != null) {
+            AcervoCartografico acervo = new AcervoCartografico();
+            acervo.setId(this.acervoCartograficoId);
+            entity.setAcervoCartografico(acervo);
+        }
+
+        if (this.acervoIconograficoId != null) {
+            AcervoIconografico acervo = new AcervoIconografico();
+            acervo.setId(this.acervoIconograficoId);
+            entity.setAcervoIconografico(acervo);
+        }
+
+        if (this.bibliotecaLivrosPeriodicosId != null) {
+            BibliotecaLivrosPeriodicos biblioteca = new BibliotecaLivrosPeriodicos();
+            biblioteca.setId(this.bibliotecaLivrosPeriodicosId);
+            entity.setBibliotecaLivrosPeriodicos(biblioteca);
+        }
+
+        if (this.bibliotecaApoioId != null) {
+            BibliotecaApoio biblioteca = new BibliotecaApoio();
+            biblioteca.setId(this.bibliotecaApoioId);
+            entity.setBibliotecaApoio(biblioteca);
         }
 
         entity.setDataDiagnostico(this.dataDiagnostico);
@@ -105,7 +145,12 @@ public class DiagnosticoRestauracaoDTO {
             entity.getResponsavelRestauracao() != null ? entity.getResponsavelRestauracao().getId() : null,
             entity.getDataDiagnostico(),
             entity.getNumeroDocumento(),
-            entity.getAcervoDocumental() != null ? entity.getAcervoDocumental().getId() : null,
+            entity.getAcervoDocumentalTombo() != null ? entity.getAcervoDocumentalTombo().getId() : null,
+            entity.getAcervoDocumentalProcessos() != null ? entity.getAcervoDocumentalProcessos().getId() : null,
+            entity.getAcervoCartografico() != null ? entity.getAcervoCartografico().getId() : null,
+            entity.getAcervoIconografico() != null ? entity.getAcervoIconografico().getId() : null,
+            entity.getBibliotecaLivrosPeriodicos() != null ? entity.getBibliotecaLivrosPeriodicos().getId() : null,
+            entity.getBibliotecaApoio() != null ? entity.getBibliotecaApoio().getId() : null,
             entity.getAutor(),
             entity.getTitulo(),
             entity.getLocal(),
