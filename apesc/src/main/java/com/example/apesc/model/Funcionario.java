@@ -32,6 +32,11 @@ public class Funcionario {
     @Column(name = "email")
     private String email;
 
+    // Hash BCrypt da senha de acesso. Nunca serializado nas respostas da API.
+    @Column(name = "senha")
+    @JsonIgnore
+    private String senha;
+
     @Column(name = "numero_matricula")
     private String numeroMatricula;
 

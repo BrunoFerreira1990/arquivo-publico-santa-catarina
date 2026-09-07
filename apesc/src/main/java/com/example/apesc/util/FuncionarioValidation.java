@@ -22,11 +22,15 @@ public class FuncionarioValidation {
         this.funcionarioRepository = funcionarioRepository;
     }
 
+    private static final int SENHA_MIN_LENGTH = 8;
+
     public void validateSave(Funcionario funcionario) {
         validateNome(funcionario);
         validateDataNascimento(funcionario);
         validateGenero(funcionario);
         validateEmail(funcionario);
+        validateEmailUnico(funcionario);
+        validateSenhaObrigatoria(funcionario);
         validateNumeroMatricula(funcionario);
         validateCargo(funcionario);
         validateSetor(funcionario);
@@ -43,9 +47,59 @@ public class FuncionarioValidation {
         validateDataNascimento(funcionario);
         validateGenero(funcionario);
         validateEmail(funcionario);
+        validateEmailUnicoForUpdate(funcionario);
+        validateSenhaOpcional(funcionario);
         validateNumeroMatriculaForUpdate(funcionario);
         validateCargo(funcionario);
         validateSetor(funcionario);
+    }
+
+    private void validateEmailUnico(Funcionario funcionario) {
+        if (funcionarioRepository.existsByEmailIgnoreCase(funcionario.getEmail())) {
+            throw new CustomException(
+                ErrorConstants.EMAIL_DUPLICADO,
+                HttpStatus.CONFLICT
+            );
+        }
+    }
+
+    private void validateEmailUnicoForUpdate(Funcionario funcionario) {
+        if (funcionarioRepository.existsByEmailIgnoreCaseAndIdNot(
+                funcionario.getEmail(),
+                funcionario.getId())) {
+            throw new CustomException(
+                ErrorConstants.EMAIL_DUPLICADO,
+                HttpStatus.CONFLICT
+            );
+        }
+    }
+
+    // No cadastro a senha é obrigatória: é a credencial de acesso do funcionário.
+    private void validateSenhaObrigatoria(Funcionario funcionario) {
+        if (funcionario.getSenha() == null || funcionario.getSenha().trim().isEmpty()) {
+            throw new CustomException(
+                ErrorConstants.SENHA_REQUIRED,
+                HttpStatus.BAD_REQUEST
+            );
+        }
+        validateSenhaForca(funcionario.getSenha());
+    }
+
+    // Na atualização a senha é opcional: quando ausente, mantém-se a senha atual.
+    private void validateSenhaOpcional(Funcionario funcionario) {
+        if (funcionario.getSenha() == null || funcionario.getSenha().isEmpty()) {
+            return;
+        }
+        validateSenhaForca(funcionario.getSenha());
+    }
+
+    private void validateSenhaForca(String senha) {
+        if (senha.trim().length() < SENHA_MIN_LENGTH) {
+            throw new CustomException(
+                ErrorConstants.SENHA_INVALIDA,
+                HttpStatus.BAD_REQUEST
+            );
+        }
     }
 
     private void validateNome(Funcionario funcionario) {

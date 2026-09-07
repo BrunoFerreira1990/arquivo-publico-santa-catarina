@@ -7,6 +7,7 @@ import com.example.apesc.repository.FuncionarioRepository;
 import com.example.apesc.util.FuncionarioValidation;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,16 +19,33 @@ public class FuncionarioServiceImpl implements FuncionarioService {
 
     private final FuncionarioRepository funcionarioRepository;
     private final FuncionarioValidation funcionarioValidation;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public Funcionario save(Funcionario funcionario) {
         funcionarioValidation.validateSave(funcionario);
+        funcionario.setSenha(passwordEncoder.encode(funcionario.getSenha().trim()));
         return funcionarioRepository.save(funcionario);
     }
 
     @Transactional
     public Funcionario update(Funcionario funcionario) {
         funcionarioValidation.validateUpdate(funcionario);
+
+        Funcionario existente = funcionarioRepository.findById(funcionario.getId())
+            .orElseThrow(() -> new CustomException(
+                ErrorConstants.ID_NOT_FOUND,
+                HttpStatus.NOT_FOUND
+            ));
+
+        // Senha só é alterada quando explicitamente informada; caso contrário
+        // preserva-se o hash atual para não invalidar o acesso do funcionário.
+        if (funcionario.getSenha() == null || funcionario.getSenha().isEmpty()) {
+            funcionario.setSenha(existente.getSenha());
+        } else {
+            funcionario.setSenha(passwordEncoder.encode(funcionario.getSenha().trim()));
+        }
+
         return funcionarioRepository.save(funcionario);
     }
 

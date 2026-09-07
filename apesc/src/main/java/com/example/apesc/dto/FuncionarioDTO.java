@@ -3,6 +3,7 @@ package com.example.apesc.dto;
 import com.example.apesc.model.Funcionario;
 import com.example.apesc.model.Permissoes;
 import com.example.apesc.model.enums.Generos;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,6 +21,11 @@ public class FuncionarioDTO {
     private LocalDate dataNascimento;
     private Generos genero;
     private String email;
+
+    // Recebida apenas na entrada (cadastro/atualização); nunca devolvida nas respostas.
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String senha;
+
     private String numeroMatricula;
     private String cargo;
     private String setor;
@@ -38,6 +44,7 @@ public class FuncionarioDTO {
         entity.setDataNascimento(this.dataNascimento);
         entity.setGenero(this.genero);
         entity.setEmail(this.email);
+        entity.setSenha(this.senha);
         entity.setNumeroMatricula(this.numeroMatricula);
         entity.setCargo(this.cargo);
         entity.setSetor(this.setor);
@@ -59,6 +66,7 @@ public class FuncionarioDTO {
             entity.getDataNascimento(),
             entity.getGenero(),
             entity.getEmail(),
+            null,
             entity.getNumeroMatricula(),
             entity.getCargo(),
             entity.getSetor(),

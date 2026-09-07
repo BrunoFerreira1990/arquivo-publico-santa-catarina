@@ -88,6 +88,73 @@ Diagnósticos de conservação e restauração de documentos.
 - `RECEBIDOS`: Documentos recebidos (sem entidade receptora específica)
 - `EXPEDIDOS`: Documentos expedidos (sem entidade receptora específica)
 
+## Autenticação e Autorização
+
+O sistema usa **JWT stateless**: todos os endpoints sob `/api/**` exigem um token
+válido no header `Authorization`, exceto `POST /api/auth/login`.
+
+### Fluxo
+
+1. **Login** — `POST /api/auth/login`
+   ```json
+   { "email": "admin@apesc.local", "senha": "admin12345" }
+   ```
+   Resposta:
+   ```json
+   {
+     "token": "<jwt>",
+     "tipo": "Bearer",
+     "expiraEmSegundos": 3600,
+     "funcionarioId": 1,
+     "nome": "Administrador APESC",
+     "email": "admin@apesc.local",
+     "autoridades": ["ROLE_ADMINISTRADOR"]
+   }
+   ```
+
+2. **Requisições autenticadas** — enviar o token em cada chamada:
+   ```
+   Authorization: Bearer <jwt>
+   ```
+
+3. **Usuário atual** — `GET /api/auth/me` devolve id, nome, e-mail e autoridades
+   extraídos do token.
+
+### Credenciais e papéis
+
+- As credenciais ficam no próprio `Funcionario` (campo `senha`, hash **BCrypt**,
+  nunca serializado nas respostas). O login é feito por **e-mail**.
+- A senha é obrigatória no cadastro (`POST /api/funcionario`) e opcional na
+  atualização (`PATCH` sem `senha` mantém a atual). Mínimo de 8 caracteres.
+- O papel do funcionário vem da entidade `Permissoes`: `nomeRegra` é convertido
+  na authority `ROLE_<NOME_DA_REGRA>` (maiúsculas, espaços viram `_`). Funcionário
+  sem permissão fica autenticado, porém sem papel.
+- Proteção fina por papel pode ser feita com `@PreAuthorize("hasRole('...')")`
+  (method security já habilitado).
+
+### Primeiro acesso (bootstrap admin)
+
+No primeiro start, se não houver nenhum funcionário com senha, o sistema cria um
+administrador padrão (regra `ADMINISTRADOR`). Configurável / desativável por
+variáveis de ambiente — **troque a senha padrão imediatamente**.
+
+### Configuração (variáveis de ambiente)
+
+| Variável | Padrão | Descrição |
+|---|---|---|
+| `APP_JWT_SECRET` | `apesc-dev-secret-troque-em-producao-0123456789` | Segredo HS256 (mínimo 32 bytes). **Obrigatório trocar em produção.** |
+| `APP_JWT_EXPIRATION` | `3600` | Validade do token, em segundos |
+| `APP_BOOTSTRAP_ADMIN_ENABLED` | `true` | Cria o admin inicial |
+| `APP_BOOTSTRAP_ADMIN_EMAIL` | `admin@apesc.local` | E-mail do admin inicial |
+| `APP_BOOTSTRAP_ADMIN_SENHA` | `admin12345` | Senha do admin inicial |
+| `APP_BOOTSTRAP_ADMIN_NOME` | `Administrador APESC` | Nome do admin inicial |
+
+### Respostas de erro
+
+- `401 NAO_AUTENTICADO` — sem token, token inválido ou expirado
+- `401 CREDENCIAIS_INVALIDAS` — e-mail/senha incorretos no login
+- `403 NAO_AUTORIZADO` — autenticado, mas sem a autoridade exigida
+
 ## Endpoints da API
 
 ### Acervo Documental
