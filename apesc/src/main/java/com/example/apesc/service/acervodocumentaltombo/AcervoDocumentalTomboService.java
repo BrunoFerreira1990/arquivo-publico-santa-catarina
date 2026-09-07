@@ -1,9 +1,9 @@
 package com.example.apesc.service.acervodocumentaltombo;
 
 import com.example.apesc.model.AcervoDocumentalTombo;
+import com.example.apesc.specification.AcervoDocumentalTomboSearchFilter;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface AcervoDocumentalTomboService {
 
@@ -11,7 +11,7 @@ public interface AcervoDocumentalTomboService {
 
     List<AcervoDocumentalTombo> findByAcervoDocumento(Long acervoDocumentalId);
 
-    Optional<AcervoDocumentalTombo> findByIdWithRelations(Long id);
+    List<AcervoDocumentalTombo> search(AcervoDocumentalTomboSearchFilter filtro);
 
     AcervoDocumentalTombo update(AcervoDocumentalTombo tombo);
 

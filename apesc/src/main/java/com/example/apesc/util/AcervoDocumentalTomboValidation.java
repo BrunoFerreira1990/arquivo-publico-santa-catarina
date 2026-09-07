@@ -17,7 +17,7 @@ public class AcervoDocumentalTomboValidation {
 
         validateBasicFields(tombo, acervoDocumentalRepository);
 
-        if (tomboRepository.existsByAcervoDocumentalIdAndNumeroTombo(tombo.getAcervoDocumental().getId(), tombo.getNumeroTombo())) {
+        if (tomboRepository.existsByNumeroTombo(tombo.getNumeroTombo())) {
             throw new CustomException(ErrorConstants.NUMERO_TOMBO_DUPLICADO, HttpStatus.CONFLICT);
         }
     }
@@ -36,8 +36,7 @@ public class AcervoDocumentalTomboValidation {
 
         validateBasicFields(tombo, acervoDocumentalRepository);
 
-        if (tomboRepository.existsByAcervoDocumentalIdAndNumeroTomboAndIdNot(
-                tombo.getAcervoDocumental().getId(), tombo.getNumeroTombo(), tombo.getId())) {
+        if (tomboRepository.existsByNumeroTomboAndIdNot(tombo.getNumeroTombo(), tombo.getId())) {
             throw new CustomException(ErrorConstants.NUMERO_TOMBO_DUPLICADO, HttpStatus.CONFLICT);
         }
     }
@@ -53,6 +52,10 @@ public class AcervoDocumentalTomboValidation {
     }
 
     private void validateBasicFields(AcervoDocumentalTombo tombo, AcervoDocumentalRepository acervoDocumentalRepository) {
+        // Remove espacos em branco no inicio/fim antes de validar e persistir.
+        // numeroTombo e Integer e nao precisa de trim; acervoDocumental e id externo.
+        tombo.setPeriodo(CommonUtils.trim(tombo.getPeriodo()));
+
         if (tombo.getAcervoDocumental() == null || tombo.getAcervoDocumental().getId() == null) {
             throw new CustomException(ErrorConstants.ACERVO_DOCUMENTAL_REQUIRED, HttpStatus.BAD_REQUEST);
         }

@@ -4,13 +4,15 @@ import com.example.apesc.model.AcervoDocumentalTombo;
 import com.example.apesc.repository.AcervoDocumentalRepository;
 import com.example.apesc.repository.AcervoDocumentalTomboRepository;
 import com.example.apesc.service.acervodocumentaltombo.AcervoDocumentalTomboService;
+import com.example.apesc.specification.AcervoDocumentalTomboSearchFilter;
+import com.example.apesc.specification.AcervoDocumentalTomboSpecification;
 import com.example.apesc.util.AcervoDocumentalTomboValidation;
 import lombok.AllArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -33,8 +35,9 @@ public class AcervoDocumentalTomboServiceImpl implements AcervoDocumentalTomboSe
     }
 
     @Transactional(readOnly = true)
-    public Optional<AcervoDocumentalTombo> findByIdWithRelations(Long id) {
-        return tomboRepository.findByIdWithRelations(id);
+    public List<AcervoDocumentalTombo> search(AcervoDocumentalTomboSearchFilter filtro) {
+        Specification<AcervoDocumentalTombo> spec = AcervoDocumentalTomboSpecification.searchByFields(filtro);
+        return tomboRepository.findAll(spec);
     }
 
     @Transactional
