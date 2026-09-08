@@ -30,6 +30,12 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_JPA_SHOW_SQL: true
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+      # Autenticação JWT: troque o segredo (>= 32 bytes) em qualquer ambiente real.
+      APP_JWT_SECRET: ${APP_JWT_SECRET:-apesc-dev-secret-troque-em-producao-0123456789}
+      APP_JWT_EXPIRATION: ${APP_JWT_EXPIRATION:-3600}
+      # Administrador inicial criado no primeiro start (quando não há funcionário com senha).
+      APP_BOOTSTRAP_ADMIN_EMAIL: ${APP_BOOTSTRAP_ADMIN_EMAIL:-admin@apesc.local}
+      APP_BOOTSTRAP_ADMIN_SENHA: ${APP_BOOTSTRAP_ADMIN_SENHA:-admin12345}
     ports:
       - "8080:8080"
     depends_on:

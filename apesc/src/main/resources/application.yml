@@ -26,6 +26,20 @@ spring:
 server:
   port: 8080
 
+app:
+  jwt:
+    # HS256: segredo com no mínimo 32 bytes. Em produção defina APP_JWT_SECRET.
+    secret: ${APP_JWT_SECRET:apesc-dev-secret-troque-em-producao-0123456789}
+    # Validade do token de acesso, em segundos (padrão: 1 hora).
+    expiration: ${APP_JWT_EXPIRATION:3600}
+  bootstrap-admin:
+    # Cria um funcionário administrador no primeiro start se não houver nenhum
+    # funcionário com senha cadastrada. Desative com APP_BOOTSTRAP_ADMIN_ENABLED=false.
+    enabled: ${APP_BOOTSTRAP_ADMIN_ENABLED:true}
+    email: ${APP_BOOTSTRAP_ADMIN_EMAIL:admin@apesc.local}
+    senha: ${APP_BOOTSTRAP_ADMIN_SENHA:admin12345}
+    nome: ${APP_BOOTSTRAP_ADMIN_NOME:Administrador APESC}
+
 logging:
   level:
     com.example.apesc: DEBUG

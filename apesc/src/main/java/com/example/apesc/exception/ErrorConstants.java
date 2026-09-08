@@ -115,7 +115,13 @@ public enum ErrorConstants {
     DIAGNOSTICO_RESTAURACAO_REQUIRED("Diagnóstico de restauração é obrigatório"),
     DIAGNOSTICO_RESTAURACAO_NOT_FOUND("Diagnóstico de restauração não encontrado"),
     DIAGNOSTICO_RESTAURACAO_JA_POSSUI_PROCEDIMENTO("Este diagnóstico de restauração já possui um procedimento de restauração cadastrado"),
-    DATA_SAIDA_REQUIRED("Data de saída é obrigatória");
+    DATA_SAIDA_REQUIRED("Data de saída é obrigatória"),
+    SENHA_REQUIRED("Senha é obrigatória"),
+    SENHA_INVALIDA("Senha deve ter no mínimo 8 caracteres"),
+    EMAIL_DUPLICADO("Email já cadastrado"),
+    CREDENCIAIS_INVALIDAS("Email ou senha inválidos"),
+    NAO_AUTENTICADO("Autenticação necessária"),
+    NAO_AUTORIZADO("Acesso negado");
 
     private final String description;
 

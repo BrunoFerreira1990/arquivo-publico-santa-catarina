@@ -16,6 +16,13 @@ spring:
 server:
   port: 0
 
+app:
+  jwt:
+    secret: test-secret-test-secret-test-secret-0123456789
+    expiration: 3600
+  bootstrap-admin:
+    enabled: false
+
 logging:
   level:
     com.example.apesc: INFO
